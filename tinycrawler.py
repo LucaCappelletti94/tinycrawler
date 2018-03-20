@@ -53,8 +53,11 @@ class TinyCrawler:
         if os.path.isfile(filename):
             with open(filename) as json_data:
                 return json.load(json_data)["outgoing_urls"]
+        try:
+            r = requests.get(url)
+        except requests.exceptions.ConnectionError as e:
+            return [], True
 
-        r = requests.get(url)
         if 'text/html' not in r.headers['content-type']:
             return []
 
