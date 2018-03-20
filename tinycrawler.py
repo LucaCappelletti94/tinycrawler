@@ -47,7 +47,8 @@ class TinyCrawler:
 
         path = urlparse(url).path
         path = ''.join(e for e in path if e.isalnum())
-        filename = directory+"/"+domain+"-"+path+".json"
+        full_path = directory+"/"+domain+"-"+path
+        filename = full_path[:100]+".json"
 
         if os.path.isfile(filename):
             with open(filename) as json_data:
