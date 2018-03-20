@@ -52,14 +52,15 @@ class TinyCrawler:
 
         if os.path.isfile(filename):
             with open(filename) as json_data:
-                return json.load(json_data)["outgoing_urls"]
+                return json.load(json_data)["outgoing_urls"], False
+
         try:
             r = requests.get(url)
         except requests.exceptions.ConnectionError as e:
             return [], True
 
         if 'text/html' not in r.headers['content-type']:
-            return []
+            return [], True
 
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -74,7 +75,7 @@ class TinyCrawler:
         with open(filename, 'w') as outfile:
             json.dump(data, outfile)
 
-        return data["outgoing_urls"]
+        return data["outgoing_urls"], True
 
     def url_filter(self, url):
         useless_words = ["#", "forum"]
@@ -91,12 +92,14 @@ class TinyCrawler:
         t = tqdm(self.urls, desc=self.startingDomain, leave=True)
         for url in t:
             ts = time.time()
-            self.urls += self.parse_url(url)
-            te = time.time()
-            t.refresh()
-            delta = random.randint(self.minTime,self.maxTime)/1000-te+ts
-            if delta > 0:
-                time.sleep(delta)
+            new_urls, wait = self.parse_url(url)
+            self.urls += new_urls
+            if wait:
+                te = time.time()
+                t.refresh()
+                delta = random.randint(self.minTime,self.maxTime)/1000-te+ts
+                if delta > 0:
+                    time.sleep(delta)
 
 myCrawler = TinyCrawler(sys.argv[1])
 
