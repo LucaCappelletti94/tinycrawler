@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup, SoupStrainer
 import sys
 
 class TinyCrawler:
-    def __init__(self, url_seed, directory="tinycrawler"):
+    def __init__(self, url_seed, directory="../downloaded_websites"):
         self.urls = [url_seed]
         self.startingDomain = self.get_domain(url_seed)
         self.minTime = 5000
