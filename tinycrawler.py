@@ -54,7 +54,12 @@ class TinyCrawler:
 
         if os.path.isfile(filename):
             with open(filename) as json_data:
-                return json.load(json_data)["outgoing_urls"], False
+                saved_urls = json.load(json_data)["outgoing_urls"]
+                response = []
+                for saved_url in saved_urls:
+                    if self.url_filter(saved_url):
+                        response.append(url)
+                return response, False
 
         try:
             r = requests.get(url)
