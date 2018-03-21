@@ -98,7 +98,8 @@ class TinyCrawler:
             try:
 	            new_urls, wait = self.parse_url(url)
     		except Exception as e:
-    			logging.exception("message")
+    			logging.exception("Domain: "+self.startingDomain+", Current url: "+url)
+
             self.urls += new_urls
             if wait:
                 te = time.time()
