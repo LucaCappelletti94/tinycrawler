@@ -7,9 +7,11 @@ import os
 import json
 import datetime
 import validators
+import logging
 from bs4 import BeautifulSoup, SoupStrainer
 
 import sys
+
 
 class TinyCrawler:
     def __init__(self, url_seed, directory="../downloaded_websites"):
@@ -92,7 +94,11 @@ class TinyCrawler:
         t = tqdm(self.urls, desc=self.startingDomain, leave=True)
         for url in t:
             ts = time.time()
-            new_urls, wait = self.parse_url(url)
+            wait = True
+            try:
+	            new_urls, wait = self.parse_url(url)
+    		except Exception as e:
+    			logging.exception("message")
             self.urls += new_urls
             if wait:
                 te = time.time()
@@ -101,6 +107,7 @@ class TinyCrawler:
                 if delta > 0:
                     time.sleep(delta)
 
+logging.basicConfig(filename='exceptions.log',level=logging.DEBUG)
 myCrawler = TinyCrawler(sys.argv[1])
 
 myCrawler.run()
