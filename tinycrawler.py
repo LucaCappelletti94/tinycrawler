@@ -96,9 +96,10 @@ class TinyCrawler:
             ts = time.time()
             wait = True
             try:
-	            new_urls, wait = self.parse_url(url)
-    		except Exception as e:
-    			logging.exception("Domain: "+self.startingDomain+", Current url: "+url)
+                new_urls, wait = self.parse_url(url)
+            except Exception as e:
+                logging.exception("Domain: "+self.startingDomain+", Current url: "+url)
+                pass
 
             self.urls += new_urls
             if wait:
@@ -107,6 +108,7 @@ class TinyCrawler:
                 delta = random.randint(self.minTime,self.maxTime)/1000-te+ts
                 if delta > 0:
                     time.sleep(delta)
+
 
 logging.basicConfig(filename='exceptions.log',level=logging.DEBUG)
 myCrawler = TinyCrawler(sys.argv[1])
