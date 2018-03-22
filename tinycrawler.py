@@ -117,7 +117,6 @@ class TinyCrawler:
                     time.sleep(delta)
 
 
-logging.basicConfig(filename='exceptions.log',level=logging.DEBUG)
 myCrawler = TinyCrawler(sys.argv[1])
 
 myCrawler.run()
