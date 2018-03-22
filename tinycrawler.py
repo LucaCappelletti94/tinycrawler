@@ -20,9 +20,12 @@ class TinyCrawler:
     maxTime = 10000
     directory = "../downloaded_websites"
     custom_url_filter = lambda url: True
+    wait = True
     url_number = 0
     estimated_step_time = 0
-    wait = True
+    max_output_len = 0
+    sleep_time = 0
+    estimated_sleep_time = (minTime+maxTime)/2000
 
     def __init__(self, url_seed):
         self.domain = self._get_domain(url_seed)
@@ -131,10 +134,9 @@ class TinyCrawler:
 
     def _sleep(self, start):
         if self.wait:
-            sleep_time = random.randint(self.minTime,self.maxTime)/1000-time.time()+start
-            if sleep_time > 0:
-                time.sleep(sleep_time)
-        self.estimated_step_time = self.estimated_step_time*0.6 + 0.4*(time.time()-start)
+            self.sleep_time = random.randint(self.minTime,self.maxTime)/1000-time.time()+start
+            if self.sleep_time > 0:
+                time.sleep(self.sleep_time)
 
     def _update_stored_urls(self):
         with open(self.urlsPath, 'w') as outfile:
@@ -146,7 +148,6 @@ class TinyCrawler:
     def _iterate(self, url):
         try:
             for new_url in self._parse_url(url):
-                #print(new_url)
                 if self._url_filter(new_url):
                     self.urls.append(new_url)
             self._update_stored_urls()
@@ -155,7 +156,7 @@ class TinyCrawler:
             pass
 
     def _estimated_time(self):
-        d = datetime(1,1,1) + timedelta(seconds=self.estimated_step_time*(len(self.urls)-self.url_number))
+        d = datetime(1,1,1) + timedelta(seconds=(self.estimated_step_time+self.estimated_sleep_time)*(len(self.urls)-self.url_number))
         response = ""
         if d.day-1>0:
             response += "%sd"%(d.day-1)
@@ -176,8 +177,16 @@ class TinyCrawler:
             response += "%ss"%(d.second)
         return response
 
+    def _update_estimated_time(self, start):
+        self.estimated_step_time = self.estimated_step_time*0.5 + 0.5*(time.time()-start)
+        self.estimated_sleep_time = self.estimated_sleep_time*0.5 + 0.5*self.sleep_time
+
     def _update_bar(self):
-        print ("%s: %s/%s. ETA: %s"%(self.domain, self.url_number, len(self.urls), self._estimated_time()), end="\r")
+        output = "%s: %s/%s. ETA: %s, 1it in %ss, sleeping for %ss"%(self.domain, self.url_number, len(self.urls), self._estimated_time(), round(self.estimated_step_time, 1), round(self.estimated_sleep_time, 1))
+        if len(output)>self.max_output_len:
+            self.max_output_len = len(output)
+        output += " "*(self.max_output_len-len(output))
+        print (output, end="\r")
         sys.stdout.flush()
 
     def set_url_filter(self, function):
@@ -187,6 +196,7 @@ class TinyCrawler:
         while (self.url_number < iterations_number or iterations_number == -1) and  self.url_number < len(self.urls):
             start = time.time()
             self._iterate(self.urls[self.url_number])
+            self._update_estimated_time(start)
             self._sleep(start)
             self._update_bar()
             self.url_number+=1
