@@ -188,7 +188,7 @@ class TinyCrawler:
         output += " "*(self.max_output_len-len(output))
         print (output, end="\r")
         if self.url_number%100 == 0:
-            logger.error(output)
+            logging.error(output)
         sys.stdout.flush()
 
     def set_url_filter(self, function):
