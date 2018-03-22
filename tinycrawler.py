@@ -56,11 +56,12 @@ class TinyCrawler:
 
         if os.path.isfile(filename):
             with open(filename) as json_data:
-                saved_urls = json.load(json_data)["outgoing_urls"]
+                data = json.load(json_data)
+            if url == data["url"]:
                 response = []
-                for saved_url in saved_urls:
+                for saved_url in data["outgoing_urls"]:
                     if self.url_filter(saved_url):
-                        response.append(url)
+                        response.append(saved_url)
                 return response, False
 
         try:
@@ -104,11 +105,11 @@ class TinyCrawler:
             wait = True
             try:
                 new_urls, wait = self.parse_url(url)
+                self.urls += new_urls
             except Exception as e:
                 logging.exception("Domain: "+self.startingDomain+", Current url: "+url)
                 pass
 
-            self.urls += new_urls
             if wait:
                 te = time.time()
                 t.refresh()
