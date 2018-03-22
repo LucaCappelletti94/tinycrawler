@@ -21,6 +21,8 @@ class TinyCrawler:
         self.maxTime = 10000
         self.directory = directory
         self.custom_url_filter = lambda url: True
+        logging.basicConfig(filename=self.directory+"/"+self.startingDomain+'.log',level=logging.ERROR)
+
 
     def clean_request(self, text):
         soup = BeautifulSoup(text, 'lxml')
