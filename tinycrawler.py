@@ -99,7 +99,6 @@ class TinyCrawler:
             self._cache_webpage(url, path, new_urls, soup)
         except Exception as e:
             self._logger.exception(url)
-            pass
 
         # When we are done, we free the proxy
         self._proxies.add(proxy)
