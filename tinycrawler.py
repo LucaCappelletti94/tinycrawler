@@ -32,6 +32,7 @@ class TinyCrawler:
             directory=self.directory
         )
         self._proxies = Proxies()
+        self._bar = Bar()
 
     def _get_domain(self, url):
         parsed_uri = urlparse(url)
@@ -78,8 +79,6 @@ class TinyCrawler:
         return 'text/html' not in request.headers['content-type']
 
     def _download(self, url, path):
-
-
         # If there are no free proxies, we sleep
         while self._proxies.empty():
             time.sleep(0.1)
@@ -118,8 +117,10 @@ class TinyCrawler:
 
             if self._is_path_cached(path):
                 self._load_cached_webpage(path)
+            else:
+                self._download(url,path)
 
-            self._download(url,path)
+            self._bar.update(self._urls.total(), self._urls.done())
 
     def set_url_filter(self, function):
         self.urls.set_url_filter(function)

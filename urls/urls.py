@@ -63,3 +63,9 @@ class Urls:
     def add_list(self, urls):
         with Pool(self._processes) as p:
             p.map(self.add, urls)
+
+    def total(self):
+        return len(self._parsed) + len(self._unparsed)
+
+    def done(self):
+        return len(self._parsed)
