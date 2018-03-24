@@ -1,6 +1,7 @@
 import os
 import json
 import validators
+from multiprocessing import Manager
 
 class Urls:
 
@@ -8,12 +9,12 @@ class Urls:
 
     _parsed = _manager.list()
     _unparsed = _manager.list()
-    _custom_validator = lambda url: True
+    _custom_validator = lambda self, url: True
     _processes = 4
 
     def __init__(self, seed, directory, cache=False):
         self.cache=cache
-        self._path = "%s-urls.json"%_directory
+        self._path = "%s-urls.json"%directory
         if self._is_cached():
             self._load_cache()
         else:
@@ -40,7 +41,7 @@ class Urls:
     def get(self):
         url = self._unparsed[0]
         self._unparsed = self._unparsed[1:]
-        self.parsed.append(url)
+        self._parsed.append(url)
         if self.cache:
             self._update_cache()
         return url
