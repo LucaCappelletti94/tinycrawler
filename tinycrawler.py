@@ -1,38 +1,36 @@
-from tqdm import tqdm
 import requests
 import time
 from urllib.parse import urljoin, urlparse
-import random
 import os
 import json
 import validators
 
 from bs4 import BeautifulSoup
-from multiprocessing import Process, Manager
-from datetime import datetime, timedelta
-import sys
 
-from tinycrawler.log import log
-from tinycrawler.proxies import proxies
-from tinycrawler.bar import bar
+from multiprocessing import Process, Lock
+
+from tinycrawler.log.log import Log
+from tinycrawler.urls.urls import Urls
+from tinycrawler.proxies.proxies import Proxies
+from tinycrawler.bar.bar import Bar
 
 class TinyCrawler:
 
     _processes_number = 8
 
-    def __init__(self, seed, directory = "../downloaded_websites"):
+    def __init__(self, seed, directory = "downloaded_websites"):
         self._domain = self._get_domain(seed)
-        self._directory = "%s/%s"%(self._directory, self._domain)
+        self._directory = "%s/%s"%(directory, self._domain)
         if not os.path.exists(self._directory):
             os.makedirs(self._directory)
 
-        self._logger = Log(directory=self.directory)
+        self._logger = Log(directory=self._directory)
         self._urls = Urls(
             seed = seed,
-            directory=self.directory
+            directory=self._directory
         )
         self._proxies = Proxies()
-        self._bar = Bar()
+        self._bar = Bar(self._domain, self._logger)
 
     def _get_domain(self, url):
         parsed_uri = urlparse(url)
@@ -94,14 +92,14 @@ class TinyCrawler:
 
             new_urls = self._urls_from_soup(url, soup)
 
-            self.urls.add_list(new_urls)
+            self._urls.add_list(new_urls)
 
             self._cache_webpage(url, path, new_urls, soup)
         except Exception as e:
             self._logger.exception(url)
 
         # When we are done, we free the proxy
-        self._proxies.add(proxy)
+        self._proxies.put(proxy)
 
 
     def _load_cached_webpage(self, path):
@@ -122,28 +120,16 @@ class TinyCrawler:
 
             self._bar.update(self._urls.total(), self._urls.done())
 
-    def set_url_filter(self, function):
-        self.urls.set_url_filter(function)
+    def set_custom_validator(self, function):
+        self._urls.set_custom_validator(function)
 
     def run(self):
         processes = []
         lock = Lock()
         for i in range(self._processes_number):
-            p = Process(target=self._job, args=(lock))
+            p = Process(target=self._job, args=(lock,))
             p.start()
             processes.append(p)
 
         for p in processes:
             p.join()
-
-def myCustomFilter(url):
-    for unwanted_word in ["#", "forum"]:
-        if unwanted_word in url:
-            return False
-    return True
-
-myCrawler = TinyCrawler(sys.argv[1])
-
-myCrawler.set_url_filter(myCustomFilter)
-
-myCrawler.run()
