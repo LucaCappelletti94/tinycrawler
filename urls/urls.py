@@ -57,8 +57,8 @@ class Urls:
     def set_custom_validator(self, validator):
         self._custom_validator = validator
 
-    def isEmpty(self):
-        return len(self._unparsed) == 0
+    def empty(self):
+        return not self._unparsed
 
     def add_list(self, urls):
         with Pool(self._processes) as p:
