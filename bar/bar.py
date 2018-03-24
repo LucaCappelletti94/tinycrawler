@@ -36,5 +36,5 @@ class Bar:
         sys.stdout.flush()
 
 
-    def update(self, delta, new_total, new_partial):
+    def update(self, new_total, new_partial):
         # To be implemented
