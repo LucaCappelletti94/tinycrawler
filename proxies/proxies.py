@@ -41,8 +41,8 @@ class Proxies:
     def get(self):
         return self._proxies.get()
 
-    def put(self):
-        return self._proxies.put()
+    def put(self, proxy):
+        return self._proxies.put(proxy)
 
     def empty(self):
         return self._proxies.empty()
