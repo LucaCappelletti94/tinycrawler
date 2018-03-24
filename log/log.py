@@ -1,12 +1,13 @@
+import os
 import logging
 
 class Log:
   def __init__(self, directory):
     self._path = "%s.log"%(directory)
-    if os.path.isfile(self._logPath):
-        with open(self.path, 'w'):
+    if os.path.isfile(self._path):
+        with open(self._path, 'w'):
             pass
-    logging.basicConfig(filename=self.path,level=logging.ERROR)
+    logging.basicConfig(filename=self._path,level=logging.ERROR)
 
   def log(self, message=""):
     logging.error(message)
