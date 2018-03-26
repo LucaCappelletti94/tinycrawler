@@ -7,34 +7,38 @@ import validators
 
 from bs4 import BeautifulSoup
 
-from multiprocessing import Process, Lock
+from multiprocessing import Process, Lock, cpu_count, Manager
+from multiprocessing.managers import BaseManager
 
 from tinycrawler.log.log import Log
 from tinycrawler.urls.urls import Urls
 from tinycrawler.proxies.proxies import Proxies
 from tinycrawler.bar.bar import Bar
 
+class MyManager(BaseManager): pass
+MyManager.register('Urls', Urls)
+MyManager.register('Proxies', Proxies)
+MyManager.register('Bar', Bar)
+
 class TinyCrawler:
 
-    _processes_number = 8
+    _processes_number = cpu_count()
 
     def __init__(self, seed, directory = "downloaded_websites"):
-        self._domain = self._get_domain(seed)
+        self._domain = Urls.domain(seed)
         self._directory = "%s/%s"%(directory, self._domain)
         if not os.path.exists(self._directory):
             os.makedirs(self._directory)
 
         self._logger = Log(directory=self._directory)
-        self._urls = Urls(
+        myManager = MyManager()
+        myManager.start()
+        self._urls = myManager.Urls(
             seed = seed,
             directory=self._directory
         )
-        self._proxies = Proxies()
-        self._bar = Bar(self._domain, self._logger)
-
-    def _get_domain(self, url):
-        parsed_uri = urlparse(url)
-        return '{uri.netloc}'.format(uri=parsed_uri)
+        self._proxies = myManager.Proxies()
+        self._bar = myManager.Bar(self._domain, self._logger)
 
     def _get_clean_text(self, soup):
         for useless_tag in ["form", "script", "head", "style", "input"]:
@@ -76,60 +80,94 @@ class TinyCrawler:
     def _request_is_binary(self, request):
         return 'text/html' not in request.headers['content-type']
 
-    def _download(self, url, path):
-        # If there are no free proxies, we sleep
-        while self._proxies.empty():
-            time.sleep(0.1)
-        # When there is one, we aquire lock
-        proxy = self._proxies.get()
+    def _download(self, url, path, lock, identifier):
+        while True:
+            # If there are no free proxies, we sleep
+            lock.acquire()
+            if self._proxies.empty():
+                lock.release()
+                time.sleep(0.1)
+            else:
+                # When there is one, we aquire lock
+                proxy,timeout = self._proxies.get()
+                lock.release()
+                time.sleep(timeout)
 
-        try:
-            request = requests.get(url, proxies = self._proxy_to_urls(proxy))
-            if self._request_is_binary(request):
-                return []
+                try:
+                    if proxy["local"]:
+                        request = requests.get(url)
+                    else:
+                        request = requests.get(url, proxies = proxy["urls"])
+                    success = True
+                except Exception as e:
+                    self._logger.exception(url)
+                    success = False
 
-            soup = BeautifulSoup(request.text, 'lxml')
+                if success:
+                    if self._request_is_binary(request):
+                        pass
+                    else:
+                        soup = BeautifulSoup(request.text, 'lxml')
 
-            new_urls = self._urls_from_soup(url, soup)
+                        new_urls = self._urls_from_soup(url, soup)
 
-            self._urls.add_list(new_urls)
+                        lock.acquire()
+                        self._urls.add_list(new_urls)
+                        lock.release()
 
-            self._cache_webpage(url, path, new_urls, soup)
-        except Exception as e:
-            self._logger.exception(url)
+                        self._cache_webpage(url, path, new_urls, soup)
 
-        # When we are done, we free the proxy
-        self._proxies.put(proxy)
-
+                # When we are done, we free the proxy
+                lock.acquire()
+                self._proxies.put(proxy)
+                lock.release()
+                break
 
     def _load_cached_webpage(self, path):
-        self.wait = False
         return self._load_cached_urls(path)
 
+    def _job(self, lock, identifier):
+        i = 100
+        while i > 0:
+            lock.acquire()
+            if not self._urls.empty():
+                url = self._urls.get()
+                lock.release()
 
-    def _job(self, lock):
-        while not self._urls.empty():
-            url = self._urls.get()
+                i = 100
 
-            path = self._get_url_path(url)
+                path = self._get_url_path(url)
 
-            if self._is_path_cached(path):
-                self._load_cached_webpage(path)
+                if self._is_path_cached(path):
+                    lock.acquire()
+                    self._urls.add_list(self._load_cached_webpage(path))
+                    lock.release()
+                else:
+                    self._download(url,path, lock, identifier)
+
+                self._bar.update(self._urls.total(), self._urls.done())
             else:
-                self._download(url,path)
+                lock.release()
+                i-=1
+                time.sleep(0.1)
 
-            self._bar.update(self._urls.total(), self._urls.done())
+    def set_validation_options(self, opt):
+        self._urls.set_validation_options(opt)
 
     def set_custom_validator(self, function):
         self._urls.set_custom_validator(function)
 
     def run(self):
-        processes = []
-        lock = Lock()
-        for i in range(self._processes_number):
-            p = Process(target=self._job, args=(lock,))
-            p.start()
-            processes.append(p)
+        self._urls.load()
+        if self._urls.empty():
+            print("No urls to parse")
+        else:
+            processes = []
+            lock = Lock()
+            for i in range(self._processes_number):
+                p = Process(target=self._job, args=(lock,i))
+                p.start()
+                processes.append(p)
 
-        for p in processes:
-            p.join()
+            for p in processes:
+              p.join()
