@@ -11,9 +11,13 @@ from urllib.parse import urlparse
 from tinycrawler.tinycrawler import TinyCrawler
 
 def myCustomFilter(url):
-    path = ''.join(e for e in urlparse(url).path if e.isalnum())
-    for unwanted_word in ["#", "?", ":"]:
+    path = urlparse(url).path
+    for unwanted_word in [":"]:
         if unwanted_word in path:
+            return False
+
+    for unwanted_word in ["#", "?"]:
+        if unwanted_word in url:
             return False
 
     if "https://it.wikipedia.org/wiki/" not in url:
@@ -22,8 +26,8 @@ def myCustomFilter(url):
     return True
 
 myCrawler = TinyCrawler(
-    seed = https://it.wikipedia.org/wiki/Pagina_principale,
-    proxy_test_server =  "http://my_test_server"
+  seed = "https://it.wikipedia.org/wiki/Pagina_principale",
+  proxy_test_server =  "http://188.152.124.186"
 )
 
 myCrawler.set_custom_validator(myCustomFilter)
