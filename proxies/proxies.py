@@ -10,8 +10,8 @@ class Proxies:
     _path = "proxies.json"
     _proxies = []
     _processes = cpu_count()
-    _test_timeout = 5
-    _proxy_timeout = 5
+    _test_timeout = 3
+    _proxy_timeout = 10
 
     def __init__(self, proxy_test_server, https_only=True, remote=True):
 

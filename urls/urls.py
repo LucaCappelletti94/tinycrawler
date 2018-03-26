@@ -81,6 +81,7 @@ class Urls:
         self.cache=cache
         if self._is_cached():
             self._load_cache()
-        else:
-            self.add(self._seed)
-            self._update_cache()
+        self.add(self._seed)
+        self._update_cache()
+
+

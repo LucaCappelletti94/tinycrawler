@@ -31,16 +31,16 @@ class TinyCrawler:
             os.makedirs(self._directory)
 
         self._logger = Log(directory=self._directory)
-        myManager = MyManager()
-        myManager.start()
-        self._urls = myManager.Urls(
+        self._myManager = MyManager()
+        self._myManager.start()
+        self._urls = self._myManager.Urls(
             seed = seed,
             directory=self._directory
         )
-        self._proxies = myManager.Proxies(
+        self._proxies = self._myManager.Proxies(
             proxy_test_server = proxy_test_server
         )
-        self._bar = myManager.Bar(self._domain, self._logger)
+        self._bar = self._myManager.Bar(self._domain)
 
     def _get_clean_text(self, soup):
         for useless_tag in ["form", "script", "head", "style", "input"]:
@@ -115,9 +115,8 @@ class TinyCrawler:
 
                         lock.acquire()
                         self._urls.add_list(new_urls)
-                        lock.release()
-
                         self._cache_webpage(url, path, new_urls, soup)
+                        lock.release()
 
                 # When we are done, we free the proxy
                 lock.acquire()
@@ -166,6 +165,7 @@ class TinyCrawler:
         else:
             processes = []
             lock = Lock()
+            print("Processes used: %s"%self._processes_number)
             for i in range(self._processes_number):
                 p = Process(target=self._job, args=(lock,i))
                 p.start()
