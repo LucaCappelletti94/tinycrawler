@@ -24,7 +24,7 @@ class TinyCrawler:
 
     _processes_number = cpu_count()
 
-    def __init__(self, seed, directory = "downloaded_websites"):
+    def __init__(self, seed, proxy_test_server, directory = "downloaded_websites"):
         self._domain = Urls.domain(seed)
         self._directory = "%s/%s"%(directory, self._domain)
         if not os.path.exists(self._directory):
@@ -37,7 +37,9 @@ class TinyCrawler:
             seed = seed,
             directory=self._directory
         )
-        self._proxies = myManager.Proxies()
+        self._proxies = myManager.Proxies(
+            proxy_test_server = proxy_test_server
+        )
         self._bar = myManager.Bar(self._domain, self._logger)
 
     def _get_clean_text(self, soup):

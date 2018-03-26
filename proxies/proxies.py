@@ -8,15 +8,15 @@ from functools import reduce
 class Proxies:
 
     _path = "proxies.json"
-    _server = "http://188.152.124.186"
     _proxies = []
     _processes = cpu_count()
     _test_timeout = 5
     _proxy_timeout = 5
 
-    def __init__(self, https_only=True, remote=True):
+    def __init__(self, proxy_test_server, https_only=True, remote=True):
 
         self.https_only = https_only
+        self._server = proxy_test_server
 
         with open(self._path) as f:
             proxies_list = json.load(f)
