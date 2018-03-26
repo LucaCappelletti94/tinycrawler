@@ -173,3 +173,5 @@ class TinyCrawler:
 
             for p in processes:
               p.join()
+
+            print("\n No more urls.")
