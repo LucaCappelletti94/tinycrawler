@@ -23,7 +23,7 @@ def myCustomFilter(url):
 
 myCrawler = TinyCrawler(
     seed = https://it.wikipedia.org/wiki/Pagina_principale,
-    proxy_test_server =  "http://188.152.124.186"
+    proxy_test_server =  "http://my_test_server"
 )
 
 myCrawler.set_custom_validator(myCustomFilter)
