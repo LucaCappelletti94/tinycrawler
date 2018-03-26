@@ -22,7 +22,7 @@ MyManager.register('Bar', Bar)
 
 class TinyCrawler:
 
-    _processes_number = cpu_count()
+    _processes_number = cpu_count()*8
 
     def __init__(self, seed, proxy_test_server, directory = "downloaded_websites"):
         self._domain = Urls.domain(seed)
