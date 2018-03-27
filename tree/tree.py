@@ -5,7 +5,6 @@ class Tree:
     default_value = None
     n_of_unparsed = 0
     n_of_parsed = 0
-    root = ""
 
     def __init__(self,filename=None):
         if filename != None:
@@ -17,11 +16,11 @@ class Tree:
         self.parsed_trie   = trie()
 
     def add(self,value):
-        self.unparsed_trie[self.root + value] = self.default_value
+        self.unparsed_trie[value] = self.default_value
         self.n_of_unparsed += 1
 
     def pop(self):
-        value = self.unparsed_trie.iter(self.root).__next__()
+        value = self.unparsed_trie.iter("").__next__()
         self.parsed_trie[value] = self.default_value
         self.n_of_unparsed -= 1
         self.n_of_parsed += 1
