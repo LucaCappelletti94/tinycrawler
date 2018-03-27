@@ -4,10 +4,11 @@ from multiprocessing import Process, Manager, Pool, cpu_count
 from tqdm import tqdm
 from time import time
 from functools import reduce
+import os
 
 class Proxies:
 
-    _path = "proxies.json"
+    _path = os.path.join(os.path.dirname(__file__), 'proxies.json')
     _proxies = []
     _processes = cpu_count()
     _test_timeout = 3
