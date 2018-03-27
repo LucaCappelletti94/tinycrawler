@@ -12,5 +12,7 @@ class Log:
   def log(self, message=""):
     logging.error(message)
 
-  def exception(self, message=""):
-    logging.exception(message)
+  def exception(self, e):
+    self.log("="*100)
+    logging.exception(e)
+    self.log("="*100)
