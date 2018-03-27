@@ -6,14 +6,11 @@ from datetime import datetime, timedelta
 
 class Bar:
     max_output_len = 0
-    bar_output_sleep_pattern = "{domain}: {current_partial}/{current_total}. ETA: {ETA}, 1it in {iteration_time}s, sleeping for {sleep_time}s"
-    bar_output_no_sleep_pattern = "{domain}: {current_partial}/{current_total}. ETA: {ETA}, 1it in {iteration_time}s"
+    bar_output_pattern = "{domain}: {current_partial}/{current_total}. ETA: {ETA}, 1it in {iteration_time}s"
     estimated_step_time = 0
-    estimated_sleep_time = 0
 
-    def __init__(self,domain,logging):
+    def __init__(self,domain):
         self.domain = domain
-        self.logging = logging
         self.start = time.time()
 
     def _format_value(self,response,value,pattern):
@@ -24,9 +21,7 @@ class Bar:
         return response
 
     def _seconds_delta(self):
-        seconds = self.estimated_step_time + self.estimated_sleep_time
-        seconds *= (self.total-self.partial)
-        return seconds
+        return self.estimated_step_time*(self.total-self.partial)
 
     def _ETA(self):
 
@@ -43,12 +38,10 @@ class Bar:
         return response
 
     def _update_estimated_time(self):
-        self.estimated_step_time = self.estimated_step_time*0.5 + 0.5*(time.time()-self.start)
-        self.estimated_sleep_time = self.estimated_sleep_time*0.5 + 0.5*self.sleep_time
-
-
-    def get_estimated_sleep_time(self):
-        return round(self.estimated_sleep_time, 1)
+        if self.estimated_step_time == 0:
+            self.estimated_step_time = time.time()-self.start
+        else:
+            self.estimated_step_time = self.estimated_step_time*0.99 + 0.01*(time.time()-self.start)
 
     def get_estimated_step_time(self):
         return round(self.estimated_step_time, 1)
@@ -65,16 +58,10 @@ class Bar:
             "current_total":self.total,
             "current_partial":self.partial,
             "ETA":self._ETA(),
-            "iteration_time":self.get_estimated_sleep_time(),
-            "sleep_time":self.get_estimated_step_time()
+            "iteration_time":self.get_estimated_step_time()
         }
 
-        if self.sleep_time == 0:
-            pattern = self.bar_output_no_sleep_pattern
-        else:
-            pattern = self.bar_output_sleep_pattern
-
-        output = pattern.format(**parameters)
+        output = self.bar_output_pattern.format(**parameters)
 
         if len(output)>self.max_output_len:
             self.max_output_len = len(output)
@@ -83,12 +70,9 @@ class Bar:
 
         print (output, end="\r")
 
-        if self.total%100 == 0:
-            logging.error(output)
-
         sys.stdout.flush()
         self.start = time.time()
 
-    def update(self, new_total, new_partial, sleep_time=0):
-        self.total, self.partial, self.sleep_time = new_total, new_partial, sleep_time
+    def update(self, new_total, new_partial):
+        self.total, self.partial = new_total, new_partial
         self._update_bar()
