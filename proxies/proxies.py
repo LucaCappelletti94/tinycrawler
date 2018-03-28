@@ -10,7 +10,7 @@ class Proxies:
 
     _path = os.path.join(os.path.dirname(__file__), 'proxies.json')
     _proxies = []
-    _processes = cpu_count()
+    _processes = cpu_count()*4
     _test_timeout = 3
     _proxy_timeout = 10
 
