@@ -73,14 +73,6 @@ class TinyCrawler:
         with open(path) as json_data:
             return json.load(json_data)["outgoing_urls"]
 
-    def _cache_webpage(self, url, path, outgoing_urls, soup):
-        with open(path, 'w') as outfile:
-            json.dump({
-                "timestamp":time.time(),
-                "url": url,
-                "outgoing_urls": outgoing_urls,
-                "content": self._get_clean_text(soup)
-            }, outfile)
 
     # Returns true if the requested file is a binary (video, image, pdf)
     # Returns false if the file is a text file.
@@ -107,26 +99,33 @@ class TinyCrawler:
                         request = requests.get(url, proxies = proxy["urls"])
                     success = True
                 except Exception as e:
-                    lock.acquire()
                     self._logger.exception(e)
-                    lock.release()
                     success = False
 
                 if success:
                     if self._request_is_binary(request):
-                        pass
+                        binary = True
                     else:
+                        binary = False
                         soup = BeautifulSoup(request.text, 'lxml')
 
                         new_urls = self._urls_from_soup(url, soup)
 
-                        lock.acquire()
-                        self._urls.add_list(new_urls)
-                        self._cache_webpage(url, path, new_urls, soup)
-                        lock.release()
+                        data = {
+                            "timestamp":time.time(),
+                            "url": url,
+                            "outgoing_urls": outgoing_urls,
+                            "content": self._get_clean_text(soup)
+                        }
+
                     # When we are done, we free the proxy
                     lock.acquire()
+                    self._urls.mark_done(url)
                     self._proxies.put(proxy)
+                    if not binary:
+                        self._urls.add_list(new_urls)
+                        with open(path, 'w') as outfile:
+                            json.dump(data, outfile)
                     lock.release()
                     break
                 else:
