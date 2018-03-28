@@ -39,11 +39,11 @@ class TinyCrawler:
             seed = seed,
             directory=self._directory
         )
+        self._logger = self._myManager.Log(directory=self._directory)
         self._proxies = self._myManager.Proxies(
             proxy_test_server = proxy_test_server
         )
         self._bar = self._myManager.Bar(self._domain)
-        self._logger = self._myManager.Log(directory=self._directory)
 
     def _get_clean_text(self, soup):
         for useless_tag in ["form", "script", "head", "style", "input"]:
