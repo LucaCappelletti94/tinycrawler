@@ -150,6 +150,7 @@ class TinyCrawler:
 
                 if self._is_path_cached(path):
                     lock.acquire()
+                    self._logger.log("%s was already downloaded in %s"%(url, path))
                     self._urls.add_list(self._load_cached_webpage(path))
                     lock.release()
                 else:
