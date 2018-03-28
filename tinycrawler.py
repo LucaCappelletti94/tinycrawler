@@ -7,6 +7,8 @@ import validators
 
 from bs4 import BeautifulSoup
 
+import hashlib
+
 from multiprocessing import Process, Lock, cpu_count, Manager
 from multiprocessing.managers import BaseManager
 
@@ -59,8 +61,10 @@ class TinyCrawler:
         return urls
 
     def _get_url_path(self, url):
-        path = ''.join(e for e in urlparse(url).path if e.isalnum())
-        return self._directory+"/"+path[:100]+".json"
+        return "%s/%s.json"%(
+            self._directory,
+            hashlib.md5(urlparse(url).path.encode('utf-8')).hexdigest()
+        )
 
     def _is_path_cached(self, path):
         return os.path.isfile(path)
