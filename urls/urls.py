@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 class Urls:
 
     _parsed = []
+    _working = []
     _unparsed = []
     _custom_validator = lambda self, url: True
     _opt = {
@@ -32,8 +33,8 @@ class Urls:
         if self.cache:
             with open(self._path, 'w') as f:
                 json.dump({
-                    "parsed":list(self._parsed),
-                    "unparsed":list(self._unparsed)
+                    "parsed":self._parsed,
+                    "unparsed":self._working+self._unparsed
                 }, f)
 
     def set_validation_options(self, opt):
@@ -41,10 +42,14 @@ class Urls:
 
     def get(self):
         url = self._unparsed.pop()
-        self._parsed.append(url)
-        if self.cache:
-            self._update_cache()
+        self._working.append(url)
+        self._update_cache()
         return url
+
+    def mark_done(self, url):
+        self._working.remove(url)
+        self._parsed.append(url)
+        self._update_cache()
 
     def add(self, url):
         if self.valid(url):
@@ -56,7 +61,7 @@ class Urls:
     	return True
 
     def valid(self, url):
-        return self._custom_validator(url) and self._focus(url) and url not in self._parsed and url not in self._unparsed
+        return self._custom_validator(url) and self._focus(url) and url not in self._working and url not in self._parsed and url not in self._unparsed
 
     def set_custom_validator(self, validator):
         self._custom_validator = validator
