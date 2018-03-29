@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 class Bar:
     max_output_len = 0
-    bar_output_pattern = "{domain}: {current_partial}/{current_total}. ETA: {ETA}, 1it in {iteration_time}s"
+    bar_output_pattern = "{domain}: {current_partial}/{current_total}. ETA: {ETA}, {iterations} it / {seconds} s"
     estimated_step_time = 0
 
     def __init__(self,domain):
@@ -41,10 +41,7 @@ class Bar:
         if self.estimated_step_time == 0:
             self.estimated_step_time = time.time()-self.start
         else:
-            self.estimated_step_time = self.estimated_step_time*0.99 + 0.01*(time.time()-self.start)
-
-    def get_estimated_step_time(self):
-        return round(self.estimated_step_time, 1)
+            self.estimated_step_time = self.estimated_step_time*0.995 + 0.005*(time.time()-self.start)
 
     def _space_pad(self,output):
         output += " "*(self.max_output_len-len(output))
@@ -53,12 +50,22 @@ class Bar:
     def _update_bar(self):
         self._update_estimated_time()
 
+        seconds = self.estimated_step_time
+
+        if seconds<1 and seconds != 0:
+            iterations = round(1/seconds, 2)
+            seconds = 1
+        else:
+            iterations = 1
+            seconds = round(self.estimated_step_time, 2)
+
         parameters = {
             "domain":self.domain,
             "current_total":self.total,
             "current_partial":self.partial,
             "ETA":self._ETA(),
-            "iteration_time":self.get_estimated_step_time()
+            "iterations": iterations,
+            "seconds": seconds
         }
 
         output = self.bar_output_pattern.format(**parameters)
