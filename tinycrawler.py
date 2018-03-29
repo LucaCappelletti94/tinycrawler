@@ -78,10 +78,10 @@ class TinyCrawler:
         return hashlib.md5(urlparse(url).path.encode('utf-8')).hexdigest()
 
     def _is_path_cached(self, path):
-        return self._cache and os.path.isfile(path)
+        return self._cache and os.path.isfile("%s/%s.json"%(self._webpages_path, url_hash))
 
     def _load_cached_urls(self, path):
-        with open(path, 'r') as json_data:
+        with open("%s/%s.json"%(self._webpages_path, url_hash), 'r') as json_data:
             return json.load(json_data)["outgoing"]
 
     # Returns true if the requested file is a binary (video, image, pdf)
@@ -121,17 +121,15 @@ class TinyCrawler:
 
                         new_urls = self._urls_from_soup(url, soup)
 
-                        webpage = {
-                            "timestamp":time.time(),
-                            "url": url,
-                            "content": self._get_clean_text(soup)
-                        }
-
-                        with open(self._webpages_path, 'w') as webpage_file:
-                            json.dump(data, webpage_file)
+                        with open("%s/%s.json"%(self._webpages_path, url_hash), 'w') as webpage_file:
+                            json.dump({
+                                "timestamp":time.time(),
+                                "url": url,
+                                "content": self._get_clean_text(soup)
+                            }, webpage_file)
 
                         if self._cache:
-                            with open(self._graph_path, 'w') as urls_file:
+                            with open("%s/%s.json"%(self._graph_path, url_hash), 'w') as urls_file:
                                 json.dump({
                                     "url":url,
                                     "outgoing":new_urls
@@ -147,8 +145,6 @@ class TinyCrawler:
                     self.url_lock.release()
 
                     break
-                else:
-                    pass
 
     def _job(self):
         time.sleep(1)
@@ -163,8 +159,8 @@ class TinyCrawler:
 
                 url_hash = self._get_url_hash(url)
 
-                if self._is_path_cached(path):
-                    cached_urls = self._load_cached_urls(path)
+                if self._is_path_cached(url_hash):
+                    cached_urls = self._load_cached_urls(url_hash)
                     self.url_lock.acquire()
                     self._urls.add_list(cached_urls)
                     self.url_lock.release()
