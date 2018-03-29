@@ -27,7 +27,7 @@ class TinyCrawler:
 
     _processes_number = cpu_count()*8*2
 
-    def __init__(self, seed, proxy_test_server, cache=True, directory = "downloaded_websites"):
+    def __init__(self, seed, proxy_test_server, remote = True, cache=True, directory = "downloaded_websites"):
         self._domain = Urls.domain(seed)
         self._directory = "%s/%s"%(directory, self._domain)
         self._graph_path = self._directory+"/graph"
@@ -52,7 +52,8 @@ class TinyCrawler:
         self._logger = self._myManager.Log(directory=self._directory)
         self._proxies = self._myManager.Proxies(
             proxy_test_server = proxy_test_server,
-            cache = cache
+            cache = cache,
+            remote = remote
         )
         self._bar = self._myManager.Bar(self._domain)
 
