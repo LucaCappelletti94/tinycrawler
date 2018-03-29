@@ -54,7 +54,7 @@ class Urls:
 
     def mark_done(self, url):
         self._working.remove(url)
-        self._parsed_number++
+        self._parsed_number+=1
         self._update_cache()
 
     def add(self, url):
