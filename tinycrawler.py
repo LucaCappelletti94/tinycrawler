@@ -26,6 +26,11 @@ MyManager.register('Log', Log)
 class TinyCrawler:
 
     _processes_number = cpu_count()*8*2
+    _headers =  {
+        'user-agent': ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) '
+                       'AppleWebKit/537.36 (KHTML, like Gecko) '
+                       'Chrome/45.0.2454.101 Safari/537.36'),
+    }
 
     def __init__(self, seed, proxy_test_server, remote = True, cache=True, directory = "downloaded_websites"):
         self._domain = Urls.domain(seed)
@@ -105,9 +110,9 @@ class TinyCrawler:
 
                 try:
                     if proxy["local"]:
-                        request = requests.get(url)
+                        request = requests.get(url, headers=self._headers)
                     else:
-                        request = requests.get(url, proxies = proxy["urls"])
+                        request = requests.get(url, headers=self._headers, proxies = proxy["urls"])
                     success = True
                 except Exception as e:
                     self._logger.exception(e)
