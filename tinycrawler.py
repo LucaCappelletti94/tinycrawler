@@ -30,10 +30,17 @@ class TinyCrawler:
     def __init__(self, seed, proxy_test_server, cache=True, directory = "downloaded_websites"):
         self._domain = Urls.domain(seed)
         self._directory = "%s/%s"%(directory, self._domain)
+        self._graph_path = self._directory+"/graph"
+        self._webpages_path = self._directory+"/webpages"
+
         if not os.path.exists(self._directory):
             os.makedirs(self._directory)
-        if not os.path.exists(self._directory+"/graph"):
-            os.makedirs(self._directory+"/graph")
+        if not os.path.exists(self._webpages_path):
+            os.makedirs(self._webpages_path)
+        if not os.path.exists(self._graph_path):
+            os.makedirs(self._graph_path)
+
+        self._cache = cache
 
         self._myManager = MyManager()
         self._myManager.start()
@@ -63,30 +70,26 @@ class TinyCrawler:
         urls = []
         for link in soup.find_all('a', href=True):
             url = urljoin(base, link["href"])
-            if validators.url(url):
+            if validators.url(url) and "#" not in url:
                 urls.append(url)
         return urls
 
-    def _get_url_path(self, url):
-        return "%s/graph/%s.json"%(
-            self._directory,
-            hashlib.md5(urlparse(url).path.encode('utf-8')).hexdigest()
-        )
+    def _get_url_hash(self, url):
+        return hashlib.md5(urlparse(url).path.encode('utf-8')).hexdigest()
 
     def _is_path_cached(self, path):
         return self._cache and os.path.isfile(path)
 
     def _load_cached_urls(self, path):
         with open(path, 'r') as json_data:
-            return json.load(json_data)["outgoing_urls"]
-
+            return json.load(json_data)["outgoing"]
 
     # Returns true if the requested file is a binary (video, image, pdf)
     # Returns false if the file is a text file.
     def _request_is_binary(self, request):
         return 'text/html' not in request.headers['content-type']
 
-    def _download(self, url, path):
+    def _download(self, url, url_hash):
         while True:
             # If there are no free proxies, we sleep
             self.proxy_lock.acquire()
@@ -118,24 +121,31 @@ class TinyCrawler:
 
                         new_urls = self._urls_from_soup(url, soup)
 
-                        data = {
+                        webpage = {
                             "timestamp":time.time(),
                             "url": url,
-                            "outgoing_urls": new_urls,
                             "content": self._get_clean_text(soup)
                         }
 
+                        with open(self._webpages_path, 'w') as webpage_file:
+                            json.dump(data, webpage_file)
+
+                        if self._cache:
+                            with open(self._graph_path, 'w') as urls_file:
+                                json.dump({
+                                    "url":url,
+                                    "outgoing":new_urls
+                                    }, urls_file)
+
                     # When we are done, we free the proxy
-                    self.proxy_lock.acquire()
                     self._proxies.put(proxy)
-                    self.proxy_lock.release()
+
                     self.url_lock.acquire()
                     self._urls.mark_done(url)
                     if not binary:
                         self._urls.add_list(new_urls)
                     self.url_lock.release()
-                    with open(path, 'w') as outfile:
-                        json.dump(data, outfile)
+
                     break
                 else:
                     pass
@@ -151,7 +161,7 @@ class TinyCrawler:
 
                 i = 100
 
-                path = self._get_url_path(url)
+                url_hash = self._get_url_hash(url)
 
                 if self._is_path_cached(path):
                     cached_urls = self._load_cached_urls(path)
@@ -159,7 +169,7 @@ class TinyCrawler:
                     self._urls.add_list(cached_urls)
                     self.url_lock.release()
                 else:
-                    self._download(url,path)
+                    self._download(url,url_hash)
 
                 self._bar.update(self._urls.total(), self._urls.done())
             else:
