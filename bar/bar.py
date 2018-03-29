@@ -8,6 +8,7 @@ class Bar:
     max_output_len = 0
     bar_output_pattern = "{domain}: {current_partial}/{current_total}. ETA: {ETA}, {iterations} it / {seconds} s"
     estimated_step_time = 0
+    estimated_step_units = 0
 
     def __init__(self,domain):
         self.domain = domain
@@ -21,7 +22,7 @@ class Bar:
         return response
 
     def _seconds_delta(self):
-        return self.estimated_step_time*(self.total-self.partial)
+        return self.estimated_step_time*self.estimated_step_units
 
     def _ETA(self):
 
@@ -41,7 +42,13 @@ class Bar:
         if self.estimated_step_time == 0:
             self.estimated_step_time = time.time()-self.start
         else:
-            self.estimated_step_time = self.estimated_step_time*0.995 + 0.005*(time.time()-self.start)
+            self.estimated_step_time = self.estimated_step_time*0.99 + 0.01*(time.time()-self.start)
+
+    def _update_estimated_step_units(self):
+        if self.estimated_step_units == 0:
+            self.estimated_step_units = self.total-self.partial
+        else:
+            self.estimated_step_units = self.estimated_step_units*0.99 + 0.01*(self.total-self.partial)
 
     def _space_pad(self,output):
         output += " "*(self.max_output_len-len(output))
@@ -49,6 +56,7 @@ class Bar:
 
     def _update_bar(self):
         self._update_estimated_time()
+        self._update_estimated_step_units()
 
         seconds = self.estimated_step_time
 
