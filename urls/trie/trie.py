@@ -1,13 +1,13 @@
 import pickle
+import os
 from patricia import trie
 
 class Trie:
     def __init__(self,path=None):
-        self.path = path
+        self._path = path
+        self._trie = trie()
         if self._is_cached():
             self._load_from_cache()
-        else:
-            self._trie = trie()
 
     def __contains__(self,value):
         return value in self._trie
@@ -17,7 +17,7 @@ class Trie:
 
     def _is_cache_enabled(self):
         """Checks if a path was given"""
-        return self.path != None
+        return self._path != None
 
     def _is_cached(self):
         """Checks if the file was cached to the given path"""
@@ -25,22 +25,16 @@ class Trie:
 
     def _load_from_cache(self):
         """Loads the trie from the given path"""
-        with open(self.path,'rb') as f:
+        with open(self._path,'rb') as f:
             self = pickle.load(f)
 
     def _save(self):
         """Saves the trie to the given path"""
         if self._is_cache_enabled():
-            with open(self.path,'wb') as f:
+            with open(self._path,'wb') as f:
                 pickle.dump(self, f,-1)
 
     def add(self,el):
         """Adds an element to the trie"""
-        self.unparsed_trie[el] = None
+        self._trie[el] = None
         self._save()
-
-    def pop(self):
-        """Returns and removes an element from the trie"""
-        el = self.unparsed_trie.iter('').__next__()
-        self._save()
-        return el
