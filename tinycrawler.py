@@ -25,13 +25,15 @@ MyManager.register('Log', Log)
 
 class TinyCrawler:
 
-    _processes_number = 200#cpu_count()*8*2
+    _processes_number = cpu_count()*8*2
 
     def __init__(self, seed, proxy_test_server, directory = "downloaded_websites"):
         self._domain = Urls.domain(seed)
         self._directory = "%s/%s"%(directory, self._domain)
         if not os.path.exists(self._directory):
             os.makedirs(self._directory)
+        if not os.path.exists(self._directory+"/graph"):
+            os.makedirs(self._directory+"/graph")
 
         self._myManager = MyManager()
         self._myManager.start()
@@ -44,6 +46,9 @@ class TinyCrawler:
             proxy_test_server = proxy_test_server
         )
         self._bar = self._myManager.Bar(self._domain)
+
+        self.proxy_lock = Lock()
+        self.url_lock = Lock()
 
     def _get_clean_text(self, soup):
         for useless_tag in ["form", "script", "head", "style", "input"]:
@@ -61,7 +66,7 @@ class TinyCrawler:
         return urls
 
     def _get_url_path(self, url):
-        return "%s/%s.json"%(
+        return "%s/graph/%s.json"%(
             self._directory,
             hashlib.md5(urlparse(url).path.encode('utf-8')).hexdigest()
         )
@@ -70,7 +75,7 @@ class TinyCrawler:
         return os.path.isfile(path)
 
     def _load_cached_urls(self, path):
-        with open(path) as json_data:
+        with open(path, 'r') as json_data:
             return json.load(json_data)["outgoing_urls"]
 
 
@@ -79,17 +84,17 @@ class TinyCrawler:
     def _request_is_binary(self, request):
         return 'text/html' not in request.headers['content-type']
 
-    def _download(self, url, path, lock, identifier):
+    def _download(self, url, path):
         while True:
             # If there are no free proxies, we sleep
-            lock.acquire()
+            self.proxy_lock.acquire()
             if self._proxies.empty():
-                lock.release()
+                self.proxy_lock.release()
                 time.sleep(0.1)
             else:
                 # When there is one, we aquire lock
                 proxy,timeout = self._proxies.get()
-                lock.release()
+                self.proxy_lock.release()
                 time.sleep(timeout)
 
                 try:
@@ -114,51 +119,50 @@ class TinyCrawler:
                         data = {
                             "timestamp":time.time(),
                             "url": url,
-                            "outgoing_urls": outgoing_urls,
+                            "outgoing_urls": new_urls,
                             "content": self._get_clean_text(soup)
                         }
 
                     # When we are done, we free the proxy
-                    lock.acquire()
-                    self._urls.mark_done(url)
+                    self.proxy_lock.acquire()
                     self._proxies.put(proxy)
+                    self.proxy_lock.release()
+                    self.url_lock.acquire()
+                    self._urls.mark_done(url)
                     if not binary:
                         self._urls.add_list(new_urls)
-                        with open(path, 'w') as outfile:
-                            json.dump(data, outfile)
-                    lock.release()
+                    self.url_lock.release()
+                    with open(path, 'w') as outfile:
+                        json.dump(data, outfile)
                     break
                 else:
                     pass
 
-
-    def _load_cached_webpage(self, path):
-        return self._load_cached_urls(path)
-
-    def _job(self, lock, identifier):
+    def _job(self):
         time.sleep(1)
         i = 100
         while i > 0:
-            lock.acquire()
+            self.url_lock.acquire()
             if not self._urls.empty():
                 url = self._urls.get()
-                lock.release()
+                self.url_lock.release()
 
                 i = 100
 
                 path = self._get_url_path(url)
 
                 if self._is_path_cached(path):
-                    lock.acquire()
                     self._logger.log("%s was already downloaded in %s"%(url, path))
-                    self._urls.add_list(self._load_cached_webpage(path))
-                    lock.release()
+                    cached_urls = self._load_cached_urls(path)
+                    self.url_lock.acquire()
+                    self._urls.add_list(cached_urls)
+                    self.url_lock.release()
                 else:
-                    self._download(url,path, lock, identifier)
+                    self._download(url,path)
 
                 self._bar.update(self._urls.total(), self._urls.done())
             else:
-                lock.release()
+                self.url_lock.release()
                 i-=1
                 time.sleep(0.1)
 
@@ -174,11 +178,10 @@ class TinyCrawler:
             print("No urls to parse")
         else:
             processes = []
-            lock = Lock()
             print("Processes used: %s"%self._processes_number)
             self._bar.update(self._urls.total(), self._urls.done())
             for i in range(self._processes_number):
-                p = Process(target=self._job, args=(lock,i))
+                p = Process(target=self._job)
                 p.start()
                 processes.append(p)
 
