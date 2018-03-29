@@ -14,10 +14,11 @@ class Proxies:
     _test_timeout = 3
     _proxy_timeout = 10
 
-    def __init__(self, proxy_test_server, https_only=True, remote=True):
+    def __init__(self, proxy_test_server, cache = True, https_only=True, remote=True):
 
         self.https_only = https_only
         self._server = proxy_test_server
+        self._cache = cache
 
         with open(self._path) as f:
             proxies_list = json.load(f)

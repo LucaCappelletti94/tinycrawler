@@ -8,7 +8,8 @@ from .trie.trie import Trie
 
 class Urls:
 
-    _parsed = []
+    _parsed_number = 0
+
     _working = []
     _unparsed = []
     _custom_validator = lambda self, url: True
@@ -16,30 +17,29 @@ class Urls:
     	"domain_fucus_only":True
     }
 
-    def __init__(self, seed, directory):
+    def __init__(self, seed, directory, cache = True):
         self._path = "%s/urls"%directory
         self._seed = seed
-        self._url_trie = Trie(self._path+"/url_trie.pkl")
+        self._cache = cache
+        self._url_trie = Trie(self._path+"/url_trie.pkl", cache=cache)
         self._seed_domain = Urls.domain(self._seed)
 
         if not os.path.exists(self._path):
             os.makedirs(self._path)
 
     def _is_cached(self):
-        return self.cache and os.path.isfile(self._path)
+        return self._cache and os.path.isfile(self._path)
 
     def _load_cache(self):
         with open(self._path+"/urls.json") as f:
             data = json.load(f)
 
-        self._parsed= list(filter(lambda u: self.valid(u), data["parsed"]))
         self._unparsed= list(filter(lambda u: self.valid(u), data["unparsed"]))
 
     def _update_cache(self):
-        if self.cache:
+        if self._cache:
             with open(self._path+"/urls.json", 'w') as f:
                 json.dump({
-                    "parsed":self._parsed,
                     "unparsed":self._working+self._unparsed
                 }, f)
 
@@ -54,7 +54,7 @@ class Urls:
 
     def mark_done(self, url):
         self._working.remove(url)
-        self._parsed.append(url)
+        self._parsed_number++
         self._update_cache()
 
     def add(self, url):
@@ -81,16 +81,15 @@ class Urls:
         self._update_cache()
 
     def total(self):
-        return len(self._parsed) + len(self._unparsed)
+        return self._parsed_number + len(self._unparsed)
 
     def done(self):
-        return len(self._parsed)
+        return self._parsed_number
 
     def domain(url):
         return '{uri.netloc}'.format(uri=urlparse(url))
 
-    def load(self, cache=True):
-        self.cache=cache
+    def load(self):
         if self._is_cached():
             self._load_cache()
         self.add(self._seed)

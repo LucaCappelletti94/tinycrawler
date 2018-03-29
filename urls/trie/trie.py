@@ -3,8 +3,9 @@ import os
 from patricia import trie
 
 class Trie:
-    def __init__(self,path=None):
+    def __init__(self,path=None, cache = True):
         self._path = path
+        self._cache = cache
         self._trie = trie()
         if self._is_cached():
             self._load_from_cache()
@@ -17,7 +18,7 @@ class Trie:
 
     def _is_cache_enabled(self):
         """Checks if a path was given"""
-        return self._path != None
+        return self._path != None and self._cache
 
     def _is_cached(self):
         """Checks if the file was cached to the given path"""

@@ -27,7 +27,7 @@ class TinyCrawler:
 
     _processes_number = cpu_count()*8*2
 
-    def __init__(self, seed, proxy_test_server, directory = "downloaded_websites"):
+    def __init__(self, seed, proxy_test_server, cache=True, directory = "downloaded_websites"):
         self._domain = Urls.domain(seed)
         self._directory = "%s/%s"%(directory, self._domain)
         if not os.path.exists(self._directory):
@@ -39,11 +39,13 @@ class TinyCrawler:
         self._myManager.start()
         self._urls = self._myManager.Urls(
             seed = seed,
-            directory=self._directory
+            directory=self._directory,
+            cache = cache
         )
         self._logger = self._myManager.Log(directory=self._directory)
         self._proxies = self._myManager.Proxies(
-            proxy_test_server = proxy_test_server
+            proxy_test_server = proxy_test_server,
+            cache = cache
         )
         self._bar = self._myManager.Bar(self._domain)
 
@@ -72,7 +74,7 @@ class TinyCrawler:
         )
 
     def _is_path_cached(self, path):
-        return os.path.isfile(path)
+        return self._cache and os.path.isfile(path)
 
     def _load_cached_urls(self, path):
         with open(path, 'r') as json_data:
@@ -152,7 +154,6 @@ class TinyCrawler:
                 path = self._get_url_path(url)
 
                 if self._is_path_cached(path):
-                    self._logger.log("%s was already downloaded in %s"%(url, path))
                     cached_urls = self._load_cached_urls(path)
                     self.url_lock.acquire()
                     self._urls.add_list(cached_urls)
