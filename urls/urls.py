@@ -4,6 +4,8 @@ import validators
 from multiprocessing import Manager, Pool
 from urllib.parse import urlparse
 
+from .trie.trie import Trie
+
 class Urls:
 
     _parsed = []
@@ -15,15 +17,19 @@ class Urls:
     }
 
     def __init__(self, seed, directory):
-        self._path = "%s-urls.json"%directory
+        self._path = "%s/urls"%directory
         self._seed = seed
+        self._url_trie = Trie(self._path+"/url_trie.pkl")
         self._seed_domain = Urls.domain(self._seed)
+
+        if not os.path.exists(self._path):
+            os.makedirs(self._path)
 
     def _is_cached(self):
         return self.cache and os.path.isfile(self._path)
 
     def _load_cache(self):
-        with open(self._path) as f:
+        with open(self._path+"/urls.json") as f:
             data = json.load(f)
 
         self._parsed= list(filter(lambda u: self.valid(u), data["parsed"]))
@@ -31,7 +37,7 @@ class Urls:
 
     def _update_cache(self):
         if self.cache:
-            with open(self._path, 'w') as f:
+            with open(self._path+"/urls.json", 'w') as f:
                 json.dump({
                     "parsed":self._parsed,
                     "unparsed":self._working+self._unparsed
@@ -54,6 +60,7 @@ class Urls:
     def add(self, url):
         if self.valid(url):
             self._unparsed.append(url)
+            self._url_trie.add(url)
 
     def _focus(self, url):
     	if self._opt["domain_fucus_only"]:
@@ -61,7 +68,7 @@ class Urls:
     	return True
 
     def valid(self, url):
-        return self._custom_validator(url) and self._focus(url) and url not in self._working and url not in self._parsed and url not in self._unparsed
+        return self._custom_validator(url) and self._focus(url) and url not in self._url_trie
 
     def set_custom_validator(self, validator):
         self._custom_validator = validator
