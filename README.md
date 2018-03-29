@@ -20,13 +20,10 @@ def myCustomFilter(url):
         if unwanted_word in url:
             return False
 
-    if "https://it.wikipedia.org/wiki/" not in url:
-        return False
-
     return True
 
 myCrawler = TinyCrawler(
-  seed = "https://it.wikipedia.org/wiki/Pagina_principale",
+  seed = "https://example.com",
   proxy_test_server =  "http://188.152.124.186"
 )
 
