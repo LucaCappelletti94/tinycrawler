@@ -3,7 +3,7 @@ import logging
 
 class Log:
   def __init__(self, directory):
-    self._path = "%s.log"%(directory)
+    self._path = "%s/error.log"%(directory)
     if os.path.isfile(self._path):
         with open(self._path, 'w'):
             pass
