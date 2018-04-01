@@ -101,10 +101,10 @@ class TinyCrawler:
     def _get_url_hash(self, url):
         return hashlib.md5(urlparse(url).path.encode('utf-8')).hexdigest()
 
-    def _is_path_cached(self, path):
+    def _is_path_cached(self, url_hash):
         return self._cache and os.path.isfile("%s/%s.json"%(self._webpages_path, url_hash))
 
-    def _load_cached_urls(self, path):
+    def _load_cached_urls(self, url_hash):
         with open("%s/%s.json"%(self._webpages_path, url_hash), 'r') as json_data:
             return json.load(json_data)["outgoing"]
 
@@ -116,6 +116,7 @@ class TinyCrawler:
     def _download(self, url, url_hash):
         attempts = 0
         new_urls = []
+        binary = True
         while attempts<10:
             # If there are no free proxies, we sleep
             self.proxy_lock.acquire()
@@ -160,12 +161,12 @@ class TinyCrawler:
                                 "content": text
                             }, webpage_file)
 
-                        if self._cache:
-                            with open("%s/%s.json"%(self._graph_path, url_hash), 'w') as urls_file:
-                                json.dump({
-                                    "url":url,
-                                    "outgoing":new_urls
-                                    }, urls_file)
+                        # if self._cache:
+                        #     with open("%s/%s.json"%(self._graph_path, url_hash), 'w') as urls_file:
+                        #         json.dump({
+                        #             "url":url,
+                        #             "outgoing":new_urls
+                        #             }, urls_file)
 
                 self._proxies.put(proxy)
 
@@ -193,10 +194,11 @@ class TinyCrawler:
                     url_hash = self._get_url_hash(url)
 
                     if self._is_path_cached(url_hash):
-                        cached_urls = self._load_cached_urls(url_hash)
-                        self.url_lock.acquire()
-                        self._urls.add_list(cached_urls)
-                        self.url_lock.release()
+                        pass
+                        # cached_urls = self._load_cached_urls(url_hash)
+                        # self.url_lock.acquire()
+                        # self._urls.add_list(cached_urls)
+                        # self.url_lock.release()
                     else:
                         self._download(url,url_hash)
 
@@ -214,6 +216,7 @@ class TinyCrawler:
             pass
         except Exception as e:
             self._logger.exception(e)
+            raise e
 
     def set_validation_options(self, opt):
         self._urls.set_validation_options(opt)

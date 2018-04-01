@@ -2,7 +2,7 @@ import json
 import requests
 from multiprocessing import Process, Manager, Pool, cpu_count
 from tqdm import tqdm
-from time import time
+import time
 from functools import reduce
 import os
 
@@ -100,8 +100,8 @@ class Proxies:
         if proxy["start"]==0:
             timeout = 0
         else:
-            timeout = max(0, self._proxy_timeout - (time()-proxy["start"]))
-        proxy["start"] = time()
+            timeout = max(0, self._proxy_timeout - (time.time()-proxy["start"]))
+        proxy["start"] = time.time()
         return proxy, timeout
 
     def put(self, proxy):

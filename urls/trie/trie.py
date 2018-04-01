@@ -1,12 +1,13 @@
 import pickle
 import os
 from patricia import trie
+import time
 
 class Trie:
     def __init__(self,path=None, cache = True, cache_timeout = 100):
         self._path = path
         self._cache = cache
-        self.cache_timeout = cache_timeout
+        self._cache_timeout = cache_timeout
         self._trie = trie()
         if self._is_cached():
             self._load_from_cache()
@@ -32,9 +33,13 @@ class Trie:
 
     def _save(self):
         """Saves the trie to the given path"""
-        if self._is_cache_enabled() and os.path.getmtime(self._path) > time.time() - self._cache_timeout:
-            with open(self._path,'wb') as f:
-                pickle.dump(self, f,-1)
+        if self._is_cache_enabled():
+            if os.path.isfile(self._path) and os.path.getmtime(self._path) < time.time() - self._cache_timeout:
+                with open(self._path,'wb') as f:
+                    pickle.dump(self, f,-1)
+            else:
+                with open(self._path,'wb') as f:
+                    pickle.dump(self, f,-1)
 
     def add(self,el):
         """Adds an element to the trie"""

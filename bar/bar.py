@@ -14,6 +14,7 @@ class Bar:
         "Estimated speed: {speed}{speed_unit}",
         "Expected remaining time: {remaining_time}"
     ]
+    _outputs_lenghts = [0]*len(_outputs)
     _estimated_step_time = 0
     _estimated_step_units = 0
     _old_parsed_urls = 0
@@ -21,14 +22,11 @@ class Bar:
 
     def __init__(self, domain, total_daemons, total_proxies):
         self._start = 0
-        self._stdscr = curses.initscr()
         self._parameters.update({
             "domain":domain,
             "total_proxies":total_proxies,
             "total_daemons":total_daemons
         })
-        curses.noecho()
-        curses.cbreak()
 
     def _format_value(self,response,value,pattern):
         if value > 0:
@@ -58,7 +56,7 @@ class Bar:
         if old_estimate == 0:
             return delta
         else:
-            return old_estimate*0.999 + 0.001*(delta)
+            return old_estimate*0.99 + 0.01*(delta)
 
     def _estimate_speed(self):
         if self._estimated_step_time <1 and self._estimated_step_time != 0:
@@ -82,8 +80,16 @@ class Bar:
         self._start = time.time()
 
     def _update_bar(self):
+        for i, l in enumerate(self._outputs_lenghts):
+            self._stdscr.addstr(i, 0, " "*l)
+        self._stdscr.refresh()
+
+        self._stdscr.addstr(0, 0, "-"*max(self._outputs_lenghts))
         for i, output in enumerate(self._outputs):
-            self._stdscr.addstr(i, 0, output.format(**self._parameters))
+            out = output.format(**self._parameters)
+            self._outputs_lenghts[i] = max(len(out), self._outputs_lenghts[i])
+            self._stdscr.addstr(i+1, 0, out)
+        self._stdscr.addstr(len(self._outputs), 0, "-"*max(self._outputs_lenghts))
         self._stdscr.refresh()
 
     def finalize(self):
@@ -93,6 +99,9 @@ class Bar:
 
     def update(self, free_proxies, parsed_urls, total_urls, cache_update_time):
         if self._start == 0:
+            self._stdscr = curses.initscr()
+            curses.noecho()
+            curses.cbreak()
             self._start = time.time()
 
         self._old_parsed_urls = self._parsed_urls

@@ -3,6 +3,7 @@ import json
 import validators
 from multiprocessing import Manager, Pool
 from urllib.parse import urlparse
+import time
 
 from .trie.trie import Trie
 
@@ -41,7 +42,7 @@ class Urls:
     def _update_cache(self):
         if self._cache:
             if os.path.isfile(self._urls_path):
-                if os.path.getmtime(self._urls_path) > time.time() - self._cache_timeout:
+                if os.path.getmtime(self._urls_path) < time.time() - self._cache_timeout:
                     with open(self._urls_path, 'w') as f:
                         json.dump({
                             "unparsed":self._working+self._unparsed
