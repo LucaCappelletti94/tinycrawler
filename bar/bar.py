@@ -16,7 +16,6 @@ class Bar:
     ]
     _outputs_lenghts = [0]*len(_outputs)
     _estimated_step_time = 0
-    _estimated_step_units = 0
     _old_parsed_urls = 0
     _parsed_urls = 0
 
@@ -36,7 +35,7 @@ class Bar:
         return response
 
     def _seconds_delta(self):
-        return (self._total_urls-self._parsed_urls)/self._estimated_step_time*self._estimated_step_time
+        return (self._total_urls-self._parsed_urls)*self._estimated_step_time
 
     def _estimate_remaining_time(self):
 
@@ -67,7 +66,6 @@ class Bar:
 
     def _update_parameters(self):
         self._estimated_step_time = self._update_estimated(self._estimated_step_time, time.time()-self._start)
-        self._estimated_step_units = self._update_estimated(self._estimated_step_units, self._parsed_urls - self._old_parsed_urls)
 
         speed, unit = self._estimate_speed()
 
@@ -84,12 +82,12 @@ class Bar:
             self._stdscr.addstr(i, 0, " "*l)
         self._stdscr.refresh()
 
-        self._stdscr.addstr(0, 0, "-"*max(self._outputs_lenghts))
         for i, output in enumerate(self._outputs):
             out = output.format(**self._parameters)
             self._outputs_lenghts[i] = max(len(out), self._outputs_lenghts[i])
             self._stdscr.addstr(i+1, 0, out)
-        self._stdscr.addstr(len(self._outputs), 0, "-"*max(self._outputs_lenghts))
+        self._stdscr.addstr(0, 0, "-"*max(self._outputs_lenghts))
+        self._stdscr.addstr(len(self._outputs)+1, 0, "-"*max(self._outputs_lenghts))
         self._stdscr.refresh()
 
     def finalize(self):

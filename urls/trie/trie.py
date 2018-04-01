@@ -10,7 +10,10 @@ class Trie:
         self._cache_timeout = cache_timeout
         self._trie = trie()
         if self._is_cached():
+            self._last_update = os.path.getmtime(self._path)
             self._load_from_cache()
+        else:
+            self._last_update = time.time()
 
     def __contains__(self,value):
         return value in self._trie
@@ -34,12 +37,13 @@ class Trie:
     def _save(self):
         """Saves the trie to the given path"""
         if self._is_cache_enabled():
-            if os.path.isfile(self._path) and os.path.getmtime(self._path) < time.time() - self._cache_timeout:
+            if self._last_update < time.time() - self._cache_timeout:
                 with open(self._path,'wb') as f:
                     pickle.dump(self, f,-1)
             else:
                 with open(self._path,'wb') as f:
                     pickle.dump(self, f,-1)
+            self._last_update = time.time()
 
     def add(self,el):
         """Adds an element to the trie"""

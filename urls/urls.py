@@ -41,17 +41,12 @@ class Urls:
 
     def _update_cache(self):
         if self._cache:
-            if os.path.isfile(self._urls_path):
-                if os.path.getmtime(self._urls_path) < time.time() - self._cache_timeout:
-                    with open(self._urls_path, 'w') as f:
-                        json.dump({
-                            "unparsed":self._working+self._unparsed
-                        }, f)
-            else:
+            if self._last_update < time.time() - self._cache_timeout:
                 with open(self._urls_path, 'w') as f:
                     json.dump({
                         "unparsed":self._working+self._unparsed
                     }, f)
+                self._last_update = time.time()
 
     def set_validation_options(self, opt):
     	self._opt = {**self._opt, **opt}
@@ -101,12 +96,15 @@ class Urls:
 
     def time_to_next_caching(self):
         if self._cache:
-            return self._cache_timeout + os.path.getmtime(self._urls_path) - time.time()
+            return self._cache_timeout + self._last_update - time.time()
         return False
 
     def load(self):
         if self._is_cached():
+            self._last_update = os.path.getmtime(self._urls_path)
             self._load_cache()
+        else:
+            self._last_update = 0
         self.add(self._seed)
         self._update_cache()
 
