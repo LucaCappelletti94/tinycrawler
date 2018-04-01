@@ -32,7 +32,7 @@ class TinyCrawler:
                        'Chrome/45.0.2454.101 Safari/537.36'),
     }
 
-    def __init__(self, seed, proxy_test_server, remote = True, cache=True, directory = "downloaded_websites"):
+    def __init__(self, seed, proxy_test_server, remote = True, cache=True, cache_timeout = 100, directory = "downloaded_websites"):
         self._domain = Urls.domain(seed)
         self._directory = "%s/%s"%(directory, self._domain)
         self._graph_path = self._directory+"/graph"
@@ -45,6 +45,8 @@ class TinyCrawler:
         if not os.path.exists(self._graph_path):
             os.makedirs(self._graph_path)
 
+        self._retrieve_public_ip()
+
         self._cache = cache
 
         self._myManager = MyManager()
@@ -52,15 +54,21 @@ class TinyCrawler:
         self._urls = self._myManager.Urls(
             seed = seed,
             directory=self._directory,
-            cache = cache
+            cache = cache,
+            cache_timeout = cache_timeout
         )
         self._logger = self._myManager.Log(directory=self._directory)
         self._proxies = self._myManager.Proxies(
             proxy_test_server = proxy_test_server,
             cache = cache,
+            cache_timeout = cache_timeout,
             remote = remote
         )
-        self._bar = self._myManager.Bar(self._domain)
+        self._bar = self._myManager.Bar(
+            domain = self._domain,
+            total_proxies = self._proxies.total_proxies(),
+            total_daemons = self._processes_number
+        )
 
         self.proxy_lock = Lock()
         self.url_lock = Lock()
@@ -72,6 +80,9 @@ class TinyCrawler:
         clean_text = " ".join(clean_text.split())
         return clean_text
 
+    def _retrieve_public_ip(self):
+        self._ip = requests.get('http://ip.42.pl/raw').text
+
     def _urls_from_soup(self, base, soup):
         urls = []
         for link in soup.find_all('a', href=True):
@@ -79,6 +90,13 @@ class TinyCrawler:
             if validators.url(url) and "#" not in url:
                 urls.append(url)
         return urls
+
+    def _is_ip_blocked(self, text):
+        if self._ip in text:
+            print("IP has been flagged!!")
+            self._logger.log("IP has been flagged!!")
+            return True
+        return False
 
     def _get_url_hash(self, url):
         return hashlib.md5(urlparse(url).path.encode('utf-8')).hexdigest()
@@ -96,7 +114,9 @@ class TinyCrawler:
         return 'text/html' not in request.headers['content-type']
 
     def _download(self, url, url_hash):
-        while True:
+        attempts = 0
+        new_urls = []
+        while attempts<10:
             # If there are no free proxies, we sleep
             self.proxy_lock.acquire()
             if self._proxies.empty():
@@ -116,6 +136,8 @@ class TinyCrawler:
                     success = True
                 except Exception as e:
                     self._logger.exception(e)
+                    time.sleep(1)
+                    attempts+=1
                     success = False
 
                 if success:
@@ -127,11 +149,15 @@ class TinyCrawler:
 
                         new_urls = self._urls_from_soup(url, soup)
 
+                        text = self._get_clean_text(soup)
+
+                        self._is_ip_blocked(text)
+
                         with open("%s/%s.json"%(self._webpages_path, url_hash), 'w') as webpage_file:
                             json.dump({
                                 "timestamp":time.time(),
                                 "url": url,
-                                "content": self._get_clean_text(soup)
+                                "content": text
                             }, webpage_file)
 
                         if self._cache:
@@ -141,43 +167,53 @@ class TinyCrawler:
                                     "outgoing":new_urls
                                     }, urls_file)
 
-                    # When we are done, we free the proxy
-                    self._proxies.put(proxy)
+                self._proxies.put(proxy)
 
-                    self.url_lock.acquire()
-                    self._urls.mark_done(url)
-                    if not binary:
-                        self._urls.add_list(new_urls)
-                    self.url_lock.release()
-
+                if success:
                     break
 
+        self.url_lock.acquire()
+        self._urls.mark_done(url)
+        if not binary:
+            self._urls.add_list(new_urls)
+        self.url_lock.release()
+
     def _job(self):
-        time.sleep(1)
-        i = 100
-        while i > 0:
-            self.url_lock.acquire()
-            if not self._urls.empty():
-                url = self._urls.get()
-                self.url_lock.release()
-
-                i = 100
-
-                url_hash = self._get_url_hash(url)
-
-                if self._is_path_cached(url_hash):
-                    cached_urls = self._load_cached_urls(url_hash)
-                    self.url_lock.acquire()
-                    self._urls.add_list(cached_urls)
+        try:
+            time.sleep(1)
+            i = 100
+            while i > 0:
+                self.url_lock.acquire()
+                if not self._urls.empty():
+                    url = self._urls.get()
                     self.url_lock.release()
-                else:
-                    self._download(url,url_hash)
 
-                self._bar.update(self._urls.total(), self._urls.done())
-            else:
-                self.url_lock.release()
-                i-=1
-                time.sleep(0.1)
+                    i = 100
+
+                    url_hash = self._get_url_hash(url)
+
+                    if self._is_path_cached(url_hash):
+                        cached_urls = self._load_cached_urls(url_hash)
+                        self.url_lock.acquire()
+                        self._urls.add_list(cached_urls)
+                        self.url_lock.release()
+                    else:
+                        self._download(url,url_hash)
+
+                    self._bar.update(
+                        free_proxies = self._proxies.free_proxies(),
+                        parsed_urls = self._urls.done(),
+                        total_urls = self._urls.total(),
+                        cache_update_time = self._urls.time_to_next_caching()
+                    )
+                else:
+                    self.url_lock.release()
+                    i-=1
+                    time.sleep(0.1)
+        except KeyboardInterrupt:
+            pass
+        except Exception as e:
+            self._logger.exception(e)
 
     def set_validation_options(self, opt):
         self._urls.set_validation_options(opt)
@@ -188,17 +224,29 @@ class TinyCrawler:
     def run(self):
         self._urls.load()
         if self._urls.empty():
+            self._bar.finalize()
             print("No urls to parse")
         else:
-            processes = []
-            print("Processes used: %s"%self._processes_number)
-            self._bar.update(self._urls.total(), self._urls.done())
-            for i in range(self._processes_number):
-                p = Process(target=self._job)
-                p.start()
-                processes.append(p)
+            try:
+                processes = []
+                self._bar.update(
+                    free_proxies = self._proxies.free_proxies(),
+                    parsed_urls = self._urls.done(),
+                    total_urls = self._urls.total(),
+                    cache_update_time = self._urls.time_to_next_caching()
+                )
+                for i in range(self._processes_number):
+                    p = Process(target=self._job)
+                    p.start()
+                    processes.append(p)
 
-            for p in processes:
-                p.join()
-
-            print("\n No more urls.")
+                for p in processes:
+                    p.join()
+                self._bar.finalize()
+                print("\n No more urls.")
+            except KeyboardInterrupt:
+                self._bar.finalize()
+                print("Exiting...")
+            except Exception as e:
+                self._bar.finalize()
+                raise e
