@@ -70,8 +70,9 @@ class TinyCrawler:
             total_daemons = self._processes_number
         )
 
-        self.proxy_lock = Lock()
-        self.url_lock = Lock()
+        self._proxy_lock = Lock()
+        self._url_lock = Lock()
+        self._bar_lock = Lock()
 
     def _get_clean_text(self, soup):
         for useless_tag in ["form", "script", "head", "style", "input"]:
@@ -119,14 +120,14 @@ class TinyCrawler:
         binary = True
         while attempts<10:
             # If there are no free proxies, we sleep
-            self.proxy_lock.acquire()
+            self._proxy_lock.acquire()
             if self._proxies.empty():
-                self.proxy_lock.release()
+                self._proxy_lock.release()
                 time.sleep(0.1)
             else:
                 # When there is one, we aquire lock
                 proxy,timeout = self._proxies.get()
-                self.proxy_lock.release()
+                self._proxy_lock.release()
                 time.sleep(timeout)
 
                 try:
@@ -168,26 +169,28 @@ class TinyCrawler:
                         #             "outgoing":new_urls
                         #             }, urls_file)
 
+                self._proxy_lock.acquire()
                 self._proxies.put(proxy)
+                self._proxy_lock.release()
 
                 if success:
                     break
 
-        self.url_lock.acquire()
+        self._url_lock.acquire()
         self._urls.mark_done(url)
         if not binary:
             self._urls.add_list(new_urls)
-        self.url_lock.release()
+        self._url_lock.release()
 
     def _job(self):
         try:
             time.sleep(1)
             i = 100
             while i > 0:
-                self.url_lock.acquire()
+                self._url_lock.acquire()
                 if not self._urls.empty():
                     url = self._urls.get()
-                    self.url_lock.release()
+                    self._url_lock.release()
 
                     i = 100
 
@@ -196,20 +199,22 @@ class TinyCrawler:
                     if self._is_path_cached(url_hash):
                         pass
                         # cached_urls = self._load_cached_urls(url_hash)
-                        # self.url_lock.acquire()
+                        # self._url_lock.acquire()
                         # self._urls.add_list(cached_urls)
-                        # self.url_lock.release()
+                        # self._url_lock.release()
                     else:
                         self._download(url,url_hash)
 
+                    self._bar_lock.acquire()
                     self._bar.update(
                         free_proxies = self._proxies.free_proxies(),
                         parsed_urls = self._urls.done(),
                         total_urls = self._urls.total(),
                         cache_update_time = self._urls.time_to_next_caching()
                     )
+                    self._bar_lock.release()
                 else:
-                    self.url_lock.release()
+                    self._url_lock.release()
                     i-=1
                     time.sleep(0.1)
         except KeyboardInterrupt:
@@ -217,6 +222,8 @@ class TinyCrawler:
         except Exception as e:
             self._logger.exception(e)
             raise e
+
+        self._bar.set_dead_daemon()
 
     def set_validation_options(self, opt):
         self._urls.set_validation_options(opt)
