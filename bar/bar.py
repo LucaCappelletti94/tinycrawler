@@ -7,7 +7,7 @@ class Bar:
     _parameters = {}
     _outputs = [
         "Currently downloading from {domain}",
-        "Used daemons: {total_daemons}",
+        "Active daemons: {active_daemons}/{total_daemons}",
         "Free proxies: {free_proxies}/{total_proxies}",
         "Downloaded pages: {parsed_urls}/{total_urls}",
         "Updating cache in: {cache_update_time}",
@@ -18,9 +18,11 @@ class Bar:
     _estimated_step_time = 0
     _old_parsed_urls = 0
     _parsed_urls = 0
+    _active_daemons = 0
 
     def __init__(self, domain, total_daemons, total_proxies):
         self._start = 0
+        self._active_daemons = total_daemons
         self._parameters.update({
             "domain":domain,
             "total_proxies":total_proxies,
@@ -90,6 +92,9 @@ class Bar:
         self._stdscr.addstr(len(self._outputs)+1, 0, "-"*max(self._outputs_lenghts))
         self._stdscr.refresh()
 
+    def set_dead_daemon(self):
+        self._active_daemons -= 1
+
     def finalize(self):
         curses.echo()
         curses.nocbreak()
@@ -111,6 +116,7 @@ class Bar:
             "free_proxies":free_proxies,
             "parsed_urls":parsed_urls,
             "total_urls":total_urls,
+            "active_daemons":self._active_daemons,
             "cache_update_time":cache_update_time
         })
         self._update_parameters()
