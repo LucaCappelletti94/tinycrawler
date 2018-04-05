@@ -40,10 +40,7 @@ class Trie:
             if self._last_update < time.time() - self._cache_timeout:
                 with open(self._path,'wb') as f:
                     pickle.dump(self, f,-1)
-            else:
-                with open(self._path,'wb') as f:
-                    pickle.dump(self, f,-1)
-            self._last_update = time.time()
+                self._last_update = time.time()
 
     def add(self,el):
         """Adds an element to the trie"""
