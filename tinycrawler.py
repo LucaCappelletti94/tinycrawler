@@ -242,12 +242,7 @@ class TinyCrawler:
         else:
             try:
                 processes = []
-                self._bar.update(
-                    free_proxies = self._proxies.free_proxies(),
-                    parsed_urls = self._urls.done(),
-                    total_urls = self._urls.total(),
-                    cache_update_time = self._urls.time_to_next_caching()
-                )
+                self._bar.start()
                 for i in range(self._processes_number):
                     p = Process(target=self._job)
                     p.start()

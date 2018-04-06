@@ -12,7 +12,8 @@ class Bar:
         "Downloaded pages: {parsed_urls}/{total_urls}",
         "Updating cache in: {cache_update_time}",
         "Estimated speed: {speed}{speed_unit}",
-        "Expected remaining time: {remaining_time}"
+        "Expected remaining time: {remaining_time}",
+        "Elapsed time: {elapsed_time}"
     ]
     _outputs_lenghts = [0]*len(_outputs)
     _estimated_step_time = 0
@@ -21,7 +22,6 @@ class Bar:
     _active_daemons = 0
 
     def __init__(self, domain, total_daemons, total_proxies):
-        self._start = 0
         self._active_daemons = total_daemons
         self._parameters.update({
             "domain":domain,
@@ -39,9 +39,9 @@ class Bar:
     def _seconds_delta(self):
         return (self._total_urls-self._parsed_urls)*self._estimated_step_time
 
-    def _estimate_remaining_time(self):
+    def _seconds_to_string(self, delta):
 
-        d = datetime(1,1,1) + timedelta(seconds=self._seconds_delta())
+        d = datetime(1,1,1) + timedelta(seconds=delta)
 
         eta = ""
         if d.day-1>0:
@@ -74,14 +74,15 @@ class Bar:
         self._parameters.update({
             "speed":speed,
             "speed_unit":unit,
-            "remaining_time":self._estimate_remaining_time()
+            "remaining_time":self._seconds_to_string(self._seconds_delta()),
+            "elapsed_time": self._seconds_to_string(time.time()-self._start_time),
         })
 
         self._start = time.time()
 
     def _update_bar(self):
         for i, l in enumerate(self._outputs_lenghts):
-            self._stdscr.addstr(i, 0, " "*l)
+            self._stdscr.addstr(i+1, 0, " "*l)
         self._stdscr.refresh()
 
         for i, output in enumerate(self._outputs):
@@ -92,6 +93,13 @@ class Bar:
         self._stdscr.addstr(len(self._outputs)+1, 0, "-"*max(self._outputs_lenghts))
         self._stdscr.refresh()
 
+    def start(self):
+        self._stdscr = curses.initscr()
+        curses.noecho()
+        curses.cbreak()
+        self._start = time.time()
+        self._start_time = time.time()
+
     def set_dead_daemon(self):
         self._active_daemons -= 1
 
@@ -101,23 +109,20 @@ class Bar:
         curses.endwin()
 
     def update(self, free_proxies, parsed_urls, total_urls, cache_update_time):
-        if self._start == 0:
-            self._stdscr = curses.initscr()
-            curses.noecho()
-            curses.cbreak()
-            self._start = time.time()
-
         self._old_parsed_urls = self._parsed_urls
         self._parsed_urls = parsed_urls
         self._total_urls = total_urls
         if cache_update_time == False:
-            cache_update_time = "cache is disabled"
+            cache_update_string = "cache is disabled"
+        else:
+            cache_update_string = self._seconds_to_string(cache_update_time)
+
         self._parameters.update({
             "free_proxies":free_proxies,
             "parsed_urls":parsed_urls,
             "total_urls":total_urls,
             "active_daemons":self._active_daemons,
-            "cache_update_time":cache_update_time
+            "cache_update_time":cache_update_string
         })
         self._update_parameters()
         self._update_bar()
