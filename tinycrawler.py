@@ -32,11 +32,14 @@ class TinyCrawler:
                        'Chrome/45.0.2454.101 Safari/537.36'),
     }
 
-    def __init__(self, seed, proxy_test_server, remote = True, cache=True, cache_timeout = 100, directory = "downloaded_websites"):
+    def __init__(self, seed, proxy_test_server=None, remote = True, cache=True, cache_timeout = 100, directory = "downloaded_websites"):
         self._domain = Urls.domain(seed)
         self._directory = "%s/%s"%(directory, self._domain)
         self._graph_path = self._directory+"/graph"
         self._webpages_path = self._directory+"/webpages"
+
+        if proxy_test_server == None:
+            proxy_test_server = seed
 
         if not os.path.exists(self._directory):
             os.makedirs(self._directory)
