@@ -41,6 +41,9 @@ class Bar:
 
     def _seconds_to_string(self, delta):
 
+        if delta <= 0:
+            return "now"
+
         d = datetime(1,1,1) + timedelta(seconds=delta)
 
         eta = ""
