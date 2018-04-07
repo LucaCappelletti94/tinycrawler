@@ -15,4 +15,3 @@ class Log:
   def exception(self, e):
     self.log("="*100)
     logging.exception(e)
-    self.log("="*100)
