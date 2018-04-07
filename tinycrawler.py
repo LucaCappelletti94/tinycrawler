@@ -121,6 +121,7 @@ class TinyCrawler:
         attempts = 0
         new_urls = []
         binary = True
+        success = False
         while attempts<10:
             # If there are no free proxies, we sleep
             self._proxy_lock.acquire()
@@ -140,7 +141,6 @@ class TinyCrawler:
                         request = requests.get(url, headers=self._headers, proxies = proxy["urls"])
                     success = True
                 except Exception as e:
-                    self._logger.exception(e)
                     time.sleep(1)
                     attempts+=1
                     success = False
@@ -178,6 +178,9 @@ class TinyCrawler:
 
                 if success:
                     break
+
+        if not success:
+            self._logger.log("Unable to download from url %s"%url)
 
         self._url_lock.acquire()
         self._urls.mark_done(url)
@@ -224,9 +227,8 @@ class TinyCrawler:
             pass
         except Exception as e:
             self._logger.exception(e)
-            raise e
 
-        self._bar.set_dead_daemon()
+        self._bar.add_dead_daemon()
 
     def set_validation_options(self, opt):
         self._urls.set_validation_options(opt)
