@@ -8,8 +8,10 @@ class Bar:
     _outputs = [
         "Currently downloading from {domain}",
         "Active daemons: {active_daemons}/{total_daemons}",
+        "Daemons working on failing urls: {failing_daemons}/{active_daemons}",
         "Free proxies: {free_proxies}/{total_proxies}",
         "Downloaded pages: {parsed_urls}/{total_urls}",
+        "Failed urls: {failed_urls}/{parsed_urls}",
         "Updating cache in: {cache_update_time}",
         "Estimated speed: {speed}{speed_unit}",
         "Expected remaining time: {remaining_time}",
@@ -20,6 +22,9 @@ class Bar:
     _old_parsed_urls = 0
     _parsed_urls = 0
     _active_daemons = 0
+    _failing_daemons = 0
+    _failed_urls = 0
+    _last_update_time = 0
 
     def __init__(self, domain, total_daemons, total_proxies):
         self._active_daemons = total_daemons
@@ -96,38 +101,55 @@ class Bar:
         self._stdscr.addstr(len(self._outputs)+1, 0, "-"*max(self._outputs_lenghts))
         self._stdscr.refresh()
 
+    def add_dead_daemon(self):
+        self._active_daemons -= 1
+
+    def add_failed_url(self):
+        self._failed_urls -= 1
+
+    def add_failing_daemon(self):
+        self._failing_daemons += 1
+
+    def remove_failing_daemon(self):
+        self._failing_daemons -= 1
+
     def start(self):
         self._stdscr = curses.initscr()
         curses.noecho()
         curses.cbreak()
         self._start = time.time()
         self._start_time = time.time()
-
-    def set_dead_daemon(self):
-        self._active_daemons -= 1
+        self._last_update_time = time.time()
 
     def finalize(self):
         curses.echo()
         curses.nocbreak()
         curses.endwin()
 
-    def update(self, free_proxies, parsed_urls, total_urls, cache_update_time):
-        self._old_parsed_urls = self._parsed_urls
-        self._parsed_urls = parsed_urls
-        self._total_urls = total_urls
-        if cache_update_time == False:
-            cache_update_string = "cache is disabled"
-        else:
-            cache_update_string = self._seconds_to_string(cache_update_time)
+    def _requires_update(self):
+        return time.time() - self.last_update_time > 1
 
-        self._parameters.update({
-            "free_proxies":free_proxies,
-            "parsed_urls":parsed_urls,
-            "total_urls":total_urls,
-            "active_daemons":self._active_daemons,
-            "cache_update_time":cache_update_string
-        })
-        self._update_parameters()
-        self._update_bar()
+    def update(self, free_proxies, parsed_urls, total_urls, cache_update_time):
+        if self._requires_update():
+            self._old_parsed_urls = self._parsed_urls
+            self._parsed_urls = parsed_urls
+            self._total_urls = total_urls
+            if cache_update_time == False:
+                cache_update_string = "cache is disabled"
+            else:
+                cache_update_string = self._seconds_to_string(cache_update_time)
+
+            self._parameters.update({
+                "free_proxies":free_proxies,
+                "parsed_urls":parsed_urls,
+                "total_urls":total_urls,
+                "cache_update_time":cache_update_string,
+                "active_daemons":self._active_daemons,
+                "failed_urls":self._failed_urls,
+                "failing_daemons":self._failing_daemons
+            })
+            self._last_update_time = time.time()
+            self._update_parameters()
+            self._update_bar()
 
 

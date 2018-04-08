@@ -142,6 +142,10 @@ class TinyCrawler:
                     success = True
                 except Exception as e:
                     time.sleep(1)
+                    if attempts == 0:
+                        self._bar_lock.acquire()
+                        self._bar.add_failing_daemon()
+                        self._bar_lock.release()
                     attempts+=1
                     success = False
 
@@ -181,6 +185,14 @@ class TinyCrawler:
 
         if not success:
             self._logger.log("Unable to download from url %s"%url)
+            self._bar_lock.acquire()
+            self._bar.add_failed_url()
+            self._bar.remove_failing_daemon()
+            self._bar_lock.release()
+        elif attempts > 0:
+            self._bar_lock.acquire()
+            self._bar.remove_failing_daemon()
+            self._bar_lock.release()
 
         self._url_lock.acquire()
         self._urls.mark_done(url)
@@ -228,7 +240,9 @@ class TinyCrawler:
         except Exception as e:
             self._logger.exception(e)
 
+        self._bar_lock.acquire()
         self._bar.add_dead_daemon()
+        self._bar_lock.release()
 
     def set_validation_options(self, opt):
         self._urls.set_validation_options(opt)
@@ -259,4 +273,4 @@ class TinyCrawler:
                 print("Exiting...")
             except Exception as e:
                 self._bar.finalize()
-                raise e
+                self._logger.exception(e)
