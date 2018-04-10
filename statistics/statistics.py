@@ -1,6 +1,6 @@
 from multiprocessing import Lock
 
-def statistics:
+class statistics:
     def __init__(self):
         self._lock = Lock()
         self._running_processes = {}

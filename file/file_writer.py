@@ -1,16 +1,18 @@
+import os
 import json
-
+from ..process.process_handler import process_handler
 
 class file_writer(process_handler):
 
-    def __init__(self, queue, path, timeout):
-        super().__init__()
+    def __init__(self, queue, path, statistics, timeout):
+        super().__init__(statistics)
         self._queue = queue # Queue of files to write
         self._name = path.split("/")[-1]
         self._path = path # Path where to write files
         self._timeout = timeout
         self._file_number = 0
         self._counter = 0
+        self._statistics = statistics
 
         if not os.path.exists(path):
             os.makedirs(path)

@@ -1,7 +1,7 @@
-from multiprocessing import Queue
+import queue
 from .trie.trie import Trie
 
-class TrieQueue(Queue):
+class triequeue(queue.Queue):
 
     def __init__(self):
         super().__init__()
@@ -12,7 +12,7 @@ class TrieQueue(Queue):
 
     def put(self, element):
         super().put(element)
-        self._trie.add(url)
+        self._trie.add(element)
 
     def __contains__(self, element):
         return element in self._trie

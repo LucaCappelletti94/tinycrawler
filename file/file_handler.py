@@ -1,7 +1,7 @@
 from multiprocessing import Queue
 
-from .file.file_parser import file_parser
-from .file.file_writer import file_writer
+from .file_parser import file_parser
+from .file_writer import file_writer
 
 class file_handler:
 
@@ -18,8 +18,8 @@ class file_handler:
             statistics = statistics,
             timeout = timeout
         )
-        self._webpages_writer = file_writer(parsed, "%s/%s"%(path, "webpages"), timeout)
-        self._graph_writer = file_writer(graph, "%s/%s"%(path, "graph"), timeout)
+        self._webpages_writer = file_writer(parsed, "%s/%s"%(path, "webpages"), statistics, timeout)
+        self._graph_writer = file_writer(graph, "%s/%s"%(path, "graph"), statistics, timeout)
 
     def run(self):
         """Starts the parser"""

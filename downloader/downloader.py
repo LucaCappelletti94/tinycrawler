@@ -1,5 +1,6 @@
 import time
 from multiprocessing import cpu_count
+from ..process.process_handler import process_handler
 
 class downloader(process_handler):
 
