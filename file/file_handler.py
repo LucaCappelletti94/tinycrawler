@@ -5,7 +5,7 @@ from .file_writer import file_writer
 
 class file_handler:
 
-    def __init__(self, files, urls, path, statistics, timeout = 30):
+    def __init__(self, files, urls, path, statistics, logger, timeout = 30):
 
         parsed = Queue()
         graph = Queue()
@@ -16,16 +16,17 @@ class file_handler:
             urls = urls,
             graph = graph,
             statistics = statistics,
+            logger = logger,
             timeout = timeout
         )
-        self._webpages_writer = file_writer(parsed, "%s/%s"%(path, "webpages"), statistics, timeout)
-        self._graph_writer = file_writer(graph, "%s/%s"%(path, "graph"), statistics, timeout)
+        self._webpages_writer = file_writer(parsed, "%s/%s"%(path, "webpages"), statistics, logger, timeout)
+        self._graph_writer = file_writer(graph, "%s/%s"%(path, "graph"), statistics, logger, timeout)
 
     def run(self):
         """Starts the parser"""
         self._parser.run()
-        self._webpages_writer.run()
-        self._graph_writer.run()
+        #self._webpages_writer.run()
+        #self._graph_writer.run()
 
     def join(self):
         self._parser.join()

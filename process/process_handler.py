@@ -6,28 +6,36 @@ class process_handler:
 
     _processes = []
 
-    def __init__(self, statistics):
+    def __init__(self, statistics, logger):
         self._statistics = statistics
+        self._logger = logger
 
     def process(self, name, target):
-        self._processes.append(Process(target=self._job_wrapper(name, target)))
+        self._processes.append(Process(target=self._job_wrapper(name, target), name=name))
 
     def _job_wrapper(self, name, target):
         def _job():
-            self._statistics.set_process_running(name, True)
-            while(True):
-                try:
-                    target()
-                    break
-                except queue.Empty:
-                    break
-            self._statistics.set_process_running(name, False)
+            try:
+                self._statistics.set_process_running(name, True)
+                while(True):
+                    try:
+                        target()
+                        break
+                    except queue.Empty:
+                        break
+                self._statistics.set_process_running(name, False)
+            except Exception as e:
+                self._logger.exception(e)
+
         return _job
 
     def run(self):
         """Starts the parser"""
-        for p in self._processes:
-            p.start()
+        try:
+            for p in self._processes:
+                p.start()
+        except Exception as e:
+            self._logger.exception(e)
 
     def join(self):
         """Waits for the parser process to terminate"""

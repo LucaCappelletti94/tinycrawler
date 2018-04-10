@@ -5,6 +5,7 @@ from multiprocessing import Queue
 from multiprocessing.managers import BaseManager
 
 from tinycrawler.log.log import log
+from tinycrawler.cli.cli import cli
 from tinycrawler.statistics.statistics import statistics
 from tinycrawler.file.file_handler import file_handler
 from tinycrawler.downloader.downloader import downloader
@@ -39,7 +40,8 @@ class crawler:
             files = files,
             urls = urls,
             path = self._directory,
-            statistics = statistics
+            statistics = stat,
+            logger = logger
         )
 
         proxies = self._myManager.proxiesqueue()
@@ -50,16 +52,21 @@ class crawler:
             urls = urls,
             proxies = proxies,
             files = files,
-            statistics = statistics,
+            statistics = stat,
             logger = logger
         )
+
+        self._cli = cli(stat)
 
         urls.put(seed)
 
     def run(self):
-        self._cli.run()
+        #self._cli.run()
         self._downloader.run()
-        self._file_handler.run()
+        #self._file_handler.run()
+        #self._cli.join()
+        #self._file_handler.join()
+        self._downloader.join()
 
     def set_url_validator(self, url_validator):
         self._file_handler.set_url_validator(url_validator)

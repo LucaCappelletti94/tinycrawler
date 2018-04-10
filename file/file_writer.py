@@ -4,8 +4,8 @@ from ..process.process_handler import process_handler
 
 class file_writer(process_handler):
 
-    def __init__(self, queue, path, statistics, timeout):
-        super().__init__(statistics)
+    def __init__(self, queue, path, statistics, logger, timeout):
+        super().__init__(statistics, logger)
         self._queue = queue # Queue of files to write
         self._name = path.split("/")[-1]
         self._path = path # Path where to write files

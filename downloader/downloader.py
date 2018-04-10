@@ -1,4 +1,5 @@
 import time
+import requests
 from multiprocessing import cpu_count
 from ..process.process_handler import process_handler
 
@@ -11,6 +12,7 @@ class downloader(process_handler):
     }
 
     def __init__(self, urls, proxies, files, logger, statistics):
+        super().__init__(statistics, logger)
         self._urls = urls
         self._proxies = proxies
         self._files = files
@@ -39,6 +41,7 @@ class downloader(process_handler):
                     self._files.put(request.text)
                 break
             except Exception as e:
+                self._logger.exception(e)
                 max_attempts -= 1
                 time.sleep(0.5)
 
@@ -46,6 +49,6 @@ class downloader(process_handler):
             self._logger.log("Unable to download webpage at %s"%url)
 
     def run(self):
-        for i in range(cpu_count()*4):
+        for i in range(cpu_count()):
             super().process("downloader n. %s"%(i), self._download)
         super().run()

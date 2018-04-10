@@ -8,8 +8,8 @@ class file_parser(process_handler):
     _custom_file_parser = lambda soup: soup
     _custom_url_validator = lambda url: True
 
-    def __init__(self, files, parsed, urls, graph, statistics, timeout):
-        super().__init__(statistics)
+    def __init__(self, files, parsed, urls, graph, statistics, logger, timeout):
+        super().__init__(statistics, logger)
         self._files = files # Queue of files to be parsed
         self._parsed = parsed # Queue of parsed files
         self._urls = urls # UrlQueue of parsed urls
