@@ -31,3 +31,6 @@ class file_handler:
         self._parser.join()
         self._webpages_writer.join()
         self._graph_writer.join()
+
+    def set_url_validator(self, url_validator):
+        self._parser.set_url_validator(url_validator)

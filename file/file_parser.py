@@ -5,7 +5,7 @@ import hashlib
 class file_parser(process_handler):
 
     _custom_file_parser = lambda soup: soup
-    _custom_url_parser = lambda url: True
+    _custom_url_validator = lambda url: True
 
     def __init__(self, files, parsed, urls, graph, statistics, timeout):
     	super().__init__()
@@ -16,7 +16,7 @@ class file_parser(process_handler):
         self._timeout = timeout
 
     def _valid_url(self, url):
-    	return validators.url(url) and self._custom_url_parser(url) and url not in self._urls
+    	return validators.url(url) and self._custom_url_validator(url) and url not in self._urls
 
     def _extract_valid_urls(self, request_url, soup):
     	urls = []
@@ -41,9 +41,9 @@ class file_parser(process_handler):
         	"outgoing": self._extract_valid_urls(request_url, soup)
         }))
 
-    def set_custom_url_parser(self, custom_url_parser):
+    def set_url_validator(self, custom_url_validator):
         """Sets the user defined url parser"""
-        self._custom_url_parser = custom_url_parser
+        self._custom_url_validator = custom_url_validator
 
     def set_custom_file_parser(self, custom_file_parser):
         """Sets the user defined file parser"""

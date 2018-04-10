@@ -18,6 +18,7 @@ class process_handler:
             while(True):
                 try:
                     target()
+                    break
                 except queue.Empty:
                     break
             self._statistics.set_process_running(name, False)

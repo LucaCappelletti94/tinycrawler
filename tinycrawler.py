@@ -50,5 +50,8 @@ class TinyCrawler:
     	self._downloader.run()
     	self._file_handler.run()
 
+    def set_url_validator(self, url_validator):
+    	self._file_handler.set_url_validator(set_url_validator)
+
     def domain(self, url):
         return '{uri.netloc}'.format(uri=urlparse(url))
