@@ -11,7 +11,7 @@ class MyManager(BaseManager): pass
 MyManager.register('statistics', statistics)
 MyManager.register('log', log)
 
-class TinyCrawler:
+class crawler:
 
     def __init__(self, seed, directory = "downloaded_websites"):
 
