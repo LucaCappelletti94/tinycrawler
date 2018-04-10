@@ -1,8 +1,11 @@
 from multiprocessing import Queue
 
-class file_hanlder:
+from .file.file_parser import file_parser
+from .file.file_writer import file_writer
 
-    def __init__(self, files, urls, statistics, path, timeout = 30):
+class file_handler:
+
+    def __init__(self, files, urls, path, statistics, timeout = 30):
 
         parsed = Queue()
         graph = Queue()

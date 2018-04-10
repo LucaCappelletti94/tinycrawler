@@ -1,5 +1,6 @@
 import json
 
+
 class file_writer(process_handler):
 
     def __init__(self, queue, path, timeout):
@@ -10,6 +11,9 @@ class file_writer(process_handler):
         self._timeout = timeout
         self._file_number = 0
         self._counter = 0
+
+        if not os.path.exists(path):
+            os.makedirs(path)
 
     def _write(self):
         """Parse the downloaded files, cleans them and extracts urls"""

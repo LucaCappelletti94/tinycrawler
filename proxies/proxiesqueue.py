@@ -1,18 +1,16 @@
 import json
 import requests
-from multiprocessing import Process, Manager, Pool, cpu_count
+from multiprocessing import Pool, cpu_count, Queue
 from tqdm import tqdm
 import time
-from functools import reduce
 import os
 
-class Proxies:
+class ProxiesQueue(Queue):
 
     _path = os.path.join(os.path.dirname(__file__), 'proxies.json')
     _cache_path = os.path.join(os.path.dirname(__file__), 'tested_proxies.json')
-    _proxies = []
     _processes = cpu_count()*4
-    _test_timeout = 5
+    _test_timeout = 10
     _proxy_timeout = 10
 
     def __init__(self, proxy_test_server, cache = True, cache_timeout = 100, https_only=True, remote=True):
@@ -95,23 +93,11 @@ class Proxies:
 
         return proxy
 
-    def get(self):
-        proxy = self._proxies.pop()
+    def get(self, block = True, timeout = None):
+        proxy = super().get(block = block, timeout = timeout)
         if proxy["start"]==0:
             timeout = 0
         else:
             timeout = max(0, self._proxy_timeout - (time.time()-proxy["start"]))
         proxy["start"] = time.time()
         return proxy, timeout
-
-    def put(self, proxy):
-        return self._proxies.append(proxy)
-
-    def total_proxies(self):
-        return self._total_proxies
-
-    def free_proxies(self):
-        return len(self._proxies)
-
-    def empty(self):
-        return len(self._proxies)==0

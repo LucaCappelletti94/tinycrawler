@@ -1,17 +1,20 @@
-import os
 import logging
+from multiprocessing import Lock
 
-class Log:
+class log:
   def __init__(self, directory):
+    self._lock = Lock()
     self._path = "%s/error.log"%(directory)
-    if os.path.isfile(self._path):
-        with open(self._path, 'w'):
-            pass
     logging.basicConfig(filename=self._path,level=logging.ERROR)
+    with open(self._path, 'w'):
+        pass
 
-  def log(self, message=""):
+  def log(self, message):
+    self._lock.acquire()
     logging.error(message)
+    self._lock.release()
 
   def exception(self, e):
-    self.log("="*100)
+    self._lock.acquire()
     logging.exception(e)
+    self._lock.release()
