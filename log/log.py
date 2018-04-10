@@ -16,5 +16,5 @@ class log:
 
   def exception(self, e):
     self._lock.acquire()
-    logging.exception(e)
+    logging.exception(e, exc_info=True)
     self._lock.release()

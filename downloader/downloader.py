@@ -24,6 +24,7 @@ class downloader(process_handler):
 
     def _download(self):
         """Tries to download an url with a proxy n times"""
+
         url = self._urls.get(timeout=60)
 
         max_attempts = 10
@@ -41,7 +42,6 @@ class downloader(process_handler):
                     self._files.put((url, request.text))
                 break
             except Exception as e:
-                self._logger.exception(e)
                 max_attempts -= 1
                 time.sleep(1)
 
@@ -49,6 +49,6 @@ class downloader(process_handler):
             self._logger.log("Unable to download webpage at %s"%url)
 
     def run(self):
-        for i in range(cpu_count()):
+        for i in range(cpu_count()*8*2):
             super().process("downloader n. %s"%(i), self._download)
-        super().run("downloader")
+        super().run()

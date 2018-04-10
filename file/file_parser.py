@@ -65,4 +65,4 @@ class file_parser(process_handler):
     def run(self):
         """Starts the parser"""
         super().process("parser", self._parse)
-        super().run("parser")
+        super().run()

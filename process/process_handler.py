@@ -1,6 +1,7 @@
 from multiprocessing import Process
 from abc import ABC
 import queue
+import time
 
 class process_handler:
 
@@ -14,6 +15,7 @@ class process_handler:
 
     def _job_wrapper(self, name, target):
         def _job():
+            time.sleep(10)
             try:
                 self._statistics.set_process_running(name, True)
                 while(True):
@@ -28,13 +30,9 @@ class process_handler:
 
         return _job
 
-    def run(self, flag):
+    def run(self):
         """Starts the parser"""
-        try:
-            [p.start() for p in self._processes]
-        except Exception as e:
-            self._logger.log("Exception during run from method %s"%flag)
-            self._logger.exception(e, exc_info=True)
+        [p.start() for p in self._processes]
 
     def join(self):
         """Waits for the parser process to terminate"""

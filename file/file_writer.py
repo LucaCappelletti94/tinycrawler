@@ -34,4 +34,4 @@ class file_writer(process_handler):
     def run(self):
         """Starts the parser"""
         super().process("%s writer"%self._name, self._write)
-        super().run("%s writer"%self._name)
+        super().run()
