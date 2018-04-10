@@ -18,6 +18,7 @@ class downloader(process_handler):
         self._files = files
         self._logger = logger
         self._statistics = statistics
+        self._failed = 0
 
     def _request_is_binary(self, request):
         return 'text/html' not in request.headers['content-type']
@@ -46,9 +47,11 @@ class downloader(process_handler):
                 time.sleep(1)
 
         if max_attempts==0:
+            self._failed+=1
+            self._statistics.set_failed(self._failed)
             self._logger.log("Unable to download webpage at %s"%url)
 
     def run(self):
-        for i in range(cpu_count()*8*2):
+        for i in range(cpu_count()*8*3):
             super().process("downloader n. %s"%(i), self._download)
         super().run()

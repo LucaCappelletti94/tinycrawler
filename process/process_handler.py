@@ -16,17 +16,11 @@ class process_handler:
     def _job_wrapper(self, name, target):
         def _job():
             time.sleep(10)
-            try:
-                self._statistics.set_process_running(name, True)
-                while(True):
-                    try:
-                        target()
-                    except queue.Empty:
-                        break
-                self._statistics.set_process_running(name, False)
-            except Exception as e:
-                self._logger.log("Exception from process %s"%name)
-                self._logger.exception(e)
+            while(True):
+                try:
+                    target()
+                except queue.Empty:
+                    break
 
         return _job
 
