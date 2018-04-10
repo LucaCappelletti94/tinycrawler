@@ -14,11 +14,18 @@ class cli:
         self._old_done = 0
 
     def _cli(self):
+        time.sleep(10)
         self._stdscr = curses.initscr()
         curses.noecho()
         curses.cbreak()
         while True:
             time.sleep(1)
+
+            for k, v in self._outputs_max_lenghts.items():
+                self._print(" "*v, k)
+
+            self._stdscr.refresh()
+
             self._reset_cursor()
 
             self._print("Downloaded pages: %s/%s"%(
