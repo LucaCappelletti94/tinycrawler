@@ -29,9 +29,9 @@ class file_writer(process_handler):
 
         filename, content = self._queue.get(timeout=self._timeout)
         with open("%s/%s/%s.json"%(self._path, self._counter, filename), "w") as f:
-            json.dump(f, content)
+            json.dump(content, f)
 
     def run(self):
         """Starts the parser"""
         super().process("%s writer"%self._name, self._write)
-        super().run()
+        super().run("%s writer"%self._name)

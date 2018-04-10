@@ -14,5 +14,5 @@ class triequeue(queue.Queue):
         super().put(element)
         self._trie.add(element)
 
-    def __contains__(self, element):
-        return element in self._trie
+    def contains(self, value):
+        return value in self._trie

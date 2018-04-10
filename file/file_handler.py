@@ -25,8 +25,8 @@ class file_handler:
     def run(self):
         """Starts the parser"""
         self._parser.run()
-        #self._webpages_writer.run()
-        #self._graph_writer.run()
+        self._webpages_writer.run()
+        self._graph_writer.run()
 
     def join(self):
         self._parser.join()

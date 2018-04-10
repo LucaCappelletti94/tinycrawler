@@ -4,11 +4,10 @@ import queue
 
 class process_handler:
 
-    _processes = []
-
     def __init__(self, statistics, logger):
         self._statistics = statistics
         self._logger = logger
+        self._processes = []
 
     def process(self, name, target):
         self._processes.append(Process(target=self._job_wrapper(name, target), name=name))
@@ -20,22 +19,22 @@ class process_handler:
                 while(True):
                     try:
                         target()
-                        break
                     except queue.Empty:
                         break
                 self._statistics.set_process_running(name, False)
             except Exception as e:
+                self._logger.log("Exception from process %s"%name)
                 self._logger.exception(e)
 
         return _job
 
-    def run(self):
+    def run(self, flag):
         """Starts the parser"""
         try:
-            for p in self._processes:
-                p.start()
+            [p.start() for p in self._processes]
         except Exception as e:
-            self._logger.exception(e)
+            self._logger.log("Exception during run from method %s"%flag)
+            self._logger.exception(e, exc_info=True)
 
     def join(self):
         """Waits for the parser process to terminate"""

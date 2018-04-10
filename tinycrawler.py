@@ -61,11 +61,11 @@ class crawler:
         urls.put(seed)
 
     def run(self):
-        #self._cli.run()
+        self._cli.run()
+        self._file_handler.run()
         self._downloader.run()
-        #self._file_handler.run()
-        #self._cli.join()
-        #self._file_handler.join()
+        self._cli.join()
+        self._file_handler.join()
         self._downloader.join()
 
     def set_url_validator(self, url_validator):
