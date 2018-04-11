@@ -4,29 +4,6 @@ from multiprocessing import Pool, cpu_count
 from tqdm import tqdm
 import time
 import os
-import queue
-
-class proxiesqueue(queue.Queue):
-
-    _proxy_timeout = 5
-
-    def __init__(self):
-        super().__init__()
-
-        self.put({
-            "local":True,
-            "start":0
-        })
-
-    def get(self, block = True, timeout = None):
-        proxy = super().get(block = block, timeout = timeout)
-        if proxy["start"]==0:
-            timeout = 0
-        else:
-            timeout = max(0, self._proxy_timeout - (time.time()-proxy["start"]))
-        proxy["start"] = time.time()
-        return proxy, timeout
-
 
 class proxiesloader:
     _path = os.path.join(os.path.dirname(__file__), 'proxies.json')
@@ -43,12 +20,17 @@ class proxiesloader:
     def load(self, proxy_queue):
         with open(self._path) as f:
             proxies_list = json.load(f)
+        total_proxies = 0
         with Pool(self._processes) as p:
-            [proxy_queue.put(x) for x in list(filter(lambda x: x!=False, tqdm(p.imap(self._test_connection, proxies_list), total=len(proxies_list), desc="Testing proxies", leave=True)))]
+            for x in list(filter(lambda x: x!=False, tqdm(p.imap(self._test_connection, proxies_list), total=len(proxies_list), desc="Testing proxies", leave=True))):
+                proxy_queue.put(x)
+                total_proxies +=1
         proxy_queue.put({
             "local":True,
             "start":0
         })
+
+        return total_proxies
 
     def _test_connection(self, proxy):
         if self.https_only and not (proxy["support"]["https"] or proxy["support"]["socks4"] or proxy["support"]["socks5"]):

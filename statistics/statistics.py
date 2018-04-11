@@ -10,15 +10,17 @@ class statistics:
         self._total = 0
         self._failed = 0
         self._total_proxies = 0
-        self._active_proxies = 0
+        self._free_proxies = 0
+        self._processes_waiting_proxies = 0
+        self._processes_waiting_urls = 0
+        self._total_downloaders = 0
         self._start_time = time.time()
 
-    def set_process_running(self, name, status):
-        self._lock.acquire()
-        self._running_processes.update({
-            name: status
-        })
-        self._lock.release()
+    def set_start_time(self):
+        self._start_time = time.time()
+
+    def set_total_downloaders(self, total):
+        self._total_downloaders = total
 
     def add_done(self):
         self._done += 1
@@ -31,8 +33,38 @@ class statistics:
         self._failed += 1
         self._lock.release()
 
+    def add_process_waiting_proxy(self):
+        self._lock.acquire()
+        self._processes_waiting_proxies += 1
+        self._lock.release()
+
+    def add_process_waiting_url(self):
+        self._lock.acquire()
+        self._processes_waiting_urls += 1
+        self._lock.release()
+
+    def remove_process_waiting_proxy(self):
+        self._lock.acquire()
+        self._processes_waiting_proxies -= 1
+        self._remove_free_proxy()
+        self._lock.release()
+
+    def remove_process_waiting_url(self):
+        self._lock.acquire()
+        self._processes_waiting_urls -= 1
+        self._lock.release()
+
     def set_total_proxies(self, total_proxies):
         self._total_proxies = total_proxies
+        self._free_proxies = total_proxies
+
+    def add_free_proxy(self):
+        self._lock.acquire()
+        self._free_proxies +=1
+        self._lock.release()
+
+    def _remove_free_proxy(self):
+        self._free_proxies -=1
 
     def get_done(self):
         return self._done
@@ -43,11 +75,20 @@ class statistics:
     def get_failed(self):
         return self._failed
 
-    def get_running_processes(self):
-        return self._running_processes
+    def get_free_proxies(self):
+        return self._free_proxies
+
+    def get_processes_waiting_urls(self):
+        return self._processes_waiting_urls
+
+    def get_processes_waiting_proxies(self):
+        return self._processes_waiting_proxies
 
     def get_total_proxies(self):
         return self._total_proxies
+
+    def get_total_downloaders(self):
+        return self._total_downloaders
 
     def _format_value(self,response,value,pattern):
         if value > 0:

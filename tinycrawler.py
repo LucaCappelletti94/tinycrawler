@@ -10,13 +10,12 @@ from tinycrawler.statistics.statistics import statistics
 from tinycrawler.file.file_handler import file_handler
 from tinycrawler.downloader.downloader import downloader
 from tinycrawler.triequeue.triequeue import triequeue
-from tinycrawler.proxies.proxiesqueue import proxiesqueue, proxiesloader
+from tinycrawler.proxies.proxiesloader import proxiesloader
 
 class MyManager(BaseManager): pass
 MyManager.register('statistics', statistics)
 MyManager.register('log', log)
 MyManager.register('triequeue', triequeue)
-MyManager.register('proxiesqueue', proxiesqueue)
 
 class crawler:
 
@@ -44,9 +43,11 @@ class crawler:
             logger = logger
         )
 
-        proxies = self._myManager.proxiesqueue()
+        proxies = Queue()
         proxies_loader = proxiesloader(proxy_test_server = seed)
-        proxies_loader.load(proxies)
+        total = proxies_loader.load(proxies)
+
+        stat.set_total_proxies(total)
 
         self._downloader = downloader(
             urls = urls,
@@ -61,9 +62,9 @@ class crawler:
         urls.put(seed)
 
     def run(self):
-        self._cli.run()
         self._file_handler.run()
         self._downloader.run()
+        self._cli.run()
         self._cli.join()
         self._file_handler.join()
         self._downloader.join()

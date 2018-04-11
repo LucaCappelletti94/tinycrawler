@@ -11,11 +11,14 @@ class cli:
         self._i=0
         self._outputs_max_lenghts = {}
         self._speeds = []
+        self._growing_speeds = []
         self._outputs = {}
         self._old_done = 0
+        self._old_total = 0
 
     def _cli(self):
         time.sleep(1)
+        self._statistics.set_start_time()
         self._stdscr = curses.initscr()
         curses.noecho()
         curses.cbreak()
@@ -30,8 +33,11 @@ class cli:
 
             self._print_fraction("Downloaded pages", done, total)
             self._print_fraction("Failed pages", failed, done)
+            self._print_fraction("Free proxies", self._statistics.get_free_proxies(), self._statistics.get_total_proxies())
+            self._print_fraction("Downloaders waiting proxy", self._statistics.get_processes_waiting_proxies(), self._statistics.get_total_downloaders())
+            self._print_fraction("Downloaders waiting urls", self._statistics.get_processes_waiting_urls(), self._statistics.get_total_downloaders())
             self._print_speed()
-            self._print("Available proxies: §%s"% self._statistics.get_total_proxies())
+            self._print_growing_speed()
             self._print("Elapsed time: §%s"% self._statistics.get_elapsed_time())
 
             self._print_frame(0)
@@ -51,7 +57,7 @@ class cli:
         else:
             perc = str(round(v1/v2*100, 1))+"%"
 
-        self._print("%s: §%s/%s, %s"%(
+        self._print("%s: §%s/%s %s"%(
             label,
             v1,
             v2,
@@ -65,13 +71,24 @@ class cli:
         self._reset_cursor()
 
     def _print_speed(self):
-        self._speeds.append(self._statistics.get_done()-self._old_done)
+        done = self._statistics.get_done()
+        self._speeds.append(done-self._old_done)
         self._speeds = self._speeds[-1000:]
-        self._old_done = self._statistics.get_done()
+        self._old_done = done
 
         self._print("Average speed: §%s it/s"%(
             round(sum(self._speeds) / len(self._speeds),2)
-        ), self._i)
+        ))
+
+    def _print_growing_speed(self):
+        total = self._statistics.get_total()
+        self._growing_speeds.append(total-self._old_total)
+        self._growing_speeds = self._growing_speeds[-1000:]
+        self._old_total = total
+
+        self._print("Growing speed: §%s url/s"%(
+            round(sum(self._growing_speeds) / len(self._growing_speeds),2)
+        ))
 
     def _reset_cursor(self):
         self._i = 1

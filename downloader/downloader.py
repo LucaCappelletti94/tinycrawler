@@ -25,36 +25,52 @@ class downloader(process_handler):
     def _download(self):
         """Tries to download an url with a proxy n times"""
 
+        self._statistics.add_process_waiting_url()
         url = self._urls.get(timeout=60)
+        self._statistics.remove_process_waiting_url()
 
-        max_attempts = 10
+        max_attempts = 20
 
         while max_attempts>0:
-            proxy,timeout = self._proxies.get(timeout=60)
-            time.sleep(timeout)
+            self._statistics.add_process_waiting_proxy()
+            proxy = self._proxies.get(timeout=60)
+            self._statistics.remove_process_waiting_proxy()
+
+            if proxy["start"]!=0:
+                timeout = max(0, 1 - (time.time()-proxy["start"]))
+                time.sleep(timeout)
+
+            success = False
 
             try:
                 if proxy["local"]:
-                    request = requests.get(url, headers=self._headers, allow_redirects=True)
+                    request = requests.get(url, headers=self._headers, timeout=10)
                 else:
-                    request = requests.get(url, headers=self._headers, proxies = proxy["urls"], allow_redirects=True)
+                    request = requests.get(url, headers=self._headers, proxies = proxy["urls"], timeout=10)
                 if not self._request_is_binary(request) and request.status_code==200:
                     for file in self._files:
                         file.put((url, request.text))
-                break
+                success = True
             except requests.exceptions.ConnectionError:
                 max_attempts -= 1
             except Exception as e:
                 self._logger.exception(e)
                 max_attempts -= 1
 
+            proxy["start"] = time.time()
+            self._statistics.add_free_proxy()
             self._proxies.put(proxy)
+
+            if success:
+                break
 
         if max_attempts==0:
             self._statistics.add_failed()
             self._logger.log("Unable to download webpage at %s"%url)
 
     def run(self):
-        for i in range(cpu_count()*8):
+        processes_number = cpu_count()*8*2
+        for i in range(processes_number):
             super().process("downloader n. %s"%(i), self._download)
+        self._statistics.set_total_downloaders(processes_number)
         super().run()

@@ -52,14 +52,16 @@ class file_handler:
 
     def _extract_valid_urls(self, request_url, text, logger):
         urls = []
+        total = 0
         for link in re.findall(self._url_regex, text):
             url = urljoin(request_url, link)
             if validators.url(url):
                 urls.append(url)
                 if self._custom_url_validator(url) and not self._urls.contains(url):
+                    total += 1
                     self._urls.put(url)
         self._statistics.add_done()
-        self._statistics.add_total(len(urls))
+        self._statistics.add_total(total)
         return urls
 
     def set_url_validator(self, url_validator):
