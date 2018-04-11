@@ -52,7 +52,7 @@ class file_handler:
 
     def _extract_valid_urls(self, request_url, text, logger):
         urls = []
-        for link in re.find_all(self._url_regex, text):
+        for link in re.findall(self._url_regex, text):
             url = urljoin(request_url, link)
             if validators.url(url):
                 urls.append(url)
