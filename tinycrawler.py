@@ -31,7 +31,7 @@ class crawler:
         self._myManager = MyManager()
         self._myManager.start()
 
-        files = Queue()
+        files = [Queue(), Queue()]
         urls = self._myManager.triequeue()
         stat = self._myManager.statistics()
         logger = self._myManager.log(self._directory)
