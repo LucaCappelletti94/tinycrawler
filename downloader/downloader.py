@@ -42,9 +42,13 @@ class downloader(process_handler):
                     for file in self._files:
                         file.put((url, request.text))
                 break
+            except requests.exceptions.ConnectionError:
+                max_attempts -= 1
             except Exception as e:
                 self._logger.exception(e)
                 max_attempts -= 1
+
+            self._proxies.put(proxy)
 
         if max_attempts==0:
             self._statistics.add_failed()
