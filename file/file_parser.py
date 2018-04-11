@@ -12,7 +12,7 @@ class file_parser(process_handler):
 
     def _parse(self):
         """Parse the downloaded files, cleans them and extracts urls"""
-        request_url, file_soup = self._files.get(timeout=self._timeout)
+        request_url, file_soup = self._input_queue.get(timeout=self._timeout)
         filename = hashlib.md5(request_url.encode('utf-8')).hexdigest()
         self._output_queue.put((filename,{
             "url": request_url,
