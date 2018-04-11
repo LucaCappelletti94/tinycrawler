@@ -8,7 +8,7 @@ import queue
 
 class proxiesqueue(queue.Queue):
 
-    _proxy_timeout = 10
+    _proxy_timeout = 5
 
     def __init__(self):
         super().__init__()
