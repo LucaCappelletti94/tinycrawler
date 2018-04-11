@@ -31,6 +31,8 @@ class cli:
             self._print_fraction("Downloaded pages", done, total)
             self._print_fraction("Failed pages", failed, done)
             self._print_speed()
+            self._print("Available proxies: §%s"% self._statistics.get_total_proxies())
+            self._print("Elapsed time: §%s"% self._statistics.get_elapsed_time())
 
             self._print_frame(0)
             self._print_frame(self._i-1)
@@ -47,14 +49,14 @@ class cli:
         if v2 == 0:
             perc = "NaN"
         else:
-            perc = str(round(v1/v2*100, 2))+"%"
+            perc = str(round(v1/v2*100, 1))+"%"
 
         self._print("%s: §%s/%s, %s"%(
             label,
             v1,
             v2,
             perc
-        ), self._i)
+        ))
 
     def _clear(self):
         for k, v in self._outputs_max_lenghts.items():
@@ -77,7 +79,9 @@ class cli:
     def _print_frame(self, pos):
         self._print("-"*max(self._outputs_max_lenghts.values()), pos)
 
-    def _print(self, value, pos):
+    def _print(self, value, pos=None):
+        if pos == None:
+            pos = self._i
         if pos in self._outputs_max_lenghts.keys():
             old_max = self._outputs_max_lenghts[pos]
         else:
@@ -101,7 +105,7 @@ class cli:
             self._stdscr.addstr(k, 0, v)
 
     def run(self):
-        self._cli_process = Process(target=self._cli)
+        self._cli_process = Process(target=self._cli, name="cli")
         self._cli_process.start()
 
     def join(self):
