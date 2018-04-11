@@ -15,13 +15,12 @@ class process_handler:
 
     def _job_wrapper(self, name, target):
         def _job():
-            time.sleep(10)
+            time.sleep(1)
             while(True):
                 try:
                     target()
                 except queue.Empty:
                     break
-
         return _job
 
     def run(self):

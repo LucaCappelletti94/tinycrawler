@@ -15,7 +15,7 @@ class cli:
         self._old_done = 0
 
     def _cli(self):
-        time.sleep(10)
+        time.sleep(1)
         self._stdscr = curses.initscr()
         curses.noecho()
         curses.cbreak()
@@ -48,6 +48,7 @@ class cli:
             perc = "NaN"
         else:
             perc = str(round(v1/v2*100, 2))+"%"
+
         self._print("%s: §%s/%s, %s"%(
             label,
             v1,
