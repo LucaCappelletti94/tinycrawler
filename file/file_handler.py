@@ -6,6 +6,8 @@ import validators
 from .file_parser import file_parser
 from .file_writer import file_writer
 
+import re
+
 class file_handler:
 
     def __init__(self, files, urls, path, statistics, logger, timeout = 30):
@@ -13,6 +15,7 @@ class file_handler:
         parsed = Queue()
         graph = Queue()
         self._urls = urls
+        self._url_regex = re.compile(r"href=\"([^\"#]+)\"")
         self._statistics = statistics
         self._custom_url_validator = lambda url: True
 
@@ -47,10 +50,10 @@ class file_handler:
         self._webpages_writer.join()
         self._graph_writer.join()
 
-    def _extract_valid_urls(self, request_url, soup):
+    def _extract_valid_urls(self, request_url, text, logger):
         urls = []
-        for link in soup.find_all('a', href=True):
-            url = urljoin(request_url, link["href"])
+        for link in re.find_all(self._url_regex, text):
+            url = urljoin(request_url, link)
             if validators.url(url):
                 urls.append(url)
                 if self._custom_url_validator(url) and not self._urls.contains(url):

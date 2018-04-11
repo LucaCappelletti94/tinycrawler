@@ -1,6 +1,5 @@
 import hashlib
 from ..process.process_handler import process_handler
-from bs4 import BeautifulSoup
 
 class file_parser(process_handler):
 
@@ -9,17 +8,19 @@ class file_parser(process_handler):
         self._input_queue = input_queue # Queue of files to be parsed
         self._output_queue = output_queue # Queue of parsed files
         self._timeout = timeout
+        self._logger = logger
         self._custom_parser = lambda request_url, soup: str(soup)
 
     def _parse(self):
         """Parse the downloaded files, cleans them and extracts urls"""
         request_url, file = self._input_queue.get(timeout=self._timeout)
-        file_soup = BeautifulSoup(file, 'lxml')
         filename = hashlib.md5(request_url.encode('utf-8')).hexdigest()
-        self._output_queue.put((filename,{
-            "url": request_url,
-            "content": self._custom_parser(request_url, file_soup)
-        }))
+        content = self._custom_parser(request_url, file, self._logger)
+        if content != None:
+            self._output_queue.put((filename,{
+                "url": request_url,
+                "content": content
+            }))
 
     def set_custom_parser(self, custom_parser):
         """Sets the user defined url parser"""
