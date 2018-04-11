@@ -18,7 +18,6 @@ class downloader(process_handler):
         self._files = files
         self._logger = logger
         self._statistics = statistics
-        self._failed = 0
 
     def _request_is_binary(self, request):
         return 'text/html' not in request.headers['content-type']
@@ -44,11 +43,9 @@ class downloader(process_handler):
                 break
             except Exception as e:
                 max_attempts -= 1
-                time.sleep(1)
 
         if max_attempts==0:
-            self._failed+=1
-            self._statistics.set_failed(self._failed)
+            self._statistics.add_failed()
             self._logger.log("Unable to download webpage at %s"%url)
 
     def run(self):

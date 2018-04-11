@@ -21,8 +21,8 @@ class statistics:
     def set_total(self, total):
         self._total = total
 
-    def set_failed(self, failed):
-        self._failed = failed
+    def add_failed(self, failed):
+        self._failed += 1
 
     def get_done(self):
         return self._done
