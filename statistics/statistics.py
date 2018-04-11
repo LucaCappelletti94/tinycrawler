@@ -22,7 +22,9 @@ class statistics:
         self._total = total
 
     def add_failed(self, failed):
+        self._lock.acquire()
         self._failed += 1
+        self._lock.release()
 
     def get_done(self):
         return self._done
