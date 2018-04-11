@@ -16,14 +16,10 @@ class statistics:
         self._lock.release()
 
     def add_done(self):
-        self._lock.acquire()
         self._done += 1
-        self._lock.release()
 
     def add_total(self, delta):
-        self._lock.acquire()
         self._total += delta
-        self._lock.release()
 
     def add_failed(self):
         self._lock.acquire()
