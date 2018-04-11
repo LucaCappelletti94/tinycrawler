@@ -12,6 +12,9 @@ class file_handler:
 
         parsed = Queue()
         graph = Queue()
+        self._urls = urls
+        self._statistics = statistics
+        self._custom_url_validator = lambda url: True
 
         self._file_parser = file_parser(
             input_queue = files[0],
@@ -33,14 +36,14 @@ class file_handler:
     def run(self):
         """Starts the parser"""
         self._url_parser.set_custom_parser(self._extract_valid_urls)
-        self._file_parser.run()
-        self._url_parser.run()
+        self._file_parser.run("file")
+        self._url_parser.run("url")
         self._webpages_writer.run()
         self._graph_writer.run()
 
     def join(self):
-        self._url_parser.join()
         self._file_parser.join()
+        self._url_parser.join()
         self._webpages_writer.join()
         self._graph_writer.join()
 

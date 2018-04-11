@@ -1,7 +1,6 @@
 import time
 import requests
 from multiprocessing import cpu_count
-from bs4 import BeautifulSoup
 from ..process.process_handler import process_handler
 
 class downloader(process_handler):
@@ -40,10 +39,11 @@ class downloader(process_handler):
                 else:
                     request = requests.get(url, headers=self._headers, proxies = proxy["urls"], allow_redirects=True)
                 if not self._request_is_binary(request) and request.status_code==200:
-                    for file_queue in self._files:
-                        file_queue.put((url, BeautifulSoup(request.text, 'lxml')))
+                    for file in self._files:
+                        file.put((url, request.text))
                 break
             except Exception as e:
+                self._logger.exception(e)
                 max_attempts -= 1
 
         if max_attempts==0:
