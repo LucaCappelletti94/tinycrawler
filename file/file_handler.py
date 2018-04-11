@@ -33,5 +33,7 @@ class file_handler:
         self._webpages_writer.join()
         self._graph_writer.join()
 
+        self._statistics.add_done()
+        self._statistics.add_total(len(urls))
     def set_url_validator(self, url_validator):
         self._parser.set_url_validator(url_validator)
