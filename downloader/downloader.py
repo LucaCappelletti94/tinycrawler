@@ -51,6 +51,8 @@ class downloader(process_handler):
                 pass
             except requests.exceptions.Timeout:
                 pass
+            except OSError:
+                pass
             except Exception as e:
                 self._logger.log("Error while downloading %s, %s"%(url, e))
 
