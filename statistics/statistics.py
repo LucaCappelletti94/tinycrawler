@@ -1,3 +1,4 @@
+from .estimator.estimator import time_estimator
 from multiprocessing import Lock
 from datetime import datetime, timedelta
 import time
@@ -14,7 +15,10 @@ class statistics:
         self._processes_waiting_proxies = 0
         self._processes_waiting_urls = 0
         self._total_downloaders = 0
+        self._binary_requests = 0
+        self._error_codes = {}
         self._start_time = time.time()
+        self._estimator = time_estimator()
 
     def set_start_time(self):
         self._start_time = time.time()
@@ -23,7 +27,9 @@ class statistics:
         self._total_downloaders = total
 
     def add_done(self):
+        self._lock.acquire()
         self._done += 1
+        self._lock.release()
 
     def add_total(self, delta):
         self._total += delta
@@ -31,6 +37,21 @@ class statistics:
     def add_failed(self):
         self._lock.acquire()
         self._failed += 1
+        self._lock.release()
+
+    def add_binary_request(self):
+        self._lock.acquire()
+        self._binary_requests += 1
+        self._lock.release()
+
+    def add_error_code(self, code):
+        self._lock.acquire()
+        delta = 1
+        if code in self._error_codes.keys():
+            delta += self._error_codes[code]
+        self._error_codes.update({
+            code: delta
+        })
         self._lock.release()
 
     def add_process_waiting_proxy(self):
@@ -90,6 +111,12 @@ class statistics:
     def get_total_downloaders(self):
         return self._total_downloaders
 
+    def get_binary_requests(self):
+        return self._binary_requests
+
+    def get_error_codes(self):
+        return self._error_codes
+
     def _format_value(self,response,value,pattern):
         if value > 0:
             if response != "":
@@ -114,5 +141,23 @@ class statistics:
 
         return eta
 
+    def get_remaining_time(self):
+        self._estimator.step_decline(self._done)
+        self._estimator.step_growth(self._total)
+        estimate = self._estimator.get_time_estimate()
+        if estimate == None:
+            return "infinite"
+        return self._seconds_to_string(estimate)
+
+    def get_growth_speed(self):
+        return self._estimator.get_growth_speed()
+
+    def get_elaboration_speed(self):
+        return self._estimator.get_decline_speed()
+
     def get_elapsed_time(self):
         return self._seconds_to_string(time.time()-self._start_time)
+
+
+
+
