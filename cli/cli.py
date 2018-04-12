@@ -26,6 +26,8 @@ class cli:
             failed = self._statistics.get_failed()
             binary = self._statistics.get_binary_requests()
             total_downloaders = self._statistics.get_total_downloaders()
+            processes_waiting_proxies =  self._statistics.get_processes_waiting_proxies()
+            processes_waiting_urls =  self._statistics.get_processes_waiting_urls()
 
             self._print_fraction("Downloaded pages", done, total)
             if failed != 0:
@@ -36,8 +38,12 @@ class cli:
             for code, number in self._statistics.get_error_codes().items():
                 self._print_fraction("Error code %s"%code, number, done)
             self._print_fraction("Free proxies", self._statistics.get_free_proxies(), self._statistics.get_total_proxies())
-            self._print_fraction("Downloaders waiting proxy", self._statistics.get_processes_waiting_proxies(), total_downloaders)
-            self._print_fraction("Downloaders waiting urls", self._statistics.get_processes_waiting_urls(), total_downloaders)
+
+            if processes_waiting_proxies != 0:
+                self._print_fraction("Downloaders waiting proxy",, total_downloaders)
+
+            if processes_waiting_urls != 0:
+                self._print_fraction("Downloaders waiting urls", self._statistics.get_processes_waiting_urls(), total_downloaders)
 
             elaboration_speed = self._statistics.get_elaboration_speed()
             growth_speed = self._statistics.get_growth_speed()
