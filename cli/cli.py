@@ -9,7 +9,7 @@ class cli:
     def __init__(self, statistics):
         self._statistics = statistics
         self._i=0
-        self._outputs_max_lenghts = {}
+        self._max_output = 0
         self._outputs = {}
 
     def _cli(self):
@@ -73,7 +73,7 @@ class cli:
             ))
 
     def _print_frame(self, pos):
-        self._print("-"*max(self._outputs_max_lenghts.values()), pos)
+        self._print("-"*self._max_len, pos)
 
     def _print_label(self, label, value, pos=None):
         self._print("%s: §%s"%(label, value), pos)
@@ -81,13 +81,8 @@ class cli:
     def _print(self, value, pos=None):
         if pos == None:
             pos = self._i
-        if pos in self._outputs_max_lenghts.keys():
-            old_max = self._outputs_max_lenghts[pos]
-        else:
-            old_max = 0
-        self._outputs_max_lenghts.update({
-            pos: max(old_max, len(value))
-        })
+
+        self._max_len = max(self._max_len, len(value))
 
         self._outputs.update({
             pos: value
@@ -95,25 +90,21 @@ class cli:
         self._i+=1
 
     def _print_all(self):
-        max_len = max(self._outputs_max_lenghts.values())
         for k, v in self._outputs.items():
             if "§" in v:
                 a, b = v.split("§")
-                padding = " "*(max_len-len(v))
+                padding = " "*(self._max_len-len(v))
                 v = a+padding+b
             self._stdscr.addstr(k, 0, v)
 
     def _clear(self):
-        if len(self._outputs_max_lenghts.values()) > 0:
-            max_len = max(self._outputs_max_lenghts.values())
-        max_len = 0
         for i in range(self._i):
-            self._stdscr.addstr(i, 0, " "*max_len)
-        self._stdscr.refresh()
-        self._reset_cursor()
+            self._stdscr.addstr(i, 0, " "*self._max_len)
 
-    def _reset_cursor(self):
+        self._stdscr.refresh()
         self._i = 1
+        self._max_len = 0
+        self._outputs = {}
 
     def run(self):
         self._cli_process = Process(target=self._cli, name="cli")
