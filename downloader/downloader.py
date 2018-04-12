@@ -38,14 +38,14 @@ class downloader(process_handler):
             self._statistics.remove_process_waiting_proxy()
 
             if proxy["start"]!=0:
-                timeout = max(0, 1 - (time.time()-proxy["start"]))
+                timeout = max(0, 2 - (time.time()-proxy["start"]))
                 time.sleep(timeout)
 
             try:
                 if proxy["local"]:
                     request = requests.get(url, headers=self._headers)
                 else:
-                    request = requests.get(url, headers=self._headers, proxies = proxy["urls"], timeout=20)
+                    request = requests.get(url, headers=self._headers, proxies = proxy["urls"], timeout=10)
                 success = True
             except requests.exceptions.ConnectionError:
                 pass
