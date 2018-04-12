@@ -23,7 +23,7 @@ class time_estimator:
         if a>=0:
             return None
 
-        return self._roots(s,v,a)
+        return self._root(s,v,a)
 
     # def _roots(self,a,b,c,d):
     #     d2 = d*d
