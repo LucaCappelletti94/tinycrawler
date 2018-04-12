@@ -23,7 +23,7 @@ class process_handler:
                     except queue.Empty:
                         break
             except Exception as e:
-                self.logger.exception("Process %s: %s"%(name, e))
+                self.logger.log("Process %s: %s"%(name, e))
                 pass
         return _job
 
