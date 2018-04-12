@@ -35,11 +35,10 @@ class downloader(process_handler):
         while max_attempts>0:
             self._statistics.add_process_waiting_proxy()
             proxy = self._proxies.get(timeout=60)
-            self._statistics.remove_process_waiting_proxy()
-
             if proxy["start"]!=0:
                 timeout = max(0, 2 - (time.time()-proxy["start"]))
                 time.sleep(timeout)
+            self._statistics.remove_process_waiting_proxy()
 
             try:
                 if proxy["local"]:
