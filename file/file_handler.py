@@ -60,7 +60,6 @@ class file_handler:
                 if self._custom_url_validator(url) and not self._urls.contains(url):
                     total += 1
                     self._urls.put(url)
-        self._statistics.add_done()
         self._statistics.add_total(total)
         return urls
 

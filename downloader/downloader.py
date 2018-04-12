@@ -30,6 +30,7 @@ class downloader(process_handler):
         self._statistics.remove_process_waiting_url()
 
         max_attempts = 20
+        success = False
 
         while max_attempts>0:
             self._statistics.add_process_waiting_proxy()
@@ -40,19 +41,16 @@ class downloader(process_handler):
                 timeout = max(0, 1 - (time.time()-proxy["start"]))
                 time.sleep(timeout)
 
-            success = False
-
             try:
                 if proxy["local"]:
-                    request = requests.get(url, headers=self._headers, timeout=10)
+                    request = requests.get(url, headers=self._headers)
                 else:
-                    request = requests.get(url, headers=self._headers, proxies = proxy["urls"], timeout=10)
-                if not self._request_is_binary(request) and request.status_code==200:
-                    for file in self._files:
-                        file.put((url, request.text))
+                    request = requests.get(url, headers=self._headers, proxies = proxy["urls"])
                 success = True
+            except requests.exceptions.ConnectionError:
+                pass
             except Exception as e:
-                self._logger.log(e)
+                self._logger.log("Error while downloading %s, %s"%(url, e))
 
             proxy["start"] = time.time()
             self._statistics.add_free_proxy()
@@ -60,10 +58,20 @@ class downloader(process_handler):
 
             if success:
                 break
-            else:
-                max_attempts -= 1
 
-        if max_attempts==0:
+            max_attempts -= 1
+
+        self._statistics.add_done()
+
+        if success:
+            if self._request_is_binary(request):
+                self._statistics.add_binary_request()
+            elif request.status_code==200:
+                for file in self._files:
+                    file.put((url, request.text))
+            else:
+                self._statistics.add_error_code(request.status_code)
+        else:
             self._statistics.add_failed()
             self._logger.log("Unable to download webpage at %s"%url)
 
