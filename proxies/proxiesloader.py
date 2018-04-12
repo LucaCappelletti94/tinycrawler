@@ -9,7 +9,7 @@ class proxiesloader:
     _path = os.path.join(os.path.dirname(__file__), 'proxies.json')
     _cache_path = os.path.join(os.path.dirname(__file__), 'tested_proxies.json')
     _processes = cpu_count()*4
-    _test_timeout = 20
+    _test_timeout = 5
 
     def __init__(self, proxy_test_server, https_only=True):
         super().__init__()

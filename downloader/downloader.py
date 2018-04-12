@@ -45,9 +45,11 @@ class downloader(process_handler):
                 if proxy["local"]:
                     request = requests.get(url, headers=self._headers)
                 else:
-                    request = requests.get(url, headers=self._headers, proxies = proxy["urls"])
+                    request = requests.get(url, headers=self._headers, proxies = proxy["urls"], timeout=20)
                 success = True
             except requests.exceptions.ConnectionError:
+                pass
+            except requests.exceptions.Timeout:
                 pass
             except Exception as e:
                 self._logger.log("Error while downloading %s, %s"%(url, e))
