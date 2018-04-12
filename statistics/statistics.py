@@ -18,7 +18,7 @@ class statistics:
         self._binary_requests = 0
         self._error_codes = {}
         self._start_time = time.time()
-        self._estimate_update_timeout = 5
+        self._estimate_update_timeout = 3
         self._last_estimate_update = 0
         self._estimator = time_estimator()
 
