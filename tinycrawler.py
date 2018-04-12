@@ -59,6 +59,8 @@ class crawler:
 
         self._cli = cli(stat)
 
+        stat.add_total(1)
+
         urls.put(seed)
 
     def run(self):
