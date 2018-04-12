@@ -1,276 +1,81 @@
-import requests
-import time
-from urllib.parse import urljoin, urlparse
 import os
-import json
-import validators
+from urllib.parse import urlparse
 
-from bs4 import BeautifulSoup
-
-import hashlib
-
-from multiprocessing import Process, Lock, cpu_count, Manager
+from multiprocessing import Queue
 from multiprocessing.managers import BaseManager
 
-from tinycrawler.log.log import Log
-from tinycrawler.urls.urls import Urls
-from tinycrawler.proxies.proxies import Proxies
-from tinycrawler.bar.bar import Bar
+from tinycrawler.log.log import log
+from tinycrawler.cli.cli import cli
+from tinycrawler.statistics.statistics import statistics
+from tinycrawler.file.file_handler import file_handler
+from tinycrawler.downloader.downloader import downloader
+from tinycrawler.triequeue.triequeue import triequeue
+from tinycrawler.proxies.proxiesloader import proxiesloader
 
 class MyManager(BaseManager): pass
-MyManager.register('Urls', Urls)
-MyManager.register('Proxies', Proxies)
-MyManager.register('Bar', Bar)
-MyManager.register('Log', Log)
+MyManager.register('statistics', statistics)
+MyManager.register('log', log)
+MyManager.register('triequeue', triequeue)
 
-class TinyCrawler:
+class crawler:
 
-    _processes_number = cpu_count()*8*2
-    _headers =  {
-        'user-agent': ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) '
-                       'AppleWebKit/537.36 (KHTML, like Gecko) '
-                       'Chrome/45.0.2454.101 Safari/537.36'),
-    }
+    def __init__(self, seed, directory = "downloaded_websites"):
 
-    def __init__(self, seed, proxy_test_server=None, remote = True, cache=True, cache_timeout = 100, directory = "downloaded_websites"):
-        self._domain = Urls.domain(seed)
+        self._domain = self.domain(seed)
         self._directory = "%s/%s"%(directory, self._domain)
-        self._graph_path = self._directory+"/graph"
-        self._webpages_path = self._directory+"/webpages"
-
-        if proxy_test_server == None:
-            proxy_test_server = seed
 
         if not os.path.exists(self._directory):
             os.makedirs(self._directory)
-        if not os.path.exists(self._webpages_path):
-            os.makedirs(self._webpages_path)
-        if not os.path.exists(self._graph_path):
-            os.makedirs(self._graph_path)
-
-        self._retrieve_public_ip()
-
-        self._cache = cache
 
         self._myManager = MyManager()
         self._myManager.start()
-        self._urls = self._myManager.Urls(
-            seed = seed,
-            directory=self._directory,
-            cache = cache,
-            cache_timeout = cache_timeout
-        )
-        self._logger = self._myManager.Log(directory=self._directory)
-        self._proxies = self._myManager.Proxies(
-            proxy_test_server = proxy_test_server,
-            cache = cache,
-            cache_timeout = cache_timeout,
-            remote = remote
-        )
-        self._bar = self._myManager.Bar(
-            domain = self._domain,
-            total_proxies = self._proxies.total_proxies(),
-            total_daemons = self._processes_number
+
+        files = [Queue(), Queue()]
+        urls = self._myManager.triequeue()
+        stat = self._myManager.statistics()
+        logger = self._myManager.log(self._directory)
+
+        self._file_handler = file_handler(
+            files = files,
+            urls = urls,
+            path = self._directory,
+            statistics = stat,
+            logger = logger
         )
 
-        self._proxy_lock = Lock()
-        self._url_lock = Lock()
-        self._bar_lock = Lock()
+        proxies = Queue()
+        proxies_loader = proxiesloader(proxy_test_server = seed)
+        total = proxies_loader.load(proxies)
 
-    def _get_clean_text(self, soup):
-        for useless_tag in ["form", "script", "head", "style", "input"]:
-            [s.extract() for s in soup(useless_tag)]
-        clean_text = soup.get_text()
-        clean_text = " ".join(clean_text.split())
-        return clean_text
+        stat.set_total_proxies(total)
 
-    def _retrieve_public_ip(self):
-        self._ip = requests.get('http://ip.42.pl/raw').text
+        self._downloader = downloader(
+            urls = urls,
+            proxies = proxies,
+            files = files,
+            statistics = stat,
+            logger = logger
+        )
 
-    def _urls_from_soup(self, base, soup):
-        urls = []
-        for link in soup.find_all('a', href=True):
-            url = urljoin(base, link["href"])
-            if validators.url(url) and "#" not in url:
-                urls.append(url)
-        return urls
+        self._cli = cli(stat)
 
-    def _is_ip_blocked(self, text):
-        if self._ip in text:
-            print("IP has been flagged!!")
-            self._logger.log("IP has been flagged!!")
-            return True
-        return False
+        stat.add_total(1)
 
-    def _get_url_hash(self, url):
-        return hashlib.md5(urlparse(url).path.encode('utf-8')).hexdigest()
-
-    def _is_path_cached(self, url_hash):
-        return self._cache and os.path.isfile("%s/%s.json"%(self._webpages_path, url_hash))
-
-    def _load_cached_urls(self, url_hash):
-        with open("%s/%s.json"%(self._webpages_path, url_hash), 'r') as json_data:
-            return json.load(json_data)["outgoing"]
-
-    # Returns true if the requested file is a binary (video, image, pdf)
-    # Returns false if the file is a text file.
-    def _request_is_binary(self, request):
-        return 'text/html' not in request.headers['content-type']
-
-    def _download(self, url, url_hash):
-        attempts = 0
-        new_urls = []
-        binary = True
-        success = False
-        while attempts<10:
-            # If there are no free proxies, we sleep
-            self._proxy_lock.acquire()
-            if self._proxies.empty():
-                self._proxy_lock.release()
-                time.sleep(0.1)
-            else:
-                # When there is one, we aquire lock
-                proxy,timeout = self._proxies.get()
-                self._proxy_lock.release()
-                time.sleep(timeout)
-
-                try:
-                    if proxy["local"]:
-                        request = requests.get(url, headers=self._headers)
-                    else:
-                        request = requests.get(url, headers=self._headers, proxies = proxy["urls"])
-                    success = True
-                except Exception as e:
-                    time.sleep(1)
-                    if attempts == 0:
-                        self._bar_lock.acquire()
-                        self._bar.add_failing_daemon()
-                        self._bar_lock.release()
-                    attempts+=1
-                    success = False
-
-                if success:
-                    if self._request_is_binary(request):
-                        binary = True
-                    else:
-                        binary = False
-                        soup = BeautifulSoup(request.text, 'lxml')
-
-                        new_urls = self._urls_from_soup(url, soup)
-
-                        text = self._get_clean_text(soup)
-
-                        self._is_ip_blocked(text)
-
-                        with open("%s/%s.json"%(self._webpages_path, url_hash), 'w') as webpage_file:
-                            json.dump({
-                                "timestamp":time.time(),
-                                "url": url,
-                                "content": text
-                            }, webpage_file)
-
-                        # if self._cache:
-                        #     with open("%s/%s.json"%(self._graph_path, url_hash), 'w') as urls_file:
-                        #         json.dump({
-                        #             "url":url,
-                        #             "outgoing":new_urls
-                        #             }, urls_file)
-
-                self._proxy_lock.acquire()
-                self._proxies.put(proxy)
-                self._proxy_lock.release()
-
-                if success:
-                    break
-
-        if not success:
-            self._logger.log("Unable to download from url %s"%url)
-            self._bar_lock.acquire()
-            self._bar.add_failed_url()
-            self._bar.remove_failing_daemon()
-            self._bar_lock.release()
-        elif attempts > 0:
-            self._bar_lock.acquire()
-            self._bar.remove_failing_daemon()
-            self._bar_lock.release()
-
-        self._url_lock.acquire()
-        self._urls.mark_done(url)
-        if not binary:
-            self._urls.add_list(new_urls)
-        self._url_lock.release()
-
-    def _job(self):
-        try:
-            time.sleep(1)
-            i = 100
-            while i > 0:
-                self._url_lock.acquire()
-                if not self._urls.empty():
-                    url = self._urls.get()
-                    self._url_lock.release()
-
-                    i = 100
-
-                    url_hash = self._get_url_hash(url)
-
-                    if self._is_path_cached(url_hash):
-                        pass
-                        # cached_urls = self._load_cached_urls(url_hash)
-                        # self._url_lock.acquire()
-                        # self._urls.add_list(cached_urls)
-                        # self._url_lock.release()
-                    else:
-                        self._download(url,url_hash)
-
-                    self._bar_lock.acquire()
-                    self._bar.update(
-                        free_proxies = self._proxies.free_proxies(),
-                        parsed_urls = self._urls.done(),
-                        total_urls = self._urls.total(),
-                        cache_update_time = self._urls.time_to_next_caching()
-                    )
-                    self._bar_lock.release()
-                else:
-                    self._url_lock.release()
-                    i-=1
-                    time.sleep(0.1)
-        except KeyboardInterrupt:
-            pass
-        except Exception as e:
-            self._logger.exception(e)
-
-        self._bar_lock.acquire()
-        self._bar.add_dead_daemon()
-        self._bar_lock.release()
-
-    def set_validation_options(self, opt):
-        self._urls.set_validation_options(opt)
-
-    def set_custom_validator(self, function):
-        self._urls.set_custom_validator(function)
+        urls.put(seed)
 
     def run(self):
-        self._urls.load()
-        if self._urls.empty():
-            self._bar.finalize()
-            print("No urls to parse")
-        else:
-            try:
-                processes = []
-                self._bar.start()
-                for i in range(self._processes_number):
-                    p = Process(target=self._job)
-                    p.start()
-                    processes.append(p)
+        self._file_handler.run()
+        self._downloader.run()
+        self._cli.run()
+        self._cli.join()
+        self._file_handler.join()
+        self._downloader.join()
 
-                for p in processes:
-                    p.join()
-                self._bar.finalize()
-                print("\n No more urls.")
-            except KeyboardInterrupt:
-                self._bar.finalize()
-                print("Exiting...")
-            except Exception as e:
-                self._bar.finalize()
-                self._logger.exception(e)
+    def set_url_validator(self, url_validator):
+        self._file_handler.set_url_validator(url_validator)
+
+    def set_file_parser(self, file_parser):
+        self._file_handler.set_file_parser(file_parser)
+
+    def domain(self, url):
+        return '{uri.netloc}'.format(uri=urlparse(url))
