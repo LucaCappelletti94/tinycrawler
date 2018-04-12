@@ -128,7 +128,7 @@ class statistics:
 
     def _seconds_to_string(self, delta):
 
-        if delta <= 0:
+        if delta <= 1:
             return "now"
 
         d = datetime(1,1,1) + timedelta(seconds=delta)
