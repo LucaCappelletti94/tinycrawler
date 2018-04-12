@@ -11,8 +11,6 @@ class cli:
         self._i=0
         self._outputs_max_lenghts = {}
         self._outputs = {}
-        self._estimate_update_timeout = 10
-        self._last_estimate_update = 0
 
     def _cli(self):
         self._statistics.set_start_time()
@@ -50,12 +48,8 @@ class cli:
             if growth_speed != 0:
                 self._print_label("Pool growth speed", str(round(growth_speed, 2))+" url/s")
 
-            if time.time() - self._last_estimate_update > self._estimate_update_timeout:
-                self._elapsed_time = self._statistics.get_remaining_time()
-                self._last_estimate_update = time.time()
-
             self._print_label("Elapsed time", self._statistics.get_elapsed_time())
-            self._print_label("Estimated remaining time", self._elapsed_time)
+            self._print_label("Estimated remaining time", self._statistics.get_remaining_time())
 
             self._print_frame(0)
             self._print_frame(self._i-1)

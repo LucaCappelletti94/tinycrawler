@@ -18,6 +18,8 @@ class statistics:
         self._binary_requests = 0
         self._error_codes = {}
         self._start_time = time.time()
+        self._estimate_update_timeout = 5
+        self._last_estimate_update = 0
         self._estimator = time_estimator()
 
     def set_start_time(self):
@@ -142,8 +144,10 @@ class statistics:
         return eta
 
     def get_remaining_time(self):
-        self._estimator.step_decline(self._done)
-        self._estimator.step_growth(self._total)
+        if time.time() - self._last_estimate_update > self._estimate_update_timeout:
+            self._last_estimate_update = time.time()
+            self._estimator.step_decline(self._done)
+            self._estimator.step_growth(self._total)
         estimate = self._estimator.get_time_estimate()
         if estimate == None:
             return "infinite"
