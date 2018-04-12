@@ -13,8 +13,3 @@ class log:
     self._lock.acquire()
     logging.error(message)
     self._lock.release()
-
-  def exception(self, e):
-    self._lock.acquire()
-    logging.exception(e, exc_info=True)
-    self._lock.release()
