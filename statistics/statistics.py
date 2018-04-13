@@ -200,16 +200,16 @@ class statistics:
 
     def _bite_to_string(self, data):
         units = ["KB", "MB", "GB", "TB"]
-        response = ""
+        response = []
         power = 1
         for unit in units:
             value = data%1024
             data -= value
             data /= 1024
             if value != 0:
-                response = "%s %s "%(round(value),unit) + response
+                response.insert(0, "%s %s"%(round(value),unit))
 
-        return response
+        return " ".join(response[:2])
 
     def get_downloaded_bites(self):
         return self._bite_to_string(self._downloaded_bites/1024)
