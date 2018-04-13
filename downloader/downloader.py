@@ -51,6 +51,8 @@ class downloader(process_handler):
                 pass
             except OSError:
                 pass
+            except requests.exceptions.SSLError:
+                pass
             except Exception as e:
                 self._logger.log("Error while downloading %s, %s"%(url, e))
 
@@ -82,6 +84,6 @@ class downloader(process_handler):
         self._statistics.bite()
         processes_number = cpu_count()*8*3
         for i in range(processes_number):
-            super().process("downloader n. %s"%(i), self._download)
+            super().process("downloader", "downloader n. %s"%(i), self._download)
         self._statistics.set_total_downloaders(processes_number)
         super().run()
