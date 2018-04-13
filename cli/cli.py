@@ -21,7 +21,9 @@ class cli:
             time.sleep(0.1)
             self._clear()
 
-            done = self._statistics.get_done()
+            downloaded = self._statistics.get_downloaded()
+            parsed = self._statistics.get_parsed()
+            written = self._statistics.get_written()
             total = self._statistics.get_total()
             failed = self._statistics.get_failed()
             binary = self._statistics.get_binary_requests()
@@ -29,21 +31,24 @@ class cli:
             processes_waiting_proxies =  self._statistics.get_processes_waiting_proxies()
             processes_waiting_urls =  self._statistics.get_processes_waiting_urls()
 
-            self._print_fraction("Downloaded pages", done, total)
+            self._print_fraction("Downloaded pages", downloaded, total)
+            if downloaded != 0:
+                self._print_fraction("Parsed pages", parsed, downloaded)
+                self._print_fraction("Written pages", written, parsed)
             if failed != 0:
-                self._print_fraction("Failed pages", failed, done)
+                self._print_fraction("Failed pages", failed, downloaded)
             if binary != 0:
-                self._print_fraction("Binary requests", binary, done)
+                self._print_fraction("Binary requests", binary, downloaded)
 
             for code, number in self._statistics.get_error_codes().items():
-                self._print_fraction("Error code %s"%code, number, done)
+                self._print_fraction("Error code %s"%code, number, downloaded)
             self._print_fraction("Free proxies", self._statistics.get_free_proxies(), self._statistics.get_total_proxies())
 
             if processes_waiting_proxies != 0:
-                self._print_fraction("Downloaders waiting proxy",, total_downloaders)
+                self._print_fraction("Downloaders waiting proxy", processes_waiting_proxies, total_downloaders)
 
             if processes_waiting_urls != 0:
-                self._print_fraction("Downloaders waiting urls", self._statistics.get_processes_waiting_urls(), total_downloaders)
+                self._print_fraction("Downloaders waiting urls", processes_waiting_urls, total_downloaders)
 
             elaboration_speed = self._statistics.get_elaboration_speed()
             growth_speed = self._statistics.get_growth_speed()

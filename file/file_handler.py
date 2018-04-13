@@ -18,6 +18,7 @@ class file_handler:
         self._url_regex = re.compile(r"href=\"([^\"#]+)\"")
         self._statistics = statistics
         self._custom_url_validator = lambda url: True
+        self._custom_file_parser = lambda request_url, text, logger: text
 
         self._file_parser = file_parser(
             input_queue = files[0],
@@ -39,6 +40,8 @@ class file_handler:
     def run(self):
         """Starts the parser"""
         self._url_parser.set_custom_parser(self._extract_valid_urls)
+        self._file_parser.set_custom_parser(self._default_file_parser)
+        self._webpages_writer.set_write_callback(self._write_counter)
         self._file_parser.run("file")
         self._url_parser.run("url")
         self._webpages_writer.run()
@@ -63,8 +66,16 @@ class file_handler:
         self._statistics.add_total(total)
         return urls
 
+    def _write_counter(self):
+        self._statistics.add_written()
+
+    def _default_file_parser(self, request_url, text, logger):
+        text = self._custom_file_parser(request_url, text, logger)
+        self._statistics.add_parsed()
+        return text
+
     def set_url_validator(self, url_validator):
         self._custom_url_validator = url_validator
 
     def set_file_parser(self, parser):
-        self._file_parser.set_custom_parser(parser)
+        self._custom_file_parser = parser

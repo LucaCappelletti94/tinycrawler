@@ -9,7 +9,6 @@ class file_parser(process_handler):
         self._output_queue = output_queue # Queue of parsed files
         self._timeout = timeout
         self._logger = logger
-        self._custom_parser = lambda request_url, soup: str(soup)
 
     def _parse(self):
         """Parse the downloaded files, cleans them and extracts urls"""

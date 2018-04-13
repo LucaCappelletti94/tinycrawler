@@ -7,7 +7,9 @@ class statistics:
     def __init__(self):
         self._lock = Lock()
         self._running_processes = {}
-        self._done = 0
+        self._parsed = 0
+        self._written = 0
+        self._downloaded = 0
         self._total = 0
         self._failed = 0
         self._total_proxies = 0
@@ -28,9 +30,19 @@ class statistics:
     def set_total_downloaders(self, total):
         self._total_downloaders = total
 
-    def add_done(self):
+    def add_downloaded(self):
         self._lock.acquire()
-        self._done += 1
+        self._downloaded += 1
+        self._lock.release()
+
+    def add_parsed(self):
+        self._lock.acquire()
+        self._parsed += 1
+        self._lock.release()
+
+    def add_written(self):
+        self._lock.acquire()
+        self._parsed += 1
         self._lock.release()
 
     def add_total(self, delta):
@@ -89,8 +101,14 @@ class statistics:
     def _remove_free_proxy(self):
         self._free_proxies -=1
 
-    def get_done(self):
-        return self._done
+    def get_downloaded(self):
+        return self._downloaded
+
+    def get_parsed(self):
+        return self._parsed
+
+    def get_written(self):
+        return self._parsed
 
     def get_total(self):
         return self._total
@@ -146,7 +164,7 @@ class statistics:
     def get_remaining_time(self):
         if time.time() - self._last_estimate_update > self._estimate_update_timeout:
             self._last_estimate_update = time.time()
-            self._estimator.step_decline(self._done)
+            self._estimator.step_decline(self._downloaded)
             self._estimator.step_growth(self._total)
         estimate = self._estimator.get_time_estimate()
         if estimate == None:

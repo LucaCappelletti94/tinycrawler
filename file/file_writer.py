@@ -31,6 +31,14 @@ class file_writer(process_handler):
         with open("%s/%s/%s.json"%(self._path, self._counter, filename), "w") as f:
             json.dump(content, f)
 
+        self._write_callback()
+
+    def _write_callback(self):
+        pass
+
+    def set_write_callback(self, write_callback):
+        self._write_callback= write_callback
+
     def run(self):
         """Starts the parser"""
         super().process("%s writer"%self._name, self._write)
