@@ -64,7 +64,7 @@ class downloader(process_handler):
 
             max_attempts -= 1
 
-        self._statistics.add_done()
+        self._statistics.add_downloaded()
 
         if success:
             if self._request_is_binary(request):
@@ -80,11 +80,8 @@ class downloader(process_handler):
             self._logger.log("Unable to download webpage at %s"%url)
 
     def run(self):
-        super().process("downloader n. %s"%(0), self._download)
-        while not self._statistics.has_bitten():
-            time.sleep(1)
         processes_number = cpu_count()*8*2
-        for i in range(1, processes_number):
+        for i in range(processes_number):
             super().process("downloader n. %s"%(i), self._download)
         self._statistics.set_total_downloaders(processes_number)
         super().run()
