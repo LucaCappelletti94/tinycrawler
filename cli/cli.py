@@ -24,7 +24,6 @@ class cli:
             downloaded = self._statistics.get_downloaded()
             parsed = self._statistics.get_parsed()
             parsed_graph = self._statistics.get_parsed_graph()
-            written = self._statistics.get_written()
             total = self._statistics.get_total()
             failed = self._statistics.get_failed()
             binary = self._statistics.get_binary_requests()
@@ -36,9 +35,6 @@ class cli:
             if downloaded != 0:
                 self._print_fraction("Parsed pages", parsed, downloaded)
                 self._print_fraction("Parsed page graphs", parsed_graph, downloaded)
-
-            if parsed != 0:
-                self._print_fraction("Written pages", written, parsed)
 
             if failed != 0:
                 self._print_fraction("Failed pages", failed, downloaded)
@@ -58,16 +54,31 @@ class cli:
             elaboration_speed = self._statistics.get_elaboration_speed()
             growth_speed = self._statistics.get_growth_speed()
 
+            if elaboration_speed != 0 or growth_speed != 0:
+                self._print_frame()
+
             if elaboration_speed != 0:
                 self._print_label("Elaboration speed", str(round(elaboration_speed, 2))+" url/s")
 
             if growth_speed != 0:
                 self._print_label("Pool growth speed", str(round(growth_speed, 2))+" url/s")
 
+            self._print_frame()
+
             self._print_label("Downloaded data", self._statistics.get_downloaded_bites())
             self._print_label("Data download speed", self._statistics.get_download_speed())
+
+            self._print_frame()
+
             self._print_label("Elapsed time", self._statistics.get_elapsed_time())
             self._print_label("Estimated remaining time", self._statistics.get_remaining_time())
+
+            processes = self._statistics.get_running_processes().items()
+
+            if len(processes)>0:
+                self._print_frame()
+                for name, number in processes:
+                    self._print_label("Process %s"%name, number)
 
             self._print_frame(0)
             self._print_frame(self._i-1)
@@ -90,8 +101,10 @@ class cli:
                 perc
             ))
 
-    def _print_frame(self, pos):
-        self._print("-"*self._max_len, pos)
+    def _print_frame(self, pos=None):
+        if pos==None:
+            pos = self._i
+        self._print("$$$", pos)
 
     def _print_label(self, label, value, pos=None):
         self._print("%s: §%s"%(label, value), pos)
@@ -109,7 +122,9 @@ class cli:
 
     def _print_all(self):
         for k, v in self._outputs.items():
-            if "§" in v:
+            if "$$$" == v:
+                v = "-"*self._max_len
+            elif "§" in v:
                 a, b = v.split("§")
                 padding = " "*(self._max_len-len(v))
                 v = a+padding+b
