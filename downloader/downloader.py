@@ -70,6 +70,7 @@ class downloader(process_handler):
             if self._request_is_binary(request):
                 self._statistics.add_binary_request()
             elif request.status_code==200:
+                self._statistics.bite()
                 for file in self._files:
                     file.put((url, request.text))
             else:
@@ -79,8 +80,11 @@ class downloader(process_handler):
             self._logger.log("Unable to download webpage at %s"%url)
 
     def run(self):
+        super().process("downloader n. %s"%(0), self._download)
+        while not self._statistics.has_bitten():
+            time.sleep(1)
         processes_number = cpu_count()*8*2
-        for i in range(processes_number):
+        for i in range(1, processes_number):
             super().process("downloader n. %s"%(i), self._download)
         self._statistics.set_total_downloaders(processes_number)
         super().run()

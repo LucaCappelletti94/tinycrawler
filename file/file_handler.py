@@ -1,5 +1,5 @@
 from multiprocessing import Queue
-
+import time
 from urllib.parse import urljoin, urlparse
 import validators
 
@@ -39,6 +39,9 @@ class file_handler:
 
     def run(self):
         """Starts the parser"""
+        while not self._statistics.has_bitten():
+            time.sleep(1)
+
         self._url_parser.set_custom_parser(self._extract_valid_urls)
         self._file_parser.set_custom_parser(self._default_file_parser)
         self._webpages_writer.set_write_callback(self._write_counter)

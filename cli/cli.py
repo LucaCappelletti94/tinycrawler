@@ -34,6 +34,8 @@ class cli:
             self._print_fraction("Downloaded pages", downloaded, total)
             if downloaded != 0:
                 self._print_fraction("Parsed pages", parsed, downloaded)
+
+            if parsed != 0:
                 self._print_fraction("Written pages", written, parsed)
 
             if failed != 0:

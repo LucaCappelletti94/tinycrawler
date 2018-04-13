@@ -23,6 +23,13 @@ class statistics:
         self._estimate_update_timeout = 3
         self._last_estimate_update = 0
         self._estimator = time_estimator()
+        self._bite = False
+
+    def bite(self):
+        self._bite = True
+
+    def has_bitten(self):
+        return self._bite
 
     def set_start_time(self):
         self._start_time = time.time()
