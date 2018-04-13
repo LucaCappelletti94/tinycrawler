@@ -64,9 +64,9 @@ class crawler:
         urls.put(seed)
 
     def run(self):
-        self._file_handler.run()
-        self._downloader.run()
         self._cli.run()
+        self._downloader.run()
+        self._file_handler.run()
         self._cli.join()
         self._file_handler.join()
         self._downloader.join()

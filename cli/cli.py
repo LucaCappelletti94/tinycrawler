@@ -23,6 +23,7 @@ class cli:
 
             downloaded = self._statistics.get_downloaded()
             parsed = self._statistics.get_parsed()
+            parsed_graph = self._statistics.get_parsed_graph()
             written = self._statistics.get_written()
             total = self._statistics.get_total()
             failed = self._statistics.get_failed()
@@ -34,6 +35,7 @@ class cli:
             self._print_fraction("Downloaded pages", downloaded, total)
             if downloaded != 0:
                 self._print_fraction("Parsed pages", parsed, downloaded)
+                self._print_fraction("Parsed page graphs", parsed_graph, downloaded)
 
             if parsed != 0:
                 self._print_fraction("Written pages", written, parsed)
@@ -62,6 +64,8 @@ class cli:
             if growth_speed != 0:
                 self._print_label("Pool growth speed", str(round(growth_speed, 2))+" url/s")
 
+            self._print_label("Downloaded data", self._statistics.get_downloaded_bites())
+            self._print_label("Data download speed", self._statistics.get_download_speed())
             self._print_label("Elapsed time", self._statistics.get_elapsed_time())
             self._print_label("Estimated remaining time", self._statistics.get_remaining_time())
 

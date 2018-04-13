@@ -20,13 +20,17 @@ class file_handler:
         self._custom_url_validator = lambda url: True
         self._custom_file_parser = lambda request_url, text, logger: text
 
-        self._file_parser = file_parser(
-            input_queue = files[0],
-            output_queue = parsed,
-            statistics = statistics,
-            logger = logger,
-            timeout = timeout
-        )
+        self._file_parsers = []
+
+        for i in range(2):
+            self._file_parsers.append(file_parser(
+                input_queue = files[0],
+                output_queue = parsed,
+                statistics = statistics,
+                logger = logger,
+                timeout = timeout
+            ))
+
         self._url_parser = file_parser(
             input_queue = files[1],
             output_queue = graph,
@@ -43,15 +47,19 @@ class file_handler:
             time.sleep(1)
 
         self._url_parser.set_custom_parser(self._extract_valid_urls)
-        self._file_parser.set_custom_parser(self._default_file_parser)
         self._webpages_writer.set_write_callback(self._write_counter)
-        self._file_parser.run("file")
+
+        for file_parser in self._file_parsers:
+            file_parser.set_custom_parser(self._default_file_parser)
+            file_parser.run("file")
+
         self._url_parser.run("url")
         self._webpages_writer.run()
         self._graph_writer.run()
 
     def join(self):
-        self._file_parser.join()
+        for file_parser in self._file_parsers:
+            file_parser.join()
         self._url_parser.join()
         self._webpages_writer.join()
         self._graph_writer.join()
@@ -66,6 +74,7 @@ class file_handler:
                 if self._custom_url_validator(url) and not self._urls.contains(url):
                     total += 1
                     self._urls.put(url)
+        self._statistics.add_parsed_graph()
         self._statistics.add_total(total)
         return urls
 

@@ -21,14 +21,19 @@ class proxiesloader:
         with open(self._path) as f:
             proxies_list = json.load(f)
         total_proxies = 0
-        with Pool(self._processes) as p:
-            for x in list(filter(lambda x: x!=False, tqdm(p.imap(self._test_connection, proxies_list), total=len(proxies_list), desc="Testing proxies", leave=True))):
-                proxy_queue.put(x)
-                total_proxies +=1
+
         proxy_queue.put({
             "local":True,
             "start":0
         })
+
+        total_proxies +=1
+
+        with Pool(self._processes) as p:
+            for x in list(filter(lambda x: x!=False, tqdm(p.imap(self._test_connection, proxies_list), total=len(proxies_list), desc="Testing proxies", leave=True))):
+                proxy_queue.put(x)
+                total_proxies +=1
+
 
         return total_proxies
 

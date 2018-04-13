@@ -39,7 +39,6 @@ class downloader(process_handler):
                 timeout = max(0, 2 - (time.time()-proxy["start"]))
                 time.sleep(timeout)
             self._statistics.remove_process_waiting_proxy()
-
             try:
                 if proxy["local"]:
                     request = requests.get(url, headers=self._headers)
@@ -64,13 +63,12 @@ class downloader(process_handler):
 
             max_attempts -= 1
 
-        self._statistics.add_downloaded()
+        self._statistics.add_downloaded(len(request.text))
 
         if success:
             if self._request_is_binary(request):
                 self._statistics.add_binary_request()
             elif request.status_code==200:
-                self._statistics.bite()
                 for file in self._files:
                     file.put((url, request.text))
             else:
@@ -80,7 +78,9 @@ class downloader(process_handler):
             self._logger.log("Unable to download webpage at %s"%url)
 
     def run(self):
-        processes_number = cpu_count()*8*2
+        self._download()
+        self._statistics.bite()
+        processes_number = cpu_count()*8*3
         for i in range(processes_number):
             super().process("downloader n. %s"%(i), self._download)
         self._statistics.set_total_downloaders(processes_number)

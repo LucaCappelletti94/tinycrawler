@@ -8,12 +8,14 @@ class statistics:
         self._lock = Lock()
         self._running_processes = {}
         self._parsed = 0
+        self._parsed_graph = 0
         self._written = 0
         self._downloaded = 0
         self._total = 0
         self._failed = 0
         self._total_proxies = 0
         self._free_proxies = 0
+        self._downloaded_bites = 0
         self._processes_waiting_proxies = 0
         self._processes_waiting_urls = 0
         self._total_downloaders = 0
@@ -37,14 +39,20 @@ class statistics:
     def set_total_downloaders(self, total):
         self._total_downloaders = total
 
-    def add_downloaded(self):
+    def add_downloaded(self, value):
         self._lock.acquire()
         self._downloaded += 1
+        self._downloaded_bites += value
         self._lock.release()
 
     def add_parsed(self):
         self._lock.acquire()
         self._parsed += 1
+        self._lock.release()
+
+    def add_parsed_graph(self):
+        self._lock.acquire()
+        self._parsed_graph += 1
         self._lock.release()
 
     def add_written(self):
@@ -113,6 +121,9 @@ class statistics:
 
     def get_parsed(self):
         return self._parsed
+
+    def get_parsed_graph(self):
+        return self._parsed_graph
 
     def get_written(self):
         return self._written
@@ -187,6 +198,23 @@ class statistics:
     def get_elapsed_time(self):
         return self._seconds_to_string(time.time()-self._start_time)
 
+    def _bite_to_string(self, data):
+        units = ["KB", "MB", "GB", "TB"]
+        response = ""
+        power = 1
+        for unit in units:
+            value = data%1024
+            data -= value
+            data /= 1024
+            if value != 0:
+                response = "%s %s "%(round(value),unit) + response
 
+        return response
+
+    def get_downloaded_bites(self):
+        return self._bite_to_string(self._downloaded_bites/1024)
+
+    def get_download_speed(self):
+        return self._bite_to_string(self._downloaded_bites/1024/(time.time() - self._start_time)) + "/s"
 
 
