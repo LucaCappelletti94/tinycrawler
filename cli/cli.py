@@ -35,6 +35,7 @@ class cli:
             if downloaded != 0:
                 self._print_fraction("Parsed pages", parsed, downloaded)
                 self._print_fraction("Written pages", written, parsed)
+
             if failed != 0:
                 self._print_fraction("Failed pages", failed, downloaded)
             if binary != 0:

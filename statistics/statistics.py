@@ -42,7 +42,7 @@ class statistics:
 
     def add_written(self):
         self._lock.acquire()
-        self._parsed += 1
+        self._written += 1
         self._lock.release()
 
     def add_total(self, delta):
@@ -108,7 +108,7 @@ class statistics:
         return self._parsed
 
     def get_written(self):
-        return self._parsed
+        return self._written
 
     def get_total(self):
         return self._total
