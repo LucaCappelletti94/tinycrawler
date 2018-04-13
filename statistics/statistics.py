@@ -9,7 +9,6 @@ class statistics:
         self._running_processes = {}
         self._parsed = 0
         self._parsed_graph = 0
-        self._written = 0
         self._downloaded = 0
         self._total = 0
         self._failed = 0
@@ -55,11 +54,6 @@ class statistics:
         self._parsed_graph += 1
         self._lock.release()
 
-    def add_written(self):
-        self._lock.acquire()
-        self._written += 1
-        self._lock.release()
-
     def add_total(self, delta):
         self._total += delta
 
@@ -80,6 +74,26 @@ class statistics:
             delta += self._error_codes[code]
         self._error_codes.update({
             code: delta
+        })
+        self._lock.release()
+
+    def set_live_process(self, name):
+        self._lock.acquire()
+        delta = 1
+        if name in self._running_processes.keys():
+            delta += self._running_processes[name]
+        self._running_processes.update({
+            name: delta
+        })
+        self._lock.release()
+
+    def set_dead_process(self, name):
+        self._lock.acquire()
+        delta = -1
+        if name in self._running_processes.keys():
+            delta += self._running_processes[name]
+        self._running_processes.update({
+            name: delta
         })
         self._lock.release()
 
@@ -125,9 +139,6 @@ class statistics:
     def get_parsed_graph(self):
         return self._parsed_graph
 
-    def get_written(self):
-        return self._written
-
     def get_total(self):
         return self._total
 
@@ -154,6 +165,9 @@ class statistics:
 
     def get_error_codes(self):
         return self._error_codes
+
+    def get_running_processes(self):
+        return self._running_processes
 
     def _format_value(self,response,value,pattern):
         if value > 0:
