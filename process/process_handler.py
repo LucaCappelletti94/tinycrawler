@@ -21,8 +21,7 @@ class process_handler:
                 while(True):
                     try:
                         target()
-                    except queue.Empty as e:
-                        self._logger.log("Process %s: %s"%(name, e))
+                    except queue.Empty:
                         break
             except Exception as e:
                 self._statistics.set_dead_process(objective)

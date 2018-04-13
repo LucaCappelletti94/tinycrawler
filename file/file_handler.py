@@ -20,7 +20,7 @@ class file_handler:
         self._file_parsers = []
         self._url_parsers = []
 
-        for i in range(3):
+        for i in range(2):
             self._file_parsers.append(file_parser(
                 input_queue = files[0],
                 statistics = statistics,
@@ -29,7 +29,7 @@ class file_handler:
                 timeout = timeout
             ))
 
-        for i in range(3):
+        for i in range(2):
             self._url_parsers.append(file_parser(
                 input_queue = files[1],
                 statistics = statistics,
