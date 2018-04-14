@@ -2,7 +2,7 @@ import time
 
 class derivative:
 
-    def __init__(self, degree, resolution=100):
+    def __init__(self, degree, resolution=10):
         self._degree = degree
         self._first = True
         self._old_value = 0

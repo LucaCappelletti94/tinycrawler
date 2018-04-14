@@ -65,12 +65,11 @@ class downloader(process_handler):
 
             max_attempts -= 1
 
-        self._statistics.add_downloaded(len(request.text))
-
         if success:
             if self._request_is_binary(request):
                 self._statistics.add_binary_request()
             elif request.status_code==200:
+                self._statistics.add_downloaded(len(request.text))
                 for file in self._files:
                     file.put((url, request.text))
             else:

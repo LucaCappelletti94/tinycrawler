@@ -247,6 +247,9 @@ class statistics:
     def get_elapsed_time(self):
         return self._seconds_to_string(time.time()-self._start_time)
 
+    def get_total_error_pages(self):
+        return sum(self._error_codes.values())
+
     def _bite_to_string(self, data):
         units = ["B", "KB", "MB", "GB", "TB"]
 

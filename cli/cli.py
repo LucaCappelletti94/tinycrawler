@@ -36,15 +36,17 @@ class cli:
                 processes_waiting_proxies =  self._statistics.get_processes_waiting_proxies()
                 processes_waiting_urls =  self._statistics.get_processes_waiting_urls()
 
-                self._print_fraction("Downloaded pages", downloaded, total)
+                total_downloaded = downloaded+failed+binary+self._statistics.get_total_error_pages()
+
+                self._print_fraction("Downloaded pages", total_downloaded, total)
                 if downloaded != 0:
                     self._print_fraction("Parsed pages", parsed, downloaded)
                     self._print_fraction("Parsed page graphs", parsed_graph, downloaded)
 
                 if failed != 0:
-                    self._print_fraction("Failed pages", failed, downloaded)
+                    self._print_fraction("Failed pages", failed, total_downloaded)
                 if binary != 0:
-                    self._print_fraction("Binary requests", binary, downloaded)
+                    self._print_fraction("Binary requests", binary, total_downloaded)
 
                 error_codes = self._statistics.get_error_codes().items()
 
@@ -52,7 +54,8 @@ class cli:
                     self._print_frame()
                     for code, number in error_codes:
                         self._print_fraction("Error code %s"%code, number, downloaded)
-                    self._print_fraction("Free proxies", self._statistics.get_free_proxies(), self._statistics.get_total_proxies())
+
+                self._print_fraction("Free proxies", self._statistics.get_free_proxies(), self._statistics.get_total_proxies())
 
                 self._print_frame()
 
