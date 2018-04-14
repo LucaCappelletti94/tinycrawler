@@ -57,7 +57,7 @@ class crawler:
             logger = logger
         )
 
-        self._cli = cli(stat)
+        self._cli = cli(stat, logger)
 
         stat.add_total(1)
 

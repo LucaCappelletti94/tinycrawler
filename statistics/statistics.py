@@ -1,5 +1,5 @@
-from .estimator.estimator import time_estimator
 from multiprocessing import Lock
+from .derivative import derivative
 from datetime import datetime, timedelta
 import time
 
@@ -15,6 +15,7 @@ class statistics:
         self._total_proxies = 0
         self._free_proxies = 0
         self._downloaded_bites = 0
+        self._saved_bites = 0
         self._processes_waiting_proxies = 0
         self._processes_waiting_urls = 0
         self._total_downloaders = 0
@@ -23,8 +24,12 @@ class statistics:
         self._start_time = time.time()
         self._estimate_update_timeout = 3
         self._last_estimate_update = 0
-        self._estimator = time_estimator()
         self._bite = False
+
+        self._elaboration_speed = derivative(1)
+        self._pool_growth_speed = derivative(1)
+        self._page_parsing_speed = derivative(1)
+        self._graph_parsing_speed = derivative(1)
 
     def bite(self):
         self._bite = True
@@ -44,9 +49,10 @@ class statistics:
         self._downloaded_bites += value
         self._lock.release()
 
-    def add_parsed(self):
+    def add_parsed(self, value):
         self._lock.acquire()
         self._parsed += 1
+        self._saved_bites += value
         self._lock.release()
 
     def add_parsed_graph(self):
@@ -195,42 +201,74 @@ class statistics:
 
         return eta
 
-    def get_remaining_time(self):
+    def _get_remaining_time(self, delta, speed):
+        if speed == 0:
+            return "infinite"
+        return self._seconds_to_string(delta/speed)
+
+    def step_speeds(self):
         if time.time() - self._last_estimate_update > self._estimate_update_timeout:
             self._last_estimate_update = time.time()
-            self._estimator.step_decline(self._downloaded)
-            self._estimator.step_growth(self._total)
-        estimate = self._estimator.get_time_estimate()
-        if estimate == None:
-            return "infinite"
-        return self._seconds_to_string(estimate)
+            self._elaboration_speed.step(self._downloaded)
+            self._pool_growth_speed.step(self._total)
+            self._page_parsing_speed.step(self._parsed)
+            self._graph_parsing_speed.step(self._parsed_graph)
 
-    def get_growth_speed(self):
-        return self._estimator.get_growth_speed()
+    def get_remaining_elaboration_time(self):
+        return self._get_remaining_time(
+            self._pool_growth_speed.position() - self._elaboration_speed.position(),
+            self._elaboration_speed.speed()
+        )
+
+    def get_remaining_page_parsing_time(self):
+        return self._get_remaining_time(
+            self._elaboration_speed.position() - self._page_parsing_speed.position(),
+            self._page_parsing_speed.speed()
+        )
+
+    def get_remaining_graph_parsing_time(self):
+        return self._get_remaining_time(
+            self._elaboration_speed.position() - self._graph_parsing_speed.position(),
+            self._graph_parsing_speed.speed()
+        )
+
+    def get_pool_growth_speed(self):
+        return self._pool_growth_speed.speed()
 
     def get_elaboration_speed(self):
-        return self._estimator.get_decline_speed()
+        return self._elaboration_speed.speed()
+
+    def get_page_parsing_speed(self):
+        return self._page_parsing_speed.speed()
+
+    def get_graph_parsing_speed(self):
+        return self._graph_parsing_speed.speed()
 
     def get_elapsed_time(self):
         return self._seconds_to_string(time.time()-self._start_time)
 
     def _bite_to_string(self, data):
-        units = ["KB", "MB", "GB", "TB"]
-        response = []
-        power = 1
-        for unit in units:
-            value = data%1024
-            data -= value
-            data /= 1024
-            if value != 0:
-                response.insert(0, "%s %s"%(round(value),unit))
+        units = ["B", "KB", "MB", "GB", "TB"]
 
-        return " ".join(response[:2])
+        response = "unable to estimate"
+
+        for unit in units:
+            if int(data) > 0:
+                response = "%s %s"%(round(data, 2), unit)
+            data /= 1024
+
+        return response
 
     def get_downloaded_bites(self):
-        return self._bite_to_string(self._downloaded_bites/1024)
+        return self._bite_to_string(self._downloaded_bites)
 
-    def get_download_speed(self):
-        return self._bite_to_string(self._downloaded_bites/1024/(time.time() - self._start_time)) + "/s"
+    def get_saved_bites(self):
+        return self._bite_to_string(self._saved_bites)
+
+    def get_saving_bites_speed(self):
+        return self._bite_to_string(self._saved_bites/(time.time() - self._start_time)) + "/s"
+
+    def get_download_bites_speed(self):
+        return self._bite_to_string(self._downloaded_bites/(time.time() - self._start_time)) + "/s"
 
 

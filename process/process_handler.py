@@ -22,10 +22,11 @@ class process_handler:
                     try:
                         target()
                     except queue.Empty:
+                        self._logger.log("Process %s: has finished queue"%(name))
                         break
             except Exception as e:
-                self._statistics.set_dead_process(objective)
                 self._logger.log("Process %s: %s"%(name, e))
+            self._statistics.set_dead_process(objective)
         return _job
 
     def run(self):

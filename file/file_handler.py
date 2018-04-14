@@ -73,7 +73,8 @@ class file_handler:
 
     def _default_file_parser(self, request_url, text, logger):
         text = self._custom_file_parser(request_url, text, logger)
-        self._statistics.add_parsed()
+        if text != None:
+            self._statistics.add_parsed(len(text))
         return text
 
     def set_url_validator(self, url_validator):
