@@ -17,7 +17,7 @@ MyManager.register('statistics', statistics)
 MyManager.register('log', log)
 MyManager.register('triequeue', triequeue)
 
-class crawler:
+class tinycrawler:
 
     def __init__(self, seed, directory = "downloaded_websites"):
 

@@ -8,7 +8,7 @@ A small crawler that uses multiprocessing and arbitrarily many proxies (for exam
 
 ```python
 from urllib.parse import urlparse
-from tinycrawler.tinycrawler import crawler
+from tinycrawler import tinycrawler
 
 def my_custom_filter(url):
     path = urlparse(url).path
@@ -26,7 +26,7 @@ def my_text_parser(url, text, logger):
     # edit text here
     return text
     
-my_crawler = crawler(
+my_crawler = tinycrawler(
   seed = "https://example.com"
 )
 
