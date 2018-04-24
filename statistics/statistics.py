@@ -216,7 +216,7 @@ class statistics:
 
     def get_remaining_elaboration_time(self):
         return self._get_remaining_time(
-            self._pool_growth_speed.position() - self._elaboration_speed.position(),
+            self._pool_growth_speed.position() - self._elaboration_speed.position() - sum(self._error_codes.values()) - self._failed - self._binary_requests,
             self._elaboration_speed.speed()
         )
 
