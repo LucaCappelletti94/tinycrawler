@@ -32,7 +32,7 @@ class tinycrawler:
 
         files = [Queue(), Queue()]
         urls = self._myManager.triequeue()
-        stat = self._myManager.statistics()
+        self._statistics = self._myManager.statistics()
         logger = self._myManager.log(self._directory)
 
         self._file_handler = file_handler(
@@ -47,19 +47,19 @@ class tinycrawler:
         proxies_loader = proxiesloader(proxy_test_server = seed)
         total = proxies_loader.load(proxies)
 
-        stat.set_total_proxies(total)
+        self._statistics.set_total_proxies(total)
 
         self._downloader = downloader(
             urls = urls,
             proxies = proxies,
             files = files,
-            statistics = stat,
+            statistics = self._statistics,
             logger = logger
         )
 
-        self._cli = cli(stat, logger)
+        self._cli = cli(self._statistics, logger)
 
-        stat.add_total(1)
+        self._statistics.add_total(1)
 
         urls.put(seed)
 
@@ -67,9 +67,10 @@ class tinycrawler:
         self._cli.run()
         self._downloader.run()
         self._file_handler.run()
-        self._cli.join()
         self._file_handler.join()
         self._downloader.join()
+        self._statistics.set_done()
+        self._cli.join()
 
     def set_url_validator(self, url_validator):
         self._file_handler.set_url_validator(url_validator)

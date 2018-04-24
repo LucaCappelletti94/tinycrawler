@@ -23,6 +23,8 @@ class cli:
         try:
             while True:
                 time.sleep(0.1)
+                if self._statistics.is_done():
+                    break
                 self._clear()
                 self._statistics.step_speeds()
 

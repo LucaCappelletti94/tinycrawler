@@ -25,6 +25,7 @@ class statistics:
         self._estimate_update_timeout = 3
         self._last_estimate_update = 0
         self._bite = False
+        self._done = False
 
         self._elaboration_speed = derivative(1)
         self._pool_growth_speed = derivative(1)
@@ -36,6 +37,12 @@ class statistics:
 
     def has_bitten(self):
         return self._bite
+
+    def set_done(self):
+        self._done = True
+
+    def is_done(self):
+        return self._done
 
     def set_start_time(self):
         self._start_time = time.time()
