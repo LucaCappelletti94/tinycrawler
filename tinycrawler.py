@@ -39,7 +39,7 @@ class tinycrawler:
             files = files,
             urls = urls,
             path = self._directory,
-            statistics = stat,
+            statistics = self._statistics,
             logger = logger
         )
 
