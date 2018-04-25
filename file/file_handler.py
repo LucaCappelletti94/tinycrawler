@@ -75,7 +75,9 @@ class file_handler:
         text = self._custom_file_parser(request_url, text, logger)
         if not text:
             self._statistics.add_discarted()
-        self._statistics.add_parsed(len(text))
+            self._statistics.add_parsed(0)
+        else:
+            self._statistics.add_parsed(len(text))
         return text
 
     def set_url_validator(self, url_validator):
