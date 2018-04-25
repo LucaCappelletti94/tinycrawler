@@ -14,6 +14,7 @@ class cli:
         self._i=0
         self._max_len = 0
         self._outputs = {}
+        sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=40, cols=70))
 
     def _cli(self):
         self._statistics.set_start_time()
