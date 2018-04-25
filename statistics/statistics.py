@@ -8,7 +8,7 @@ class statistics:
         self._lock = Lock()
         self._running_processes = {}
         self._parsed = 0
-        self._discarded = 0
+        self._discarted = 0
         self._parsed_graph = 0
         self._downloaded = 0
         self._total = 0
@@ -63,9 +63,9 @@ class statistics:
         self._saved_bites += value
         self._lock.release()
 
-    def add_discarded(self):
+    def add_discarted(self):
         self._lock.acquire()
-        self._discarded += 1
+        self._discarted += 1
         self._lock.release()
 
     def add_parsed_graph(self):

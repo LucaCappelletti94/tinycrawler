@@ -74,7 +74,7 @@ class file_handler:
     def _default_file_parser(self, request_url, text, logger):
         text = self._custom_file_parser(request_url, text, logger)
         if not text:
-            self._statistics.add_discarded()
+            self._statistics.add_discarted()
         self._statistics.add_parsed(len(text))
         return text
 
