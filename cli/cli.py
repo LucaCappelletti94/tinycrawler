@@ -30,6 +30,7 @@ class cli:
 
                 downloaded = self._statistics.get_downloaded()
                 parsed = self._statistics.get_parsed()
+                discarted = self._statistics.get_discarted()
                 parsed_graph = self._statistics.get_parsed_graph()
                 total = self._statistics.get_total()
                 failed = self._statistics.get_failed()
@@ -44,6 +45,8 @@ class cli:
                 if downloaded != 0:
                     self._print_fraction("Parsed pages", parsed, downloaded)
                     self._print_fraction("Parsed page graphs", parsed_graph, downloaded)
+                    if discarted*parsed:
+                        self._print_fraction("Discarted pages", discarted, parsed)
 
                 if failed != 0:
                     self._print_fraction("Failed pages", failed, total_downloaded)
