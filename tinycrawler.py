@@ -1,28 +1,32 @@
 import os
-from urllib.parse import urlparse
-
 from multiprocessing import Queue
 from multiprocessing.managers import BaseManager
+from urllib.parse import urlparse
 
-from tinycrawler.log.log import log
 from tinycrawler.cli.cli import cli
-from tinycrawler.statistics.statistics import statistics
-from tinycrawler.file.file_handler import file_handler
 from tinycrawler.downloader.downloader import downloader
-from tinycrawler.triequeue.triequeue import triequeue
+from tinycrawler.file.file_handler import file_handler
+from tinycrawler.log.log import log
 from tinycrawler.proxies.proxiesloader import proxiesloader
+from tinycrawler.statistics.statistics import statistics
+from tinycrawler.triequeue.triequeue import triequeue
 
-class MyManager(BaseManager): pass
+
+class MyManager(BaseManager):
+    pass
+
+
 MyManager.register('statistics', statistics)
 MyManager.register('log', log)
 MyManager.register('triequeue', triequeue)
 
+
 class tinycrawler:
 
-    def __init__(self, seed, directory = "downloaded_websites"):
+    def __init__(self, seed, directory="downloaded_websites"):
 
         self._domain = self.domain(seed)
-        self._directory = "%s/%s"%(directory, self._domain)
+        self._directory = "%s/%s" % (directory, self._domain)
 
         if not os.path.exists(self._directory):
             os.makedirs(self._directory)
@@ -36,25 +40,25 @@ class tinycrawler:
         logger = self._myManager.log(self._directory)
 
         self._file_handler = file_handler(
-            files = files,
-            urls = urls,
-            path = self._directory,
-            statistics = self._statistics,
-            logger = logger
+            files=files,
+            urls=urls,
+            path=self._directory,
+            statistics=self._statistics,
+            logger=logger
         )
 
         proxies = Queue()
-        proxies_loader = proxiesloader(proxy_test_server = seed)
+        proxies_loader = proxiesloader(proxy_test_server=seed)
         total = proxies_loader.load(proxies)
 
         self._statistics.set_total_proxies(total)
 
         self._downloader = downloader(
-            urls = urls,
-            proxies = proxies,
-            files = files,
-            statistics = self._statistics,
-            logger = logger
+            urls=urls,
+            proxies=proxies,
+            files=files,
+            statistics=self._statistics,
+            logger=logger
         )
 
         self._cli = cli(self._statistics, logger)
