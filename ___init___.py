@@ -1,1 +1,1 @@
-from .tinycrawler import tinycrawler
+from .tinycrawler import TinyCrawler

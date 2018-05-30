@@ -21,7 +21,7 @@ MyManager.register('log', log)
 MyManager.register('triequeue', triequeue)
 
 
-class tinycrawler:
+class TinyCrawler:
 
     def __init__(self, seed, directory="downloaded_websites"):
 
