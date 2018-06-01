@@ -2,6 +2,7 @@ from multiprocessing import Process
 from abc import ABC
 import queue
 import time
+import traceback
 
 class process_handler:
 
@@ -25,7 +26,7 @@ class process_handler:
                         self._logger.log("Process %s: has finished queue"%(name))
                         break
             except Exception as e:
-                self._logger.log("Process %s: %s"%(name, e))
+                self._logger.log("Process %s: %s"%(name, traceback.format_exc()))
             self._statistics.set_dead_process(objective)
         return _job
 

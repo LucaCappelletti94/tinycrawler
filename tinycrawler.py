@@ -82,5 +82,8 @@ class TinyCrawler:
     def set_file_parser(self, file_parser):
         self._file_handler.set_file_parser(file_parser)
 
+    def set_url_extractor(self, file_parser):
+        self._file_handler.set_url_extractor(file_parser)
+
     def domain(self, url):
         return '{uri.netloc}'.format(uri=urlparse(url))

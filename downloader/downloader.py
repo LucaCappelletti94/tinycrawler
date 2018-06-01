@@ -49,6 +49,8 @@ class downloader(process_handler):
                     request = requests.get(
                         url, headers=self._headers, proxies=proxy["urls"], timeout=10)
                 success = True
+                if request.status_code == 403:
+                    success = False
             except requests.exceptions.ConnectionError:
                 pass
             except requests.exceptions.Timeout:

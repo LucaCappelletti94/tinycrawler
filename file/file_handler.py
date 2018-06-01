@@ -19,6 +19,7 @@ class file_handler:
 
         self._file_parsers = []
         self._url_parsers = []
+        self._custom_url_extractor = None
 
         for i in range(2):
             self._file_parsers.append(file_parser(
@@ -57,19 +58,22 @@ class file_handler:
         for url_parser in self._url_parsers:
             url_parser.join()
 
-    def _extract_valid_urls(self, request_url, text, logger):
+    def _url_extractor(self, request_url, text, logger):
         urls = []
-        total = 0
         for link in re.findall(self._url_regex, text):
             url = urljoin(request_url, link)
             if validators.url(url):
                 urls.append(url)
                 if self._custom_url_validator(url) and not self._urls.contains(url):
-                    total += 1
-                    self._urls.put(url)
+                    urls.append(url)
+        return url
+
+    def _extract_valid_urls(self, request_url, text, logger):
+        urls = self._url_extractor(request_url, text, logger)
+        [self._urls.put(url) for url in urls]
         self._statistics.add_parsed_graph()
-        self._statistics.add_total(total)
-        return urls
+        self._statistics.add_total(len(urls))
+        #return urls
 
     def _default_file_parser(self, request_url, text, logger):
         text = self._custom_file_parser(request_url, text, logger)
@@ -82,6 +86,9 @@ class file_handler:
 
     def set_url_validator(self, url_validator):
         self._custom_url_validator = url_validator
+
+    def set_url_extractor(self, url_extractor):
+        self._url_extractor = url_extractor
 
     def set_file_parser(self, parser):
         self._custom_file_parser = parser
