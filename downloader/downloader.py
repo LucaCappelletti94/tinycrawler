@@ -32,7 +32,7 @@ class downloader(process_handler):
         url = self._urls.get(timeout=60)
         self._statistics.remove_process_waiting_url()
 
-        max_attempts = 20
+        max_attempts = 80
         success = False
 
         while max_attempts > 0:
