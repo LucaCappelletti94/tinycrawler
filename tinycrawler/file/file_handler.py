@@ -1,20 +1,21 @@
-from multiprocessing import Queue
+import re
 import time
+from multiprocessing import Queue
 from urllib.parse import urljoin, urlparse
+
 import validators
 
 from .file_parser import file_parser
 
-import re
 
 class file_handler:
 
-    def __init__(self, files, urls, path, statistics, logger, timeout = 30):
+    def __init__(self, files, urls, path, statistics, logger, timeout=30):
 
         self._urls = urls
-        self._url_regex = re.compile(r"href=\"([^\"#]+)\"")
+        self._url_regex = re.compile(r"href=[\"']([^\"#\']+)[\"']")
         self._statistics = statistics
-        self._custom_url_validator = lambda url: True
+        self._url_validator = lambda url: True
         self._custom_file_parser = lambda request_url, text, logger: text
 
         self._file_parsers = []
@@ -23,20 +24,20 @@ class file_handler:
 
         for i in range(2):
             self._file_parsers.append(file_parser(
-                input_queue = files[0],
-                statistics = statistics,
-                logger = logger,
-                path = "%s/%s"%(path, "webpages"),
-                timeout = timeout
+                input_queue=files[0],
+                statistics=statistics,
+                logger=logger,
+                path="%s/%s" % (path, "webpages"),
+                timeout=timeout
             ))
 
         for i in range(2):
             self._url_parsers.append(file_parser(
-                input_queue = files[1],
-                statistics = statistics,
-                logger = logger,
-                path = "%s/%s"%(path, "graph"),
-                timeout = timeout
+                input_queue=files[1],
+                statistics=statistics,
+                logger=logger,
+                path="%s/%s" % (path, "graph"),
+                timeout=timeout
             ))
 
     def run(self):
@@ -63,17 +64,16 @@ class file_handler:
         for link in re.findall(self._url_regex, text):
             url = urljoin(request_url, link)
             if validators.url(url):
-                urls.append(url)
-                if self._custom_url_validator(url) and not self._urls.contains(url):
+                if self._url_validator(url) and not self._urls.contains(url):
                     urls.append(url)
-        return url
+        return urls
 
     def _extract_valid_urls(self, request_url, text, logger):
         urls = self._url_extractor(request_url, text, logger)
         [self._urls.put(url) for url in urls]
         self._statistics.add_parsed_graph()
         self._statistics.add_total(len(urls))
-        #return urls
+        return urls
 
     def _default_file_parser(self, request_url, text, logger):
         text = self._custom_file_parser(request_url, text, logger)
@@ -85,7 +85,7 @@ class file_handler:
         return text
 
     def set_url_validator(self, url_validator):
-        self._custom_url_validator = url_validator
+        self._url_validator = url_validator
 
     def set_url_extractor(self, url_extractor):
         self._url_extractor = url_extractor

@@ -4,12 +4,13 @@ from multiprocessing.managers import BaseManager
 from urllib.parse import urlparse
 
 from tinycrawler.cli.cli import cli
-from tinycrawler.downloader.downloader import downloader
 from tinycrawler.file.file_handler import file_handler
 from tinycrawler.log.log import log
 from tinycrawler.proxies.proxiesloader import proxiesloader
 from tinycrawler.statistics.statistics import statistics
-from tinycrawler.triequeue.triequeue import triequeue
+
+from .dictqueue import DictQueue
+from .downloader import Downloader
 
 
 class MyManager(BaseManager):
@@ -18,12 +19,12 @@ class MyManager(BaseManager):
 
 MyManager.register('statistics', statistics)
 MyManager.register('log', log)
-MyManager.register('triequeue', triequeue)
+MyManager.register('DictQueue', DictQueue)
 
 
 class TinyCrawler:
 
-    def __init__(self, seed, directory="downloaded_websites"):
+    def __init__(self, seed, directory="downloaded_websites", proxy_path=None):
 
         self._domain = self.domain(seed)
         self._directory = "%s/%s" % (directory, self._domain)
@@ -35,7 +36,7 @@ class TinyCrawler:
         self._myManager.start()
 
         files = [Queue(), Queue()]
-        urls = self._myManager.triequeue()
+        urls = self._myManager.DictQueue()
         self._statistics = self._myManager.statistics()
         logger = self._myManager.log(self._directory)
 
@@ -49,11 +50,13 @@ class TinyCrawler:
 
         proxies = Queue()
         proxies_loader = proxiesloader(proxy_test_server=seed)
+        if proxy_path is not None:
+            proxies_loader.set_proxies_path(proxy_path)
         total = proxies_loader.load(proxies)
 
         self._statistics.set_total_proxies(total)
 
-        self._downloader = downloader(
+        self._downloader = Downloader(
             urls=urls,
             proxies=proxies,
             files=files,

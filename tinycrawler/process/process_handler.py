@@ -1,8 +1,9 @@
-from multiprocessing import Process
-from abc import ABC
 import queue
 import time
 import traceback
+from abc import ABC
+from multiprocessing import Process
+
 
 class process_handler:
 
@@ -12,7 +13,8 @@ class process_handler:
         self._processes = []
 
     def process(self, objective, name, target):
-        self._processes.append(Process(target=self._job_wrapper(objective, name, target), name=name))
+        self._processes.append(
+            Process(target=self._job_wrapper(objective, name, target), name=name))
 
     def _job_wrapper(self, objective, name, target):
         def _job():
@@ -23,10 +25,13 @@ class process_handler:
                     try:
                         target()
                     except queue.Empty:
-                        self._logger.log("Process %s: has finished queue"%(name))
+                        self._logger.log(
+                            "Process %s: has finished queue" % (name))
                         break
             except Exception as e:
-                self._logger.log("Process %s: %s"%(name, traceback.format_exc()))
+                print("Process %s: %s" % (name, traceback.format_exc()))
+                self._logger.log("Process %s: %s" %
+                                 (name, traceback.format_exc()))
             self._statistics.set_dead_process(objective)
         return _job
 

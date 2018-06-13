@@ -1,10 +1,11 @@
-from setuptools import setup, find_packages
+import os
+import re
+import sys
 # To use a consistent encoding
 from codecs import open
 from os import path
-import sys
-import os
-import re
+
+from setuptools import find_packages, setup
 
 here = path.abspath(path.dirname(__file__))
 
@@ -37,7 +38,7 @@ setup(
     # https://packaging.python.org/en/latest/single_source_version.html
     version=__version__,
 
-    description='Distances and divergences between distributions implemented in python.',
+    description='Small customizable multiprocessing multi-proxy crawler.',
     long_description=long_description,
 
     # The project's main homepage.
@@ -58,7 +59,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 5 - Production/Stable',
+        'Development Status ::4 - Beta',
 
         # Indicate who your project is intended for
         'Intended Audience :: Information Technology',
@@ -87,6 +88,6 @@ def status(s):
     print('\033[1m{0}\033[0m'.format(s))
 
 
-status('Pushing git tags…')
+status('Pushing git tags')
 os.system('git tag v{0}'.format(__version__))
 os.system('git push --tags')

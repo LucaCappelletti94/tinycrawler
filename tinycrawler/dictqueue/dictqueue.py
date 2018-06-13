@@ -1,7 +1,7 @@
 import queue
 
 
-class triequeue(queue.Queue):
+class DictQueue(queue.Queue):
 
     def __init__(self):
         super().__init__()

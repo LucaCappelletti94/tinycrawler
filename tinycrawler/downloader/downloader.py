@@ -1,12 +1,13 @@
 import time
 from multiprocessing import cpu_count
 
-import requests
+from requests import get
+from requests.exceptions import ConnectionError, SSLError, Timeout
 
 from ..process.process_handler import process_handler
 
 
-class downloader(process_handler):
+class Downloader(process_handler):
 
     _headers = {
         'user-agent': ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) '
@@ -44,20 +45,14 @@ class downloader(process_handler):
             self._statistics.remove_process_waiting_proxy()
             try:
                 if proxy["local"]:
-                    request = requests.get(url, headers=self._headers)
+                    request = get(url, headers=self._headers)
                 else:
-                    request = requests.get(
-                        url, headers=self._headers, proxies=proxy["urls"], timeout=10)
+                    request = get(url, headers=self._headers,
+                                  proxies=proxy["urls"], timeout=10)
                 success = True
                 if request.status_code == 403:
                     success = False
-            except requests.exceptions.ConnectionError:
-                pass
-            except requests.exceptions.Timeout:
-                pass
-            except OSError:
-                pass
-            except requests.exceptions.SSLError:
+            except (ConnectionError, Timeout, SSLError):
                 pass
             except Exception as e:
                 self._logger.log("Error while downloading %s, %s" % (url, e))
