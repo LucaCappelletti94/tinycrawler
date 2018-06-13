@@ -1,7 +1,9 @@
-from multiprocessing import Lock
-from .derivative import derivative
-from datetime import datetime, timedelta
 import time
+from datetime import datetime, timedelta
+from multiprocessing import Lock
+
+from .derivative import derivative
+
 
 class statistics:
     def __init__(self):
@@ -41,6 +43,9 @@ class statistics:
 
     def set_done(self):
         self._done = True
+
+    def is_download_done(self):
+        return self._total == self._downloaded + self._failed + self._binary_requests
 
     def is_done(self):
         return self._done
@@ -145,11 +150,11 @@ class statistics:
 
     def add_free_proxy(self):
         self._lock.acquire()
-        self._free_proxies +=1
+        self._free_proxies += 1
         self._lock.release()
 
     def _remove_free_proxy(self):
-        self._free_proxies -=1
+        self._free_proxies -= 1
 
     def get_downloaded(self):
         return self._downloaded
@@ -193,11 +198,11 @@ class statistics:
     def get_running_processes(self):
         return self._running_processes
 
-    def _format_value(self,response,value,pattern):
+    def _format_value(self, response, value, pattern):
         if value > 0:
             if response != "":
-                response+=", "
-            response += pattern%value
+                response += ", "
+            response += pattern % value
         return response
 
     def _seconds_to_string(self, delta):
@@ -205,15 +210,15 @@ class statistics:
         if delta <= 1:
             return "now"
 
-        d = datetime(1,1,1) + timedelta(seconds=delta)
+        d = datetime(1, 1, 1) + timedelta(seconds=delta)
 
         eta = ""
-        if d.day-1>0:
-            eta += "%sd"%(d.day-1)
+        if d.day - 1 > 0:
+            eta += "%sd" % (d.day - 1)
 
-        eta = self._format_value(eta,d.hour,  "%sh")
-        eta = self._format_value(eta,d.minute, "%sm")
-        eta = self._format_value(eta,d.second,"%ss")
+        eta = self._format_value(eta, d.hour,  "%sh")
+        eta = self._format_value(eta, d.minute, "%sm")
+        eta = self._format_value(eta, d.second, "%ss")
 
         return eta
 
@@ -222,7 +227,7 @@ class statistics:
             return "now"
         if speed == 0:
             return "infinite"
-        return self._seconds_to_string(delta/speed)
+        return self._seconds_to_string(delta / speed)
 
     def step_speeds(self):
         if time.time() - self._last_estimate_update > self._estimate_update_timeout:
@@ -234,7 +239,9 @@ class statistics:
 
     def get_remaining_elaboration_time(self):
         return self._get_remaining_time(
-            self._pool_growth_speed.position() - self._elaboration_speed.position() - sum(self._error_codes.values()) - self._failed - self._binary_requests,
+            self._pool_growth_speed.position() - self._elaboration_speed.position() -
+            sum(self._error_codes.values()) -
+            self._failed - self._binary_requests,
             self._elaboration_speed.speed()
         )
 
@@ -263,7 +270,7 @@ class statistics:
         return self._graph_parsing_speed.speed()
 
     def get_elapsed_time(self):
-        return self._seconds_to_string(time.time()-self._start_time)
+        return self._seconds_to_string(time.time() - self._start_time)
 
     def get_total_error_pages(self):
         return sum(self._error_codes.values())
@@ -275,7 +282,7 @@ class statistics:
 
         for unit in units:
             if int(data) > 0:
-                response = "%s %s"%(round(data, 2), unit)
+                response = "%s %s" % (round(data, 2), unit)
             data /= 1024
 
         return response
@@ -287,9 +294,7 @@ class statistics:
         return self._bite_to_string(self._saved_bites)
 
     def get_saving_bites_speed(self):
-        return self._bite_to_string(self._saved_bites/(time.time() - self._start_time)) + "/s"
+        return self._bite_to_string(self._saved_bites / (time.time() - self._start_time)) + "/s"
 
     def get_download_bites_speed(self):
-        return self._bite_to_string(self._downloaded_bites/(time.time() - self._start_time)) + "/s"
-
-
+        return self._bite_to_string(self._downloaded_bites / (time.time() - self._start_time)) + "/s"

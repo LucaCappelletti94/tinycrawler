@@ -29,7 +29,6 @@ class process_handler:
                             "Process %s: has finished queue" % (name))
                         break
             except Exception as e:
-                print("Process %s: %s" % (name, traceback.format_exc()))
                 self._logger.log("Process %s: %s" %
                                  (name, traceback.format_exc()))
             self._statistics.set_dead_process(objective)

@@ -1,3 +1,4 @@
+import queue
 import time
 from multiprocessing import cpu_count
 
@@ -28,9 +29,19 @@ class Downloader(process_handler):
 
     def _download(self):
         """Tries to download an url with a proxy n times"""
-
+        url = None
         self._statistics.add_process_waiting_url()
-        url = self._urls.get(timeout=60)
+        for i in range(60):
+            try:
+                url = self._urls.get(timeout=1)
+                break
+            except queue.Empty as e:
+                pass
+            if self._statistics.is_download_done():
+                break
+        if url is None:
+            raise queue.Empty
+
         self._statistics.remove_process_waiting_url()
 
         max_attempts = 80
