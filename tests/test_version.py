@@ -1,4 +1,4 @@
-from dictances.__version__ import __version__
+from tinycrawler.__version__ import __version__
 import re
 
 
