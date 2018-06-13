@@ -1,0 +1,3 @@
+service_name: travis-pro
+repo_token: Pn6kP6QhCM5MMjt7SMNy4Yg2I6YpiEgx9
+parallel: true
