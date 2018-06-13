@@ -3,12 +3,12 @@ from multiprocessing import Queue
 from multiprocessing.managers import BaseManager
 from urllib.parse import urlparse
 
-from tinycrawler.cli.cli import cli
 from tinycrawler.file.file_handler import file_handler
 from tinycrawler.log.log import log
 from tinycrawler.proxies.proxiesloader import proxiesloader
 from tinycrawler.statistics.statistics import statistics
 
+from .cli import Cli
 from .dictqueue import DictQueue
 from .downloader import Downloader
 
@@ -64,7 +64,7 @@ class TinyCrawler:
             logger=logger
         )
 
-        self._cli = cli(self._statistics, logger)
+        self._cli = Cli(self._statistics, logger)
 
         self._statistics.add_total(1)
 
