@@ -85,8 +85,8 @@ The software is released under the MIT license.
 .. |travis| image:: https://travis-ci.org/LucaCappelletti94/tinycrawler.png
    :target: https://travis-ci.org/LucaCappelletti94/tinycrawler
 
-.. |coveralls| image:: https://coveralls.io/repos/github/LucaCappelletti94/distances/badge.svg?branch=master
-    :target: https://coveralls.io/github/LucaCappelletti94/distances
+.. |coveralls| image:: https://coveralls.io/repos/github/LucaCappelletti94/tinycrawler/badge.svg?branch=master
+    :target: https://coveralls.io/github/LucaCappelletti94/tinycrawler
 
 .. |sonar_quality| image:: https://sonarcloud.io/api/project_badges/measure?project=tinycrawler.lucacappelletti&metric=alert_status
     :target: https://sonarcloud.io/dashboard/index/tinycrawler.lucacappelletti
