@@ -1,6 +1,10 @@
 .. role:: py(code)
    :language: python
 
+.. role:: json(code)
+   :language: json
+
+
 Tinycrawler
 ====================
 
@@ -51,26 +55,27 @@ Usage example
 
 Proxies found on the web can be found in the file "proxies.json" and are in the following format:
 
-```json
-[
-  {
-    "ip": "89.236.17.108",
-    "port": 3128,
-    "type": [
-      "https",
-      "http"
+.. code:: python
+
+    [
+      {
+        "ip": "89.236.17.108",
+        "port": 3128,
+        "type": [
+          "https",
+          "http"
+        ]
+      },
+      {
+        "ip": "128.199.141.151",
+        "port": 3128,
+        "type": [
+          "https",
+          "http"
+        ]
+      }
     ]
-  },
-  {
-    "ip": "128.199.141.151",
-    "port": 3128,
-    "type": [
-      "https",
-      "http"
-    ]
-  }
-]
-```
+
 
 License
 --------------
