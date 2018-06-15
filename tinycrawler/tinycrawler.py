@@ -20,15 +20,15 @@ def redefined_autoproxy(token, serializer, manager=None, authkey=None,
 multiprocessing.managers.AutoProxy = redefined_autoproxy
 
 
-class MyManager(BaseManager):
+class TinyCrawlerManager(BaseManager):
     pass
 
 
-MyManager.register('Statistics', Statistics)
-MyManager.register('Log', Log)
-MyManager.register('DictJob', DictJob)
-MyManager.register('Job', Job)
-MyManager.register('ProxyJob', ProxyJob)
+TinyCrawlerManager.register('Statistics', Statistics)
+TinyCrawlerManager.register('Log', Log)
+TinyCrawlerManager.register('DictJob', DictJob)
+TinyCrawlerManager.register('Job', Job)
+TinyCrawlerManager.register('ProxyJob', ProxyJob)
 
 
 class TinyCrawler:
@@ -38,17 +38,17 @@ class TinyCrawler:
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-        self._myManager = MyManager()
-        self._myManager.start()
+        self._tinycrawler_manager = TinyCrawlerManager()
+        self._tinycrawler_manager.start()
 
-        self._logger = self._myManager.Log(directory)
-        self._statistics = self._myManager.Statistics()
+        self._logger = self._tinycrawler_manager.Log(directory)
+        self._statistics = self._tinycrawler_manager.Statistics()
 
-        self._urls = self._myManager.DictJob(
+        self._urls = self._tinycrawler_manager.DictJob(
             "urls", self._statistics, self._logger)
-        files = self._myManager.Job("files", self._statistics)
-        graph = self._myManager.Job("graph", self._statistics)
-        self._proxies = self._myManager.ProxyJob(self._statistics)
+        files = self._tinycrawler_manager.Job("files", self._statistics)
+        graph = self._tinycrawler_manager.Job("graph", self._statistics)
+        self._proxies = self._tinycrawler_manager.ProxyJob(self._statistics)
 
         self._file_parser = FileParser(
             path=directory,
