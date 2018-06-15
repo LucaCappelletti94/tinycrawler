@@ -8,16 +8,16 @@ from .log import Log
 from .process import Downloader, FileParser, UrlParser
 from .statistics import Statistics
 
-old_AutoProxy = multiprocessing.managers.AutoProxy
+backup_autoproxy = multiprocessing.managers.AutoProxy
 
 
-def AutoProxy(token, serializer, manager=None, authkey=None,
-              exposed=None, incref=True, manager_owned=True):
-    return old_AutoProxy(token, serializer, manager, authkey,
-                         exposed, incref)
+def redefined_autoproxy(token, serializer, manager=None, authkey=None,
+                        exposed=None, incref=True, manager_owned=True):
+    return backup_autoproxy(token, serializer, manager, authkey,
+                            exposed, incref)
 
 
-multiprocessing.managers.AutoProxy = AutoProxy
+multiprocessing.managers.AutoProxy = redefined_autoproxy
 
 
 class MyManager(BaseManager):
