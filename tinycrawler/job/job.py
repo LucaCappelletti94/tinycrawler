@@ -57,4 +57,3 @@ class Job(Queue):
 
     def get_counter(self):
         return self._counter
-        self._statistics.add("jobs", self._name, self._name)
