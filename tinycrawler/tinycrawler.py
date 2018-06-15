@@ -65,7 +65,7 @@ class TinyCrawler:
             logger=self._logger
         )
 
-        Downloader(
+        self._downloader = Downloader(
             urls=self._urls,
             proxies=self._proxies,
             files=files,
@@ -101,3 +101,6 @@ class TinyCrawler:
 
     def set_file_parser(self, file_parser):
         self._file_parser.set_file_parser(file_parser)
+
+    def set_retry_policy(self, retry_policy):
+        self._downloader.set_retry_policy(retry_policy)
