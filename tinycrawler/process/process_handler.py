@@ -1,44 +1,79 @@
-import queue
+"""Create a ProcessHandler for a specific target and name."""
 import time
 import traceback
 from abc import ABC
-from multiprocessing import Process
+from multiprocessing import Process, Value, cpu_count
+from queue import Empty
 
 
-class process_handler:
+class ProcessHandler:
+    """Create a ProcessHandler for a specific target and name."""
 
-    def __init__(self, statistics, logger):
+    MAXIMUM_PROCESSES = cpu_count() * 8 * 3
+
+    def __init__(self, name, jobs, statistics, logger):
+        """Init a ProcessHandler for a specific target."""
+        self._processes = []
         self._statistics = statistics
         self._logger = logger
-        self._processes = []
+        self._name = name
+        self._jobs = jobs
 
-    def process(self, objective, name, target):
-        self._processes.append(
-            Process(target=self._job_wrapper(objective, name, target), name=name))
+    def _bind_jobs(self):
+        self._jobs.set_job_handler(self)
 
-    def _job_wrapper(self, objective, name, target):
-        def _job():
+    def add_process(self):
+        """Start a new process to the target and objective given in init."""
+        name = self._get_name()
+        p = Process(target=self._job_starter, args=(name,), name=name)
+        p.start()
+        self._processes.append(p)
+
+    def are_processes_enough(self, c):
+        n = self.alives()
+        self._logger.log("Current number %s for %s" % (n, self._name))
+        return n * 10 > c or n == self.MAXIMUM_PROCESSES
+
+    def _get_name(self):
+        """Return new process identifier name."""
+        n = self.alives()
+        return "%s n.%s" % (self._name, n)
+
+    def _log_finish_queue(self, name):
+        """Log process has finished jobs."""
+        self._logger.log("Process %s: has finished queue" % (name))
+
+    def _log_process_exception(self, name):
+        """Log process has raised exception."""
+        self._logger.error("Process %s: %s" % (name, traceback.format_exc()))
+
+    def _job_loop(self, name):
+        """Handle queue iterations."""
+        while(True):
             try:
-                time.sleep(1)
-                self._statistics.set_live_process(objective)
-                while(True):
-                    try:
-                        target()
-                    except queue.Empty:
-                        self._logger.log(
-                            "Process %s: has finished queue" % (name))
-                        break
-            except Exception as e:
-                self._logger.log("Process %s: %s" %
-                                 (name, traceback.format_exc()))
-            self._statistics.set_dead_process(objective)
-        return _job
+                job = self._jobs.get()
+            except Empty:
+                self._log_finish_queue(name)
+                break
+            self._statistics.add("process", self._name + " working")
+            self._target(job)
+            self._statistics.remove("process", self._name + " working")
 
-    def run(self):
-        """Starts the parser"""
-        [p.start() for p in self._processes]
+    def _job_starter(self, name):
+        """Generic process wrapper."""
+        self._statistics.add("process", self._name + " alive")
+        try:
+            self._job_loop(name)
+        except Exception:
+            self._log_process_exception(name)
+        self._statistics.remove("process", self._name + " alive")
+
+    def _target(self, job):
+        raise NotImplementedError("You should implement target")
+
+    def alives(self):
+        return sum([int(p.is_alive()) for p in self._processes])
 
     def join(self):
         """Waits for the parser process to terminate"""
-        for p in self._processes:
-            p.join()
+        [p.join() for p in self._processes]

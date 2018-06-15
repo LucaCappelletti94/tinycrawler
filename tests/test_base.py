@@ -1,17 +1,12 @@
 """Test if crawler is working."""
 import os
+import traceback
 
 import pytest
 import requests
 from httmock import HTTMock, all_requests, response
 
 from tinycrawler import TinyCrawler
-
-
-def no_file_parser(url, text, logger):
-    """Return None to block file saving."""
-    return text
-
 
 body = ""
 
@@ -43,13 +38,9 @@ def test_base_tinycrawler():
 
     root = url_pattern % 0
     with HTTMock(example_mock):
-        my_crawler = TinyCrawler(
-            seed=root
-        )
-
-        my_crawler.set_file_parser(no_file_parser)
-
-        my_crawler.run()
+        my_crawler = TinyCrawler()
+        my_crawler.set_proxy_timeout(0)
+        my_crawler.run(root)
 
     """If it gets here without crashing I'm happy for now"""
     assert True
