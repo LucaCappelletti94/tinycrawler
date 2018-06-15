@@ -3,8 +3,6 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from multiprocessing import Lock
 
-from .derivative import derivative
-
 
 class Statistics:
     def __init__(self):
