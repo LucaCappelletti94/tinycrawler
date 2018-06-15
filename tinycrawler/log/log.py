@@ -10,14 +10,15 @@ class Log:
         with open(self._path, 'w') as f:
             f.write("")
 
+    def _log(self, logger, message):
+        self._lock.acquire()
+        logger(message)
+        self._lock.release()
+
     def log(self, message):
         """Log message with lock semaphore in info level."""
-        self._lock.acquire()
-        logging.info(message)
-        self._lock.release()
+        self._log(logging.info, message)
 
     def error(self, message):
         """Log message with lock semaphore in error level."""
-        self._lock.acquire()
-        logging.error(message)
-        self._lock.release()
+        self._log(logging.error, message)
