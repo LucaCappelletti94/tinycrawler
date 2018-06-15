@@ -1,3 +1,4 @@
+import multiprocessing
 import os
 from multiprocessing.managers import BaseManager
 
@@ -6,6 +7,17 @@ from .job import DictJob, Job, ProxyJob
 from .log import Log
 from .process import Downloader, FileParser, UrlParser
 from .statistics import Statistics
+
+old_AutoProxy = multiprocessing.managers.AutoProxy
+
+
+def AutoProxy(token, serializer, manager=None, authkey=None,
+              exposed=None, incref=True, manager_owned=True):
+    return old_AutoProxy(token, serializer, manager, authkey,
+                         exposed, incref)
+
+
+multiprocessing.managers.AutoProxy = AutoProxy
 
 
 class MyManager(BaseManager):
