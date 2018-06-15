@@ -10,7 +10,7 @@ from multiprocessing import Process
 
 
 class Cli:
-    CRYOUTS = 3
+    CRYOUTS = 2
 
     def __init__(self, statistics, logger):
         self._statistics = statistics
