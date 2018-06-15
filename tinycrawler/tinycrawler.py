@@ -90,7 +90,7 @@ class TinyCrawler:
         else:
             raise ValueError("The given seed is not valid.")
         while True:
-            sleep(0.1)
+            sleep(1)
             if self._statistics.is_everything_dead():
                 break
         if self._use_cli:
