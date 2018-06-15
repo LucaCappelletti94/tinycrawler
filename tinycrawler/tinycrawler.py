@@ -65,7 +65,7 @@ class TinyCrawler:
             logger=self._logger
         )
 
-        downloader = Downloader(
+        Downloader(
             urls=self._urls,
             proxies=self._proxies,
             files=files,
