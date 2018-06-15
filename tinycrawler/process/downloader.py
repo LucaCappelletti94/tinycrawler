@@ -24,6 +24,9 @@ class Downloader(ProcessHandler):
         """Define what to do in case of error."""
         return False
 
+    def are_processes_enough(self, c):
+        return super().are_processes_enough(c) or self._proxies.get_counter() == 0
+
     def set_retry_policy(self, retry_policy):
         """Set retry policy."""
         self._retry = retry_policy
