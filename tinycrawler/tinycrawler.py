@@ -1,6 +1,7 @@
 import multiprocessing
 import os
 from multiprocessing.managers import BaseManager
+from time import sleep
 
 from .cli import Cli
 from .job import DictJob, Job, ProxyJob
@@ -33,7 +34,9 @@ TinyCrawlerManager.register('ProxyJob', ProxyJob)
 
 class TinyCrawler:
 
-    def __init__(self, directory="downloaded_websites"):
+    def __init__(self, use_cli=False, directory="downloaded_websites"):
+
+        self._use_cli = use_cli
 
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -74,17 +77,24 @@ class TinyCrawler:
             logger=self._logger
         )
 
-        self._cli = Cli(self._statistics, self._logger)
+        if self._use_cli:
+            self._cli = Cli(self._statistics, self._logger)
 
     def run(self, seed):
-        self._cli.run()
+        if self._use_cli:
+            self._cli.run()
         if isinstance(seed, str):
             self._urls.put(seed)
         elif isinstance(seed, list):
             [self._urls.put(s) for s in seed]
         else:
             raise ValueError("The given seed is not valid.")
-        self._cli.join()
+        while True:
+            sleep(0.1)
+            if self._statistics.is_everything_dead():
+                break
+        if self._use_cli:
+            self._cli.join()
 
     def set_url_validator(self, url_validator):
         self._url_parser.set_url_validator(url_validator)
