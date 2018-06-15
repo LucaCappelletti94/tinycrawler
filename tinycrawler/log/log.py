@@ -7,8 +7,8 @@ class Log:
         self._lock = Lock()
         self._path = "%s/error.log" % (directory)
         logging.basicConfig(filename=self._path)
-        with open(self._path, 'w'):
-            pass
+        with open(self._path, 'w') as f:
+            f.write("")
 
     def log(self, message):
         """Log message with lock semaphore in info level."""
