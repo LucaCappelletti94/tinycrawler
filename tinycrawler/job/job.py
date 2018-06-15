@@ -22,9 +22,9 @@ class Job(Queue):
 
     def _callback(self):
         """If it is defined, the callback is called."""
-        if self._job_handler is not None:
-            if not self._job_handler.are_processes_enough(self._counter):
-                self._job_handler.add_process()
+        jh = self._job_handler
+        if jh is not None and not jh.are_processes_enough(self._counter):
+            jh.add_process()
 
     def put(self, value):
         """Add element to jobs, increase counter and update handler."""
