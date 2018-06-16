@@ -2,6 +2,7 @@ import hashlib
 import json
 import os
 import re
+from multiprocessing import cpu_count
 from urllib.parse import urljoin, urlparse
 
 from validators import url
@@ -16,6 +17,7 @@ class UrlParser(Parser):
         self._val = self._tautology
         self._urls = urls
         path = path + "/graph"
+        self.MAXIMUM_PROCESSES = cpu_count() * 4
         super().__init__(path, "url parser", jobs, statistics, logger)
 
     def _tautology(self, url):

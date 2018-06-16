@@ -9,8 +9,6 @@ from queue import Empty
 class ProcessHandler:
     """Create a ProcessHandler for a specific target and name."""
 
-    MAXIMUM_PROCESSES = cpu_count()
-
     def __init__(self, name, jobs, statistics, logger):
         """Init a ProcessHandler for a specific target."""
         self._processes = []
@@ -18,6 +16,7 @@ class ProcessHandler:
         self._logger = logger
         self._name = name
         self._jobs = jobs
+        self.MAXIMUM_PROCESSES = cpu_count()
 
     def _bind_jobs(self):
         self._jobs.set_job_handler(self)
@@ -35,8 +34,7 @@ class ProcessHandler:
 
     def _get_name(self):
         """Return new process identifier name."""
-        n = self.alives()
-        return "%s n.%s" % (self._name, n)
+        return "%s n.%s" % (self._name, self.alives())
 
     def _log_finish_queue(self, name):
         """Log process has finished jobs."""
