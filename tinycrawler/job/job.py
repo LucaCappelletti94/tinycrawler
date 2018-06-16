@@ -47,14 +47,14 @@ class Job(Queue):
         i = 0
         while True:
             self._lock.acquire()
-            if self._counter == 0:
-                i += 1
+            if not self._counter:
                 self._lock.release()
+                i += 1
                 sleep(0.5)
-                if i > 4:
-                    raise Empty
             else:
                 break
+            if i > 4:
+                raise Empty
         self._counter -= 1
         self._lock.release()
         job = super()._get()
