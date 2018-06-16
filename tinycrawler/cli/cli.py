@@ -36,8 +36,8 @@ class Cli:
             time.sleep(0.1)
             if self._statistics.is_everything_dead():
                 cryouts += 1
-                if cryouts == self.CRYOUTS:
-                    break
+            if cryouts == self.CRYOUTS:
+                break
             self._clear()
 
             info = self._statistics.get_informations()
