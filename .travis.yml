@@ -26,7 +26,7 @@ before_script:
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 script:
-- pytest --cov=./tinycrawler --cov-report xml:coverage.xml
+- pytest --cov=./tinycrawler -s --cov-report xml --cov-report term
 - sonar-scanner
 after_success:
 - coveralls
