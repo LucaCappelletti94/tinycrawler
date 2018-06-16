@@ -8,7 +8,7 @@
 Tinycrawler
 ====================
 
-|travis| |coveralls| |sonar_quality| |sonar_maintainability| |code_climate_maintainability| |code_climate_test_coverage| |pip|
+|travis| |sonar_quality| |sonar_maintainability| |sonar_coverage| |code_climate_maintainability| |pip|
 
 A small crawler that uses multiprocessing and arbitrarily many proxies to download one or more websites following a given filter, search and save functions.
 
@@ -85,22 +85,18 @@ The software is released under the MIT license.
 .. |travis| image:: https://travis-ci.org/LucaCappelletti94/tinycrawler.png
    :target: https://travis-ci.org/LucaCappelletti94/tinycrawler
 
-.. |coveralls| image:: https://coveralls.io/repos/github/LucaCappelletti94/tinycrawler/badge.svg?branch=master
-    :target: https://coveralls.io/github/LucaCappelletti94/tinycrawler
-
 .. |sonar_quality| image:: https://sonarcloud.io/api/project_badges/measure?project=tinycrawler.lucacappelletti&metric=alert_status
     :target: https://sonarcloud.io/dashboard/index/tinycrawler.lucacappelletti
 
 .. |sonar_maintainability| image:: https://sonarcloud.io/api/project_badges/measure?project=tinycrawler.lucacappelletti&metric=sqale_rating
     :target: https://sonarcloud.io/dashboard/index/tinycrawler.lucacappelletti
 
+.. |sonar_coverage| image:: https://sonarcloud.io/api/project_badges/measure?project=tinycrawler.lucacappelletti&metric=coverage
+    :target: https://sonarcloud.io/dashboard/index/tinycrawler.lucacappelletti
+
 .. |code_climate_maintainability| image:: https://api.codeclimate.com/v1/badges/25fb7c6119e188dbd12c/maintainability
    :target: https://codeclimate.com/github/LucaCappelletti94/tinycrawler/maintainability
    :alt: Maintainability
-
-.. |code_climate_test_coverage| image:: https://api.codeclimate.com/v1/badges/fac1039a9e8e0bf57a5d/test_coverage
-   :target: https://codeclimate.com/github/LucaCappelletti94/tinycrawler/test_coverage
-   :alt: Test Coverage
 
 .. |pip| image:: https://badge.fury.io/py/tinycrawler.svg
     :target: https://badge.fury.io/py/tinycrawler
