@@ -21,18 +21,14 @@ class UrlParser(Parser):
     def _tautology(self, url):
         return True
 
-    def _url_extractor(self, request_url, text, logger):
-        urls = []
+    def _url_extractor(self, request_url, text, urls, logger):
         for partial_link in re.findall(self._regex, text):
             link = urljoin(request_url, partial_link)
             if url(link) and self._val(link) and not self._urls.contains(link):
-                urls.append(link)
-        return urls
+                urls.put(link)
 
     def _parser(self, request_url, text, logger):
-        urls = self._url_extractor(request_url, text, logger)
-        [self._urls.put(url) for url in urls]
-        return urls
+        self._url_extractor(request_url, text, self._urls, logger)
 
     def set_validate(self, url_validator):
         """Set custom url validator."""
