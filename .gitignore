@@ -1,5 +1,7 @@
 local_test
-__pycache__
 .cache
 .idea
 .DS_Store
+.coverage*
+coverage.xml
+__pycache__
