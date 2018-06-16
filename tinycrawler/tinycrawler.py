@@ -100,18 +100,21 @@ class TinyCrawler:
         else:
             raise ValueError("The given seed is not valid.")
 
-    def run(self, seed):
-        if self._use_cli:
-            self._cli.run()
-        self._add_seed(seed)
+    def _sleep_loop(self):
         attempt = 0
-        max_attempt = 10
+        max_attempt = 5
         while True:
-            sleep(1)
+            sleep(0.1)
             if self._statistics.is_everything_dead():
                 attempt += 1
                 if attempt > max_attempt:
                     break
+
+    def run(self, seed):
+        if self._use_cli:
+            self._cli.run()
+        self._add_seed(seed)
+        self._sleep_loop()
         self._file_parser.join()
         self._url_parser.join()
         self._downloader.join()
