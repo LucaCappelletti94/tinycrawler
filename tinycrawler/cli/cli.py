@@ -30,6 +30,16 @@ class Cli:
         curses.nocbreak()
         curses.endwin()
 
+    def _print_statistics(self):
+        info = self._statistics.get_informations()
+        self._print_frame()
+        for section, sub_dict in info.items():
+            self._print(section.upper() + "@")
+            self._print_frame()
+            for label, value in sub_dict.items():
+                self._print_label(label, value)
+            self._print_frame()
+
     def _cli_loop(self):
         cryouts = 0
         while True:
@@ -40,14 +50,7 @@ class Cli:
                 break
             self._clear()
 
-            info = self._statistics.get_informations()
-            self._print_frame()
-            for section, sub_dict in info.items():
-                self._print(section.upper() + "@")
-                self._print_frame()
-                for label, value in sub_dict.items():
-                    self._print_label(label, value)
-                self._print_frame()
+            self._print_statistics()
 
             self._print_all()
 
