@@ -1,4 +1,3 @@
-import hashlib
 import json
 import os
 
@@ -20,7 +19,7 @@ class Parser(ProcessHandler):
         """Parse the downloaded files, cleans them and extracts urls"""
         request_url, html = job
 
-        filename = hashlib.md5(request_url.encode('utf-8')).hexdigest()
+        filename = hash(request_url.encode('utf-8'))
         content = self._parser(request_url, html, self._logger)
         if content is not None:
             self._write(filename, {
