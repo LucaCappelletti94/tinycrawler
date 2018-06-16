@@ -38,48 +38,56 @@ class TinyCrawler:
     def __init__(self, use_cli=False, directory="downloaded_websites"):
 
         self._use_cli = use_cli
+        self._directory = directory
 
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+        if not os.path.exists(self._directory):
+            os.makedirs(self._directory)
 
         self._tinycrawler_manager = TinyCrawlerManager()
         self._tinycrawler_manager.start()
 
-        self._logger = self._tinycrawler_manager.Log(directory)
+        self._logger = self._tinycrawler_manager.Log(self._directory)
         self._statistics = self._tinycrawler_manager.Statistics()
 
         self._urls = self._tinycrawler_manager.DictJob(
             "urls", self._statistics, self._logger)
-        files = self._tinycrawler_manager.Job("files", self._statistics)
-        graph = self._tinycrawler_manager.Job("graph", self._statistics)
+        self._files = self._tinycrawler_manager.Job("files", self._statistics)
+        self._graph = self._tinycrawler_manager.Job("graph", self._statistics)
         self._proxies = self._tinycrawler_manager.ProxyJob(self._statistics)
 
-        self._file_parser = FileParser(
-            path=directory,
-            jobs=files,
-            statistics=self._statistics,
-            logger=self._logger
-        )
-
-        self._url_parser = UrlParser(
-            path=directory,
-            jobs=graph,
-            urls=self._urls,
-            statistics=self._statistics,
-            logger=self._logger
-        )
-
-        self._downloader = Downloader(
-            urls=self._urls,
-            proxies=self._proxies,
-            files=files,
-            graph=graph,
-            statistics=self._statistics,
-            logger=self._logger
-        )
+        self._start_file_parser()
+        self._start_url_parser()
+        self._start_downloader()
 
         if self._use_cli:
             self._cli = Cli(self._statistics, self._logger)
+
+    def _start_file_parser(self):
+        self._file_parser = FileParser(
+            path=self._directory,
+            jobs=self._files,
+            statistics=self._statistics,
+            logger=self._logger
+        )
+
+    def _start_url_parser(self):
+        self._url_parser = UrlParser(
+            path=self._directory,
+            jobs=self._graph,
+            urls=self._urls,
+            statistics=self._statistics,
+            logger=self._logger
+        )
+
+    def _start_downloader(self):
+        self._downloader = Downloader(
+            urls=self._urls,
+            proxies=self._proxies,
+            files=self._files,
+            graph=self._graph,
+            statistics=self._statistics,
+            logger=self._logger
+        )
 
     def run(self, seed):
         if self._use_cli:
