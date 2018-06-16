@@ -41,6 +41,3 @@ class Parser(ProcessHandler):
 
         with open(path, "w") as f:
             json.dump(content, f)
-
-    def _parser(self, request_url, html, logger):
-        raise NotImplementedError
