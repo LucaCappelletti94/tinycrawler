@@ -89,15 +89,18 @@ class TinyCrawler:
             logger=self._logger
         )
 
-    def run(self, seed):
-        if self._use_cli:
-            self._cli.run()
+    def _add_seed(self, seed):
         if isinstance(seed, str):
             self._urls.put(seed)
         elif isinstance(seed, list):
             [self._urls.put(s) for s in seed]
         else:
             raise ValueError("The given seed is not valid.")
+
+    def run(self, seed):
+        if self._use_cli:
+            self._cli.run()
+        self._add_seed(seed)
         attempt = 0
         max_attempt = 10
         while True:
