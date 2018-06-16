@@ -1,4 +1,5 @@
 """Test if crawler is working."""
+import hashlib
 import json
 import os
 import random
@@ -61,7 +62,8 @@ def check_files():
             link = "%s/%s" % (root, j)
             links += anchor % (link, j)
         body = model.replace("{PLACEHOLDER}", links)
-        file_name = "%s/website/1/%s.json" % (download_directory, hash(url))
+        h = hashlib.md5(url.encode('utf-8')).hexdigest()
+        file_name = "%s/website/1/%s.json" % (download_directory, h)
 
         content = {
             "url": url,
@@ -76,8 +78,7 @@ def check_files():
             output = json.load(f)
 
         if output != content:
-            errors.append("File %s does not match expected: %s != %s." %
-                          (file_name, json.dumps(output, indent=4), json.dumps(content, indent=4)))
+            errors.append("File %s does not match expected" % (file_name))
             break
 
     return errors
@@ -87,7 +88,7 @@ def test_base_tinycrawler():
     global root
     global download_directory
     with HTTMock(example_mock):
-        my_crawler = TinyCrawler(use_cli=False, directory=download_directory)
+        my_crawler = TinyCrawler(use_cli=True, directory=download_directory)
         my_crawler.set_proxy_timeout(0)
         my_crawler.run(root + "/1000")
 
