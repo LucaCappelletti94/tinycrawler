@@ -6,14 +6,13 @@ from .process_handler import ProcessHandler
 
 class Parser(ProcessHandler):
 
-    def __init__(self, path, name, jobs, statistics, logger):
-        super().__init__(name, jobs, statistics, logger)
+    def __init__(self, path, name, jobs):
+        super().__init__(name, jobs)
         self._path = path
         self._file_number = 0
         self._counter = 0
         if not os.path.exists(path):
             os.makedirs(path)
-        self._bind_jobs()
 
     def _target(self, job):
         """Parse the downloaded files, cleans them and extracts urls"""

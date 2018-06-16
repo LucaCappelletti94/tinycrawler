@@ -65,29 +65,32 @@ class TinyCrawler:
     def _start_file_parser(self):
         self._file_parser = FileParser(
             path=self._directory,
-            jobs=self._files,
-            statistics=self._statistics,
-            logger=self._logger
+            jobs=self._files
         )
+        self._file_parser.set_statistics(self._statistics)
+        self._file_parser.set_logger(self._logger)
+        self._file_parser.bind()
 
     def _start_url_parser(self):
         self._url_parser = UrlParser(
             path=self._directory,
             jobs=self._graph,
-            urls=self._urls,
-            statistics=self._statistics,
-            logger=self._logger
+            urls=self._urls
         )
+        self._url_parser.set_statistics(self._statistics)
+        self._url_parser.set_logger(self._logger)
+        self._url_parser.bind()
 
     def _start_downloader(self):
         self._downloader = Downloader(
             urls=self._urls,
             proxies=self._proxies,
             files=self._files,
-            graph=self._graph,
-            statistics=self._statistics,
-            logger=self._logger
+            graph=self._graph
         )
+        self._downloader.set_statistics(self._statistics)
+        self._downloader.set_logger(self._logger)
+        self._downloader.bind()
 
     def _add_seed(self, seed):
         if isinstance(seed, str):

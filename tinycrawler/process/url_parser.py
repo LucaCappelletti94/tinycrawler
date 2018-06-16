@@ -12,13 +12,13 @@ from .parser import Parser
 
 class UrlParser(Parser):
 
-    def __init__(self, path, jobs, urls, statistics, logger):
+    def __init__(self, path, jobs, urls):
+        super().__init__(path, "url parser", jobs)
         self._regex = re.compile(r"href=[\"']([^\"#\']+)[\"']")
         self._val = self._tautology
         self._urls = urls
         path = path + "/graph"
         self.MAXIMUM_PROCESSES = cpu_count() * 4
-        super().__init__(path, "url parser", jobs, statistics, logger)
 
     def _tautology(self, url):
         return True

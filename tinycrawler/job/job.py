@@ -23,7 +23,7 @@ class Job(Queue):
     def _callback(self):
         """If it is defined, the callback is called."""
         jh = self._job_handler
-        if jh is not None and not jh.enough(self._counter):
+        if jh is not None and not jh.enough(self.len()):
             jh.add_process()
 
     def put(self, value):
@@ -61,5 +61,5 @@ class Job(Queue):
         self._statistics.remove(self._name, "Queue %s" % self._name)
         return job
 
-    def get_counter(self):
+    def len(self):
         return self._counter

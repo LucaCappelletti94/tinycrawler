@@ -10,9 +10,9 @@ from .parser import Parser
 
 class FileParser(Parser):
 
-    def __init__(self, path, jobs, statistics, logger):
+    def __init__(self, path, jobs):
+        super().__init__(path, "file parser", jobs)
         path = path + "/website"
-        super().__init__(path, "file parser", jobs, statistics, logger)
 
     def _parser(self, request_url, text, logger):
         return text

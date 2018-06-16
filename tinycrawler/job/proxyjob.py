@@ -27,7 +27,7 @@ class ProxyJob(Job):
         super().__init__("proxies", statistics)
         self.__put(self.LOCAL)
         self._test_url = None
-        self._statistics.set(self._name, "total proxies", self.get_counter())
+        self._statistics.set(self._name, "total proxies", self.len())
 
     def __get(self):
         """Private get method for ProxyJob that handle timestamp."""
@@ -82,7 +82,7 @@ class ProxyJob(Job):
             [self._put(x) for x in p.imap(self._test_proxy, proxies_data) if x]
         p.join()
 
-        self._statistics.set(self._name, "total proxies", self.get_counter())
+        self._statistics.set(self._name, "total proxies", self.len())
 
     def _test_proxy(self, proxy_data):
         """Return proxy that pass connection test."""

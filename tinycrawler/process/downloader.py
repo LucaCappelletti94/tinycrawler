@@ -12,19 +12,18 @@ class Downloader(ProcessHandler):
     MAX_ATTEMPTS = 50
     SUCCESS_STATUS = 200
 
-    def __init__(self, urls, proxies, files, graph, statistics, logger):
-        super().__init__("downloader", urls, statistics, logger)
+    def __init__(self, urls, proxies, files, graph):
+        super().__init__("downloader", urls)
         self._proxies = proxies
         self._files = files
         self._graph = graph
-        self._bind_jobs()
 
     def _retry(self, status):
         """Define what to do in case of error."""
         return False
 
     def enough(self, c):
-        return super().enough(c) or self._proxies.get_counter() <= self.alives()
+        return super().enough(c) or self._proxies.len() <= self.alives()
 
     def set_retry_policy(self, retry_policy):
         """Set retry policy."""
