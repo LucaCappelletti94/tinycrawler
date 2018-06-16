@@ -28,7 +28,7 @@ def example_mock(url, request):
         model = f.read()
 
     for i in range(10):
-        j = random.randint(0, 1000)
+        j = random.randint(0, 999)
         url = "%s/%s" % (root, j)
         links += anchor % (url, i)
 
@@ -41,7 +41,7 @@ def test_base_tinycrawler():
 
     with HTTMock(example_mock):
         my_crawler = TinyCrawler(use_cli=True)
-        my_crawler.set_proxy_timeout(1)
+        my_crawler.set_proxy_timeout(0)
         my_crawler.run(root)
 
     """If it gets here without crashing I'm happy for now"""
