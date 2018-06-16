@@ -1,5 +1,6 @@
 import multiprocessing
 import os
+import traceback
 from multiprocessing.managers import BaseManager
 from time import sleep
 
@@ -89,10 +90,14 @@ class TinyCrawler:
             [self._urls.put(s) for s in seed]
         else:
             raise ValueError("The given seed is not valid.")
+        attempt = 0
+        max_attempt = 10
         while True:
             sleep(1)
             if self._statistics.is_everything_dead():
-                break
+                attempt += 1
+                if attempt > max_attempt:
+                    break
         if self._use_cli:
             self._cli.join()
 
