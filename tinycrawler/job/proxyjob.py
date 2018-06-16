@@ -80,6 +80,7 @@ class ProxyJob(Job):
 
         with Pool(self.WORKERS) as p:
             [self._put(x) for x in p.imap(self._test_proxy, proxies_data) if x]
+        p.join()
 
         self._statistics.set(self._name, "total proxies", self.get_counter())
 
