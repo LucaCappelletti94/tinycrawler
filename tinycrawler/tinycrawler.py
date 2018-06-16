@@ -107,8 +107,8 @@ class TinyCrawler:
             sleep(0.1)
             if self._statistics.is_everything_dead():
                 attempt += 1
-                if attempt > max_attempt:
-                    break
+            if attempt > max_attempt:
+                break
 
     def run(self, seed):
         if self._use_cli:
