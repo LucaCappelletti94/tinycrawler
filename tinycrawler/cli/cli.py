@@ -20,38 +20,46 @@ class Cli:
         self._outputs = {}
         sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=40, cols=70))
 
-    def _cli(self):
-        cryouts = 0
+    def _init_curses(self):
         self._stdscr = curses.initscr()
         curses.noecho()
         curses.cbreak()
-        try:
-            while True:
-                time.sleep(0.1)
-                if self._statistics.is_everything_dead():
-                    cryouts += 1
-                    if cryouts == self.CRYOUTS:
-                        break
-                self._clear()
 
-                info = self._statistics.get_informations()
+    def _close_curses(self):
+        curses.echo()
+        curses.nocbreak()
+        curses.endwin()
+
+    def _cli_loop(self):
+        cryouts = 0
+        while True:
+            time.sleep(0.1)
+            if self._statistics.is_everything_dead():
+                cryouts += 1
+                if cryouts == self.CRYOUTS:
+                    break
+            self._clear()
+
+            info = self._statistics.get_informations()
+            self._print_frame()
+            for section, sub_dict in info.items():
+                self._print(section.upper() + "@")
                 self._print_frame()
-                for section, sub_dict in info.items():
-                    self._print(section.upper() + "@")
-                    self._print_frame()
-                    for label, value in sub_dict.items():
-                        self._print_label(label, value)
-                    self._print_frame()
+                for label, value in sub_dict.items():
+                    self._print_label(label, value)
+                self._print_frame()
 
-                self._print_all()
+            self._print_all()
 
+    def _cli(self):
+        self._init_curses()
+        try:
+            self._cli_loop()
         except Exception as e:
             self._logger.error("cli: %s" % traceback.format_exc())
         except KeyboardInterrupt:
             pass
-        curses.echo()
-        curses.nocbreak()
-        curses.endwin()
+        self._close_curses()
 
     def _print_fraction(self, label, v1, v2):
         if v2 != 0:
