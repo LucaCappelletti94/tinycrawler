@@ -1,6 +1,2 @@
 [run]
-branch = True
 concurrency = multiprocessing
-
-[paths]
-source = ./tinycrawler
