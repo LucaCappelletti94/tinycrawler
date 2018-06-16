@@ -13,11 +13,10 @@ from .parser import Parser
 class UrlParser(Parser):
 
     def __init__(self, path, jobs, urls):
-        super().__init__(path, "url parser", jobs)
+        super().__init__(path + "/graph", "url parser", jobs)
         self._regex = re.compile(r"href=[\"']([^\"#\']+)[\"']")
         self._val = self._tautology
         self._urls = urls
-        path = path + "/graph"
 
     def _tautology(self, url):
         return True
