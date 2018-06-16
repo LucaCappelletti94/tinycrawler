@@ -46,7 +46,7 @@ class Cli:
                 self._print_all()
 
         except Exception as e:
-            self._logger.log("cli: %s" % traceback.format_exc())
+            self._logger.error("cli: %s" % traceback.format_exc())
         except KeyboardInterrupt:
             pass
         curses.echo()
