@@ -34,7 +34,7 @@ class ProcessHandler:
 
     def enough(self, c):
         n = self.alives()
-        return n * 10 > c or n == self.MAXIMUM_PROCESSES
+        return n * 50 > c or n >= self.MAXIMUM_PROCESSES
 
     def _get_name(self):
         """Return new process identifier name."""
