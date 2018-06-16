@@ -9,7 +9,7 @@ from queue import Empty
 class ProcessHandler:
     """Create a ProcessHandler for a specific target and name."""
 
-    MAXIMUM_PROCESSES = cpu_count() * 8 * 3
+    MAXIMUM_PROCESSES = cpu_count()
 
     def __init__(self, name, jobs, statistics, logger):
         """Init a ProcessHandler for a specific target."""
@@ -29,9 +29,8 @@ class ProcessHandler:
         p.start()
         self._processes.append(p)
 
-    def are_processes_enough(self, c):
+    def enough(self, c):
         n = self.alives()
-        self._logger.log("Current number %s for %s" % (n, self._name))
         return n * 10 > c or n == self.MAXIMUM_PROCESSES
 
     def _get_name(self):
@@ -61,6 +60,7 @@ class ProcessHandler:
 
     def _job_starter(self, name):
         """Generic process wrapper."""
+        self._logger.log("Starting process %s" % name)
         self._statistics.add("process", self._name + " alive")
         try:
             self._job_loop(name)

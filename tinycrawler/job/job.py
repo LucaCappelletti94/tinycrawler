@@ -23,7 +23,7 @@ class Job(Queue):
     def _callback(self):
         """If it is defined, the callback is called."""
         jh = self._job_handler
-        if jh is not None and not jh.are_processes_enough(self._counter):
+        if jh is not None and not jh.enough(self._counter):
             jh.add_process()
 
     def put(self, value):
@@ -44,14 +44,20 @@ class Job(Queue):
 
     def get(self):
         """Return new job and decrease counter."""
-        self._lock.acquire()
-        if self._counter == 0:
-            self._lock.release()
-            raise Empty
-        else:
-            self._counter -= 1
-            job = super()._get()
+        i = 0
+        while True:
+            self._lock.acquire()
+            if self._counter == 0:
+                i += 1
+                self._lock.release()
+                sleep(0.5)
+                if i > 4:
+                    raise Empty
+            else:
+                break
+        self._counter -= 1
         self._lock.release()
+        job = super()._get()
         self._statistics.remove(self._name, "Queue %s" % self._name)
         return job
 

@@ -9,7 +9,6 @@ from .process_handler import ProcessHandler
 
 
 class Downloader(ProcessHandler):
-
     MAX_ATTEMPTS = 50
     SUCCESS_STATUS = 200
 
@@ -24,8 +23,8 @@ class Downloader(ProcessHandler):
         """Define what to do in case of error."""
         return False
 
-    def are_processes_enough(self, c):
-        return super().are_processes_enough(c) or self._proxies.get_counter() == 0
+    def enough(self, c):
+        return super().enough(c) or self._proxies.get_counter() <= self.alives()
 
     def set_retry_policy(self, retry_policy):
         """Set retry policy."""
