@@ -89,7 +89,7 @@ def test_base_tinycrawler():
     global empty_proxy_path
 
     with HTTMock(example_mock):
-        my_crawler = TinyCrawler(use_cli=True, directory=download_directory)
+        my_crawler = TinyCrawler(use_cli=False, directory=download_directory)
         my_crawler.set_proxy_timeout(0)
         my_crawler.set_url_validator(tinycrawler.process.UrlParser._tautology)
         my_crawler.set_file_parser(tinycrawler.process.FileParser._parser)
