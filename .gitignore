@@ -4,4 +4,3 @@ __pycache__
 .idea
 .DS_Store
 .coverage.*
-coverage.xml
