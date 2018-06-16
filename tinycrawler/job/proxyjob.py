@@ -118,9 +118,10 @@ class ProxyJob(Job):
 
         for protocol in ["socks4", "socks5"]:
             if support[protocol]:
+                address = protocol + url
                 proxy.update({
-                    "https": protocol + url,
-                    "http": protocol + url,
+                    "https": address,
+                    "http": address,
                 })
 
         return proxy
