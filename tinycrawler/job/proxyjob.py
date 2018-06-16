@@ -1,4 +1,5 @@
 """Handle ProxyJob dispatching with timeouts."""
+import json
 from multiprocessing import Pool, cpu_count
 from queue import Empty
 from time import sleep, time
@@ -71,10 +72,6 @@ class ProxyJob(Job):
 
     def load(self, path):
         """Load and test the proxies in given file."""
-        if self._test_url is None:
-            raise ValueError(
-                "You have to set a test server before loading proxies.")
-
         with open(path, 'r') as f:
             proxies_data = json.load(f)
 

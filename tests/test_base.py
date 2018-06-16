@@ -14,6 +14,7 @@ import tinycrawler
 from tinycrawler import TinyCrawler
 
 path = os.path.dirname(__file__) + "/../test_data/base_test.html"
+empty_proxy_path = os.path.dirname(__file__) + "/../test_data/empty_proxy.json"
 
 download_directory = "local_test"
 
@@ -85,6 +86,7 @@ def test_base_tinycrawler():
     global root
     global anchor
     global download_directory
+    global empty_proxy_path
 
     with HTTMock(example_mock):
         my_crawler = TinyCrawler(use_cli=True, directory=download_directory)
@@ -92,6 +94,7 @@ def test_base_tinycrawler():
         my_crawler.set_url_validator(tinycrawler.process.UrlParser._tautology)
         my_crawler.set_file_parser(tinycrawler.process.FileParser._parser)
         my_crawler.set_retry_policy(tinycrawler.process.Downloader._retry)
+        my_crawler.load_proxies(root, empty_proxy_path)
         my_crawler.run(root + "/1000")
 
     file_count = check_files(path, root, anchor, download_directory)
