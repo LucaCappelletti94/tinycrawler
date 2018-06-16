@@ -13,8 +13,6 @@ class Log:
     def _log(self, logger, message):
         self._lock.acquire()
         logger(message)
-        with open(self._path, "a") as f:
-            f.write(message + "\n")
         self._lock.release()
 
     def log(self, message):
