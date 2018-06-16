@@ -1,5 +1,5 @@
 downloaded_websites
 __pycache__
 .cache
-
+.idea
 .DS_Store
