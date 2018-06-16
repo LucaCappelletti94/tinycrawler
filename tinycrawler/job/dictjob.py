@@ -22,9 +22,7 @@ class DictJob(Job):
     def put(self, value):
         """Add element to jobs using dictionary keys."""
         key = self._hash(value)
-        self._lock.acquire()
         self._data[key] = None
-        self._lock.release()
         super().put(value)
 
     def contains(self, value):
