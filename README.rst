@@ -98,7 +98,7 @@ The software is released under the MIT license.
    :target: https://codeclimate.com/github/LucaCappelletti94/tinycrawler/maintainability
    :alt: Maintainability
 
-.. |code_climate_test_coverage| image:: https://api.codeclimate.com/v1/badges/25fb7c6119e188dbd12c/test_coverage
+.. |code_climate_test_coverage| image:: https://api.codeclimate.com/v1/badges/fac1039a9e8e0bf57a5d/test_coverage
    :target: https://codeclimate.com/github/LucaCappelletti94/tinycrawler/test_coverage
    :alt: Test Coverage
 
