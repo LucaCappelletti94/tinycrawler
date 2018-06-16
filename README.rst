@@ -14,6 +14,13 @@ A small crawler that uses multiprocessing and arbitrarily many proxies to downlo
 
 **REMEMBER THAT DDOS IS ILLEGAL. DO NOT THIS SOFTWARE FOR ILLEGAL PORPOSES.**
 
+Installing TinyCrawler
+------------------------
+
+.. code:: shell
+
+    pip install tinycrawler
+
 Usage example
 ---------------------
 
