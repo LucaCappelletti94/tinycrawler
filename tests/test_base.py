@@ -10,6 +10,7 @@ import pytest
 import requests
 from httmock import HTTMock, all_requests, response
 
+import tinycrawler
 from tinycrawler import TinyCrawler
 
 path = os.path.dirname(__file__) + "/../test_data/base_test.html"
@@ -42,12 +43,7 @@ def example_mock(url, request):
     return response(200, body, headers, None, 5, request)
 
 
-def check_files():
-    global path
-    global root
-    global anchor
-    global download_directory
-
+def check_files(path, root, anchor, download_directory):
     errors = []
 
     with open(path, "r") as f:
@@ -85,13 +81,19 @@ def check_files():
 
 
 def test_base_tinycrawler():
+    global path
     global root
+    global anchor
     global download_directory
+
     with HTTMock(example_mock):
         my_crawler = TinyCrawler(use_cli=True, directory=download_directory)
         my_crawler.set_proxy_timeout(0)
+        my_crawler.set_url_validator(tinycrawler.process.UrlParser._tautology)
+        my_crawler.set_file_parser(tinycrawler.process.FileParser._parser)
+        my_crawler.set_retry_policy(tinycrawler.process.Downloader._retry)
         my_crawler.run(root + "/1000")
 
-    file_count = check_files()
+    file_count = check_files(path, root, anchor, download_directory)
 
     assert not file_count, "errors occured:\n{}".format("\n".join(file_count))

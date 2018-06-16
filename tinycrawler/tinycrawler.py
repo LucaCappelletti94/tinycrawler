@@ -122,7 +122,7 @@ class TinyCrawler:
             self._cli.join()
 
     def set_url_validator(self, url_validator):
-        self._url_parser.set_url_validator(url_validator)
+        self._url_parser.set_validator(url_validator)
 
     def load_proxies(self, test_url, path):
         self._proxies.set_test_url(test_url)

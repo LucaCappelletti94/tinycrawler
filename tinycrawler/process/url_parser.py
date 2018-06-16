@@ -30,7 +30,7 @@ class UrlParser(Parser):
     def _parser(self, request_url, text, logger):
         self._url_extractor(request_url, text, self._urls, logger)
 
-    def set_validate(self, url_validator):
+    def set_validator(self, url_validator):
         """Set custom url validator."""
         self._val = url_validator
 
