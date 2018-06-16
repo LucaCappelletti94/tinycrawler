@@ -98,6 +98,9 @@ class TinyCrawler:
                 attempt += 1
                 if attempt > max_attempt:
                     break
+        self._file_parser.join()
+        self._url_parser.join()
+        self._downloader.join()
         if self._use_cli:
             self._cli.join()
 
