@@ -19,20 +19,18 @@ Usage example
 
 .. code:: python
 
-    #!/usr/bin/env python
-    from urllib.parse import urlparse
     from tinycrawler import TinyCrawler
     from bs4 import BeautifulSoup
 
 
-    def my_custom_validator(url):
+    def url_validator(url):
         if "http://www.example.com/my/path" not in url:
             return False
 
         return True
 
 
-    def my_file_parser(url, text, logger):
+    def file_parser(url, text, logger):
         return None
         soup = BeautifulSoup(text, 'lxml')
 
@@ -47,13 +45,14 @@ Usage example
         seed="http://www.example.com/my/path/index.html"
     )
 
-    my_crawler.set_url_validator(my_custom_validator)
-    my_crawler.set_file_parser(my_file_parser)
+    my_crawler.load_proxies("path/to/my/proxies.json")
+    my_crawler.set_url_validator(url_validator)
+    my_crawler.set_file_parser(file_parser)
 
-    my_crawler.run()
+    my_crawler.run("http://www.example.com/my/path/index.html")
 
 
-Proxies found on the web can be found in the file "proxies.json" and are in the following format:
+Proxies are expected to be in the following format:
 
 .. code:: python
 
