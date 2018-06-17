@@ -33,10 +33,14 @@ class Statistics:
         self._informations[category][name] -= value
         self._lock.release()
 
+    def get(self, category, name):
+        """Remove value to category/name."""
+        return self._informations[category][name]
+
     def get_informations(self):
         return self._informations
 
     def is_everything_dead(self):
-        if 'process' not in self._informations:
+        if 'processes' not in self._informations:
             return False
-        return not sum([v for v in self._informations['process'].values()])
+        return not sum([v for v in self._informations['processes'].values()])

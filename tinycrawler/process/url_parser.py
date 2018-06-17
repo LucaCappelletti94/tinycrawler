@@ -24,7 +24,7 @@ class UrlParser(Parser):
     def _url_extractor(self, request_url, text, urls, logger):
         for partial_link in re.findall(self._regex, text):
             link = urljoin(request_url, partial_link)
-            if url(link) and self._val(link) and not self._urls.contains(link):
+            if url(link) and self._val(link):
                 urls.put(link)
 
     def _parser(self, request_url, text, logger):

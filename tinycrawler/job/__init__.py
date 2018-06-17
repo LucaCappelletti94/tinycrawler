@@ -1,6 +1,6 @@
 """Import classes for queueing in multiprocessing."""
-from .dictjob import DictJob
-from .job import Job
+from .filejob import FileJob
 from .proxyjob import ProxyJob
+from .urljob import UrlJob
 
-__all__ = ['Job', 'DictJob', 'ProxyJob']
+__all__ = ['FileJob', 'UrlJob', 'ProxyJob']

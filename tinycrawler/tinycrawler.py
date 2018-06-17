@@ -2,13 +2,13 @@ import multiprocessing
 import os
 import traceback
 from multiprocessing.managers import BaseManager
-from time import sleep
+from time import sleep, time
 
 from .cli import Cli
-from .job import DictJob, Job, ProxyJob
+from .job import FileJob, ProxyJob, UrlJob
 from .log import Log
 from .process import Downloader, FileParser, UrlParser
-from .statistics import Statistics
+from .statistics import Statistics, Time
 
 backup_autoproxy = multiprocessing.managers.AutoProxy
 
@@ -28,12 +28,13 @@ class TinyCrawlerManager(BaseManager):
 
 TinyCrawlerManager.register('Statistics', Statistics)
 TinyCrawlerManager.register('Log', Log)
-TinyCrawlerManager.register('DictJob', DictJob)
-TinyCrawlerManager.register('Job', Job)
+TinyCrawlerManager.register('UrlJob', UrlJob)
+TinyCrawlerManager.register('FileJob', FileJob)
 TinyCrawlerManager.register('ProxyJob', ProxyJob)
 
 
 class TinyCrawler:
+    CRYOUTS = 2
 
     def __init__(self, use_cli=False, directory="downloaded_websites"):
 
@@ -49,10 +50,11 @@ class TinyCrawler:
         self._logger = self._tinycrawler_manager.Log(self._directory)
         self._statistics = self._tinycrawler_manager.Statistics()
 
-        self._urls = self._tinycrawler_manager.DictJob(
-            "urls", self._statistics, self._logger)
-        self._files = self._tinycrawler_manager.Job("files", self._statistics)
-        self._graph = self._tinycrawler_manager.Job("graph", self._statistics)
+        self._urls = self._tinycrawler_manager.UrlJob(self._statistics)
+        self._files = self._tinycrawler_manager.FileJob(
+            "files", self._statistics)
+        self._graph = self._tinycrawler_manager.FileJob(
+            "graph", self._statistics)
         self._proxies = self._tinycrawler_manager.ProxyJob(self._statistics)
 
         self._start_file_parser()
@@ -101,16 +103,20 @@ class TinyCrawler:
             raise ValueError("The given seed is not valid.")
 
     def _sleep_loop(self):
-        attempt = 0
-        max_attempt = 5
+        cryouts = 0
         while True:
+            self._statistics.set("time", "Elapsed time",
+                                 Time.seconds_to_string(time() - self._start))
             sleep(0.1)
             if self._statistics.is_everything_dead():
-                attempt += 1
-            if attempt > max_attempt:
+                cryouts += 1
+            else:
+                cryouts = 0
+            if cryouts == self.CRYOUTS:
                 break
 
     def run(self, seed):
+        self._start = time()
         if self._use_cli:
             self._cli.run()
         self._add_seed(seed)

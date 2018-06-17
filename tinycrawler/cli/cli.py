@@ -18,10 +18,10 @@ class Cli:
         self._i = 0
         self._max_len = 0
         self._outputs = {}
-        sys.stdout.write("\x1b[8;{rows};{cols}t".format(rows=40, cols=70))
 
     def _init_curses(self):
-        self._stdscr = curses.initscr()
+        curses.initscr()
+        self._window = curses.newwin(60, 60, 0, 0)
         curses.noecho()
         curses.cbreak()
 
@@ -30,14 +30,15 @@ class Cli:
         curses.nocbreak()
         curses.endwin()
 
-    def _print_statistics(self):
-        info = self._statistics.get_informations()
+    def _print_informations(self):
+        informations = self._statistics.get_informations()
         self._print_frame()
-        for section, sub_dict in info.items():
+        for section, sub_dict in informations.items():
             self._print(section.upper() + "@")
             self._print_frame()
-            for label, value in sub_dict.items():
-                self._print_label(label, value)
+            sorted_keys = sorted(sub_dict.keys(), key=str.lower)
+            for label in sorted_keys:
+                self._print_label(label.capitalize(), sub_dict[label])
             self._print_frame()
 
     def _cli_loop(self):
@@ -46,11 +47,13 @@ class Cli:
             time.sleep(0.1)
             if self._statistics.is_everything_dead():
                 cryouts += 1
+            else:
+                cryouts = 0
             if cryouts == self.CRYOUTS:
                 break
             self._clear()
 
-            self._print_statistics()
+            self._print_informations()
 
             self._print_all()
 
@@ -58,11 +61,12 @@ class Cli:
         self._init_curses()
         try:
             self._cli_loop()
+            self._close_curses()
         except Exception as e:
+            self._close_curses()
             self._logger.error("cli: %s" % traceback.format_exc())
         except KeyboardInterrupt:
-            pass
-        self._close_curses()
+            self._close_curses()
 
     def _print_fraction(self, label, v1, v2):
         if v2 != 0:
@@ -101,15 +105,15 @@ class Cli:
                 a, b = v.split("@")
                 padding = " " * (self._max_len - len(v))
                 v = a + padding + b
-            self._stdscr.addstr(k, 0, v)
+            self._window.addstr(k, 0, v)
 
-        self._stdscr.refresh()
+        self._window.refresh()
 
     def _clear(self):
         for i in range(self._i):
-            self._stdscr.addstr(i, 0, " " * self._max_len)
+            self._window.addstr(i, 0, " " * self._max_len)
 
-        self._stdscr.refresh()
+        self._window.refresh()
         self._i = 1
         self._max_len = 0
         self._outputs = {}

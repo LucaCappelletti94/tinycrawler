@@ -5,10 +5,9 @@ from .job import Job
 class DictJob(Job):
     """Handle DictJob dispatching with search handled with dictionary."""
 
-    def __init__(self, name, statistics, logger):
+    def __init__(self, name, statistics):
         """Handle DictJob dispatching with search handled with dictionary."""
         super().__init__(name, statistics)
-        self._logger = logger
         self._data = {}
 
     def _hash(self, value):
@@ -22,9 +21,6 @@ class DictJob(Job):
     def put(self, value):
         """Add element to jobs using dictionary keys."""
         key = self._hash(value)
-        self._data[key] = None
-        super().put(value)
-
-    def contains(self, value):
-        """Check if value is already in queue."""
-        return value in self._data
+        if key not in self._data:
+            self._data[key] = None
+            super().put(value)

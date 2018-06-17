@@ -23,7 +23,7 @@ class ProcessHandler:
         self._logger = logger
 
     def bind(self):
-        self._jobs.set_job_handler(self)
+        self._jobs.set_callback(self)
 
     def add_process(self):
         """Start a new process to the target and objective given in init."""
@@ -56,22 +56,19 @@ class ProcessHandler:
             except Empty:
                 self._log_finish_queue(name)
                 break
-            self._statistics.add("process", self._name + " working")
+            self._statistics.add("processes", self._name + " working")
             self._target(job)
-            self._statistics.remove("process", self._name + " working")
+            self._statistics.remove("processes", self._name + " working")
 
     def _job_starter(self, name):
         """Generic process wrapper."""
         self._logger.log("Starting process %s" % name)
-        self._statistics.add("process", self._name + " alive")
+        self._statistics.add("processes", self._name + " alive")
         try:
             self._job_loop(name)
         except Exception:
             self._log_process_exception(name)
-        self._statistics.remove("process", self._name + " alive")
-
-    def _target(self, job):
-        raise NotImplementedError("You should implement target")
+        self._statistics.remove("processes", self._name + " alive")
 
     def alives(self):
         return sum([int(p.is_alive()) for p in self._processes])
