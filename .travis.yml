@@ -1,8 +1,5 @@
 dist: trusty
 sudo: false
-env:
-  global:
-    - CC_TEST_REPORTER_ID=53eef44d00d3465aeaf806ea310cfc5497e7473d13ae05fbc753890c39712c60
 addons:
   sonarcloud:
     organization: "lucacappelletti94-github"
@@ -19,12 +16,6 @@ cache:
 install:
 - pip install -r test_requirements.txt
 - pip install .
-before_script:
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
-after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 script:
 - pytest --cov=./tinycrawler -s --cov-report xml --cov-report term
 - sonar-scanner
