@@ -1,2 +1,3 @@
 [run]
 concurrency = multiprocessing
+omit = /home/travis/virtualenv/python3.6.3/lib/python3.6/site-packages/*
