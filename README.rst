@@ -21,6 +21,13 @@ Installing TinyCrawler
 
     pip install tinycrawler
 
+
+Preview (Test case)
+---------------------
+This is the preview of the console when running the `test_base.py`_.
+
+|preview|
+
 Usage example
 ---------------------
 
@@ -37,7 +44,6 @@ Usage example
 
         return True
 
-
     def file_parser(self, request_url: str, text: str, logger: 'Log')->str:
         """Parse downloaded page into document to be saved.
             request_url: str, the url of given downloaded page
@@ -46,7 +52,7 @@ Usage example
 
             Return None if the page should not be saved.
         """
-        
+
         soup = BeautifulSoup(text, 'lxml')
 
         example = soup.find("div", {"class": "example"})
@@ -93,6 +99,9 @@ License
 --------------
 The software is released under the MIT license.
 
+.. _`test_base.py`: https://github.com/LucaCappelletti94/tinycrawler/blob/master/tests/test_base.py
+
+.. |preview| image:: https://github.com/LucaCappelletti94/tinycrawler/blob/master/preview.jpg?raw=true
 
 .. |travis| image:: https://travis-ci.org/LucaCappelletti94/tinycrawler.png
    :target: https://travis-ci.org/LucaCappelletti94/tinycrawler
