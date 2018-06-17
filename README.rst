@@ -44,16 +44,15 @@ Usage example
 
         return True
 
-    def file_parser(request_url: str, text: str, logger: 'Log')->str:
-        """Return parsed downloaded page as a text document to be saved.
-            request_url: str, the url of given downloaded page
-            text: str, the content of the page
+    def file_parser(response: 'Response', logger: 'Log')->str:
+        """Parse downloaded page into document to be saved.
+            response: 'Response', response object from requests.models.Response
             logger: 'Log', a logger to log eventual errors or infos
 
             Return None if the page should not be saved.
         """
-
-        soup = BeautifulSoup(text, 'lxml')
+        
+        soup = BeautifulSoup(response.text, 'lxml')
 
         example = soup.find("div", {"class": "example"})
         if example is None:

@@ -50,8 +50,8 @@ class Downloader(ProcessHandler):
                 break
 
             if status == self.SUCCESS_STATUS:
-                self._files.put((url, request.text))
-                self._graph.put((url, request.text))
+                self._files.put(request)
+                self._graph.put(request)
                 break
             self._statistics.add("error", "error code %s" % status)
             if self._retry(status):

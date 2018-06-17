@@ -15,15 +15,15 @@ class Parser(ProcessHandler):
         if not os.path.exists(path):
             os.makedirs(path)
 
-    def _target(self, job):
+    def _target(self, response: 'Response'):
         """Parse the downloaded files, cleans them and extracts urls"""
-        request_url, html = job
+        url = response.url
 
-        filename = hashlib.md5(request_url.encode('utf-8')).hexdigest()
-        content = self._parser(request_url, html, self._logger)
+        filename = hashlib.md5(url.encode('utf-8')).hexdigest()
+        content = self._parser(response, self._logger)
         if content is not None:
             self._write(filename, {
-                "url": request_url,
+                "url": url,
                 "content": content
             })
 

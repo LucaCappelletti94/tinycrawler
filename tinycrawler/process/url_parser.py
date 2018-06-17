@@ -5,7 +5,7 @@ import re
 from multiprocessing import cpu_count
 from urllib.parse import urljoin, urlparse
 
-from validators import url
+from validators import url as valid
 
 from .parser import Parser
 
@@ -21,14 +21,15 @@ class UrlParser(Parser):
     def _tautology(self, url):
         return True
 
-    def _url_extractor(self, request_url, text, urls, logger):
-        for partial_link in re.findall(self._regex, text):
-            link = urljoin(request_url, partial_link)
-            if url(link) and self._val(link):
+    def _url_extractor(self, response, urls, logger):
+        url = response.url
+        for partial_link in re.findall(self._regex, response.text):
+            link = urljoin(url, partial_link)
+            if valid(link) and self._val(link):
                 urls.put(link)
 
-    def _parser(self, request_url, text, logger):
-        self._url_extractor(request_url, text, self._urls, logger)
+    def _parser(self, response, logger):
+        self._url_extractor(response, self._urls, logger)
 
     def set_validator(self, url_validator):
         """Set custom url validator."""

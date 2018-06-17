@@ -13,15 +13,14 @@ class FileParser(Parser):
     def __init__(self, path, jobs):
         super().__init__(path + "/website", "file parser", jobs)
 
-    def _parser(self, request_url: str, text: str, logger: 'Log')->str:
+    def _parser(self, response: 'Response', logger: 'Log')->str:
         """Parse downloaded page into document to be saved.
-            request_url: str, the url of given downloaded page
-            text: str, the content of the page
+            response: 'Response', response object from requests.models.Response
             logger: 'Log', a logger to log eventual errors or infos
 
             Return None if the page should not be saved.
         """
-        return text
+        return response.text
 
     def set_file_parser(self, file_parser):
         """Set custom file parser."""
