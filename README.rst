@@ -5,12 +5,12 @@
    :language: json
 
 
-Tinycrawler
+TinyCrawler
 ====================
 
 |travis| |sonar_quality| |sonar_maintainability| |sonar_coverage| |code_climate_maintainability| |pip|
 
-A small crawler that uses multiprocessing and arbitrarily many proxies to download one or more websites following a given filter, search and save functions.
+An highly customizable crawler that uses multiprocessing and proxies to download one or more websites following a given filter, search and save functions.
 
 **REMEMBER THAT DDOS IS ILLEGAL. DO NOT THIS SOFTWARE FOR ILLEGAL PORPOSES.**
 
