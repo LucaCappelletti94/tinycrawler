@@ -12,7 +12,7 @@ TinyCrawler
 
 An highly customizable crawler that uses multiprocessing and proxies to download one or more websites following a given filter, search and save functions.
 
-**REMEMBER THAT DDOS IS ILLEGAL. DO NOT THIS SOFTWARE FOR ILLEGAL PORPOSES.**
+**REMEMBER THAT DDOS IS ILLEGAL. DO NOT USE THIS SOFTWARE FOR ILLEGAL PURPOSE.**
 
 Installing TinyCrawler
 ------------------------
@@ -104,7 +104,7 @@ The software is released under the MIT license.
 
 .. _`test_base.py`: https://github.com/LucaCappelletti94/tinycrawler/blob/master/tests/test_base.py
 
-.. |preview| image:: https://github.com/LucaCappelletti94/tinycrawler/blob/master/preview.jpg?raw=true
+.. |preview| image:: https://github.com/LucaCappelletti94/tinycrawler/blob/master/preview.png?raw=true
 
 .. |travis| image:: https://travis-ci.org/LucaCappelletti94/tinycrawler.png
    :target: https://travis-ci.org/LucaCappelletti94/tinycrawler
