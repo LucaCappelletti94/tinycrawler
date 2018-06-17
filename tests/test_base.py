@@ -16,8 +16,10 @@ from tinycrawler import TinyCrawler
 path = os.path.dirname(__file__) + "/../test_data/base_test.html"
 empty_proxy_path = os.path.dirname(__file__) + "/../test_data/empty_proxy.json"
 
-WEBSITE_SIZE = 10000
+WEBSITE_SIZE = 5000
 download_directory = "local_test"
+
+lock = Lock()
 
 root = "https://www.example.com"
 anchor = "<a href='%s'>Link to page alias number %s</a>"
@@ -38,7 +40,7 @@ def example_mock(url, request):
     links = ""
     random.seed(int(url.path.split('/')[-1]))
     for i in range(10):
-        j = random.randint(0, WEBSITE_SIZE)
+        j = random.randint(0, WEBSITE_SIZE - 1)
         link = "%s/%s" % (root, j)
         links += anchor % (link, j)
 
@@ -77,7 +79,8 @@ def check_files(path, root, anchor, download_directory, size):
             output = json.load(f)
 
         if output != content:
-            errors.append("File %s does not match expected" % (file_name))
+            errors.append("File %s does not match expected: %s != %s" % (
+                file_name, json.dumps(output, indent=4), json.dumps(content, indent=4)))
             break
 
     return errors
