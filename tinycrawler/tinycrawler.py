@@ -3,6 +3,7 @@ import os
 import traceback
 from multiprocessing.managers import BaseManager
 from time import sleep, time
+from urllib.parse import urlparse
 
 from .cli import Cli
 from .job import FileJob, ProxyJob, UrlJob
@@ -96,24 +97,29 @@ class TinyCrawler:
 
     def _add_seed(self, seed):
         if isinstance(seed, str):
+            self._statistics.set("info", "Working on", self._domain(seed))
             self._urls.put(seed)
         elif isinstance(seed, list):
+            self._statistics.set("info", "Working on", self._domain(seed[0]))
             [self._urls.put(s) for s in seed]
         else:
             raise ValueError("The given seed is not valid.")
 
     def _sleep_loop(self):
         cryouts = 0
-        while True:
-            self._statistics.set("time", "Elapsed time",
-                                 Time.seconds_to_string(time() - self._start))
-            sleep(0.1)
-            if self._statistics.is_everything_dead():
-                cryouts += 1
-            else:
-                cryouts = 0
-            if cryouts == self.CRYOUTS:
-                break
+        try:
+            while True:
+                self._statistics.set("time", "Elapsed time",
+                                     Time.seconds_to_string(time() - self._start))
+                sleep(0.1)
+                if self._statistics.is_everything_dead():
+                    cryouts += 1
+                else:
+                    cryouts = 0
+                if cryouts == self.CRYOUTS:
+                    break
+        except KeyboardInterrupt:
+            pass
 
     def run(self, seed):
         self._start = time()
@@ -126,6 +132,9 @@ class TinyCrawler:
         self._downloader.join()
         if self._use_cli:
             self._cli.join()
+
+    def _domain(self, url):
+        return '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(url))
 
     def set_url_validator(self, url_validator):
         self._url_parser.set_validator(url_validator)

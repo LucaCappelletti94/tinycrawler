@@ -66,6 +66,8 @@ class ProcessHandler:
         self._statistics.add("processes", self._name + " alive")
         try:
             self._job_loop(name)
+        except KeyboardInterrupt:
+            pass
         except Exception:
             self._log_process_exception(name)
         self._statistics.remove("processes", self._name + " alive")

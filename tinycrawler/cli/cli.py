@@ -21,7 +21,7 @@ class Cli:
 
     def _init_curses(self):
         curses.initscr()
-        self._window = curses.newwin(60, 60, 0, 0)
+        self._window = curses.newwin(70, 50, 0, 0)
         curses.noecho()
         curses.cbreak()
 
@@ -33,9 +33,13 @@ class Cli:
     def _print_informations(self):
         informations = self._statistics.get_informations()
         self._print_frame()
-        for section, sub_dict in informations.items():
+        self._print("TINYCRAWLER@")
+        self._print_frame()
+        sorted_sections = sorted(informations.keys(), key=str.lower)
+        for section in sorted_sections:
             self._print(section.upper() + "@")
             self._print_frame()
+            sub_dict = informations[section]
             sorted_keys = sorted(sub_dict.keys(), key=str.lower)
             for label in sorted_keys:
                 self._print_label(label.capitalize(), sub_dict[label])
@@ -65,8 +69,10 @@ class Cli:
         except Exception as e:
             self._close_curses()
             self._logger.error("cli: %s" % traceback.format_exc())
+            print("Cli has crashed, checkout log for more informations.")
         except KeyboardInterrupt:
             self._close_curses()
+            print("Shutting down crawler.")
 
     def _print_fraction(self, label, v1, v2):
         if v2 != 0:
@@ -82,13 +88,11 @@ class Cli:
         self._print("$$$", pos)
 
     def _print_label(self, label, value, pos=None):
-        self._print("%s: @ %s" % (label, value), pos)
+        self._print("%s@%s" % (label, value), pos)
 
     def _print(self, value, pos=None):
         if pos is None:
             pos = self._i
-
-        value = "| " + value + " |"
 
         self._max_len = max(self._max_len, len(value))
 
@@ -98,14 +102,23 @@ class Cli:
         self._i += 1
 
     def _print_all(self):
+        padding = 5
+        max_len = self._max_len + padding
         for k, v in self._outputs.items():
-            if "| $$$ |" == v:
-                v = "| " + ("-" * (self._max_len - 5)) + " |"
+            self._window.addstr(k, 0, "|", curses.A_DIM)
+            self._window.addstr(k, max_len + padding, "|", curses.A_DIM)
+            if "$$$" == v:
+                v = ("-" * (max_len + padding - 1))
+                self._window.addstr(k, 1, v, curses.A_DIM)
             elif "@" in v:
                 a, b = v.split("@")
-                padding = " " * (self._max_len - len(v))
-                v = a + padding + b
-            self._window.addstr(k, 0, v)
+                if len(b) == 0:
+                    self._window.addstr(k, 2, a, curses.A_BOLD)
+                else:
+                    b = " " * padding + b + " "
+                    self._window.addstr(k, max_len + padding - len(b), b)
+                    self._window.addstr(k, 2, a, curses.A_UNDERLINE)
+                    self._window.addstr(k, 2 + len(a), ":")
 
         self._window.refresh()
 
