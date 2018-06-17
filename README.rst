@@ -30,15 +30,23 @@ Usage example
     from bs4 import BeautifulSoup
 
 
-    def url_validator(url):
+    def url_validator(url:str)->bool:
+        """Return if page at given url is to be downloaded."""
         if "http://www.example.com/my/path" not in url:
             return False
 
         return True
 
 
-    def file_parser(url, text, logger):
-        return None
+    def file_parser(self, request_url: str, text: str, logger: 'Log')->str:
+        """Parse downloaded page into document to be saved.
+            request_url: str, the url of given downloaded page
+            text: str, the content of the page
+            logger: 'Log', a logger to log eventual errors or infos
+
+            Return None if the page should not be saved.
+        """
+        
         soup = BeautifulSoup(text, 'lxml')
 
         example = soup.find("div", {"class": "example"})
@@ -48,9 +56,7 @@ Usage example
         return example.get_text()
 
 
-    my_crawler = TinyCrawler(
-        seed="http://www.example.com/my/path/index.html"
-    )
+    my_crawler = TinyCrawler()
 
     my_crawler.load_proxies("path/to/my/proxies.json")
     my_crawler.set_url_validator(url_validator)
