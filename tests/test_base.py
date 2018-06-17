@@ -4,7 +4,6 @@ import json
 import os
 import random
 import traceback
-from multiprocessing import Lock
 
 import pytest
 import requests
@@ -19,8 +18,6 @@ empty_proxy_path = os.path.dirname(__file__) + "/../test_data/empty_proxy.json"
 WEBSITE_SIZE = 500
 download_directory = "local_test"
 
-lock = Lock()
-
 root = "https://www.example.com"
 anchor = "<a href='%s'>Link to page alias number %s</a>"
 
@@ -30,7 +27,6 @@ def example_mock(url, request):
     global path
     global root
     global anchor
-    global lock
     global WEBSITE_SIZE
     headers = {'content-type': 'text/html'}
 
@@ -38,9 +34,10 @@ def example_mock(url, request):
         model = f.read()
 
     links = ""
-    random.seed(int(url.path.split('/')[-1]))
+    rand = random.Random()
+    rand.seed(int(url.path.split('/')[-1]))
     for i in range(10):
-        j = random.randint(0, WEBSITE_SIZE - 1)
+        j = rand.randint(0, WEBSITE_SIZE)
         link = "%s/%s" % (root, j)
         links += anchor % (link, j)
 
@@ -54,12 +51,14 @@ def check_files(path, root, anchor, download_directory, size):
     with open(path, "r") as f:
         model = f.read()
 
-    for k in range(0, size):
+    rand = random.Random()
+
+    for k in range(0, size - 1):
         links = ""
-        random.seed(k)
         url = "%s/%s" % (root, k)
+        rand.seed(k)
         for i in range(10):
-            j = random.randint(0, size - 1)
+            j = rand.randint(0, size)
             link = "%s/%s" % (root, j)
             links += anchor % (link, j)
         body = model.replace("{PLACEHOLDER}", links)
