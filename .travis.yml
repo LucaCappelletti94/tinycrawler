@@ -8,19 +8,12 @@ addons:
 language: python
 python:
 - '3.6'
-jdk:
-- oraclejdk8
-cache:
-  directories:
-  - "$HOME/.sonar/cache"
 install:
 - pip install -r test_requirements.txt
 - pip install .
 script:
 - pytest --cov=./tinycrawler --cov-report xml --cov-report term
 - sonar-scanner
-after_success:
-- coveralls
 
 notifications:
   webhooks: https://fathomless-fjord-24024.herokuapp.com/notify
