@@ -62,7 +62,7 @@ Usage example
         return example.get_text()
 
 
-    my_crawler = TinyCrawler()
+    my_crawler = TinyCrawler(use_cli=True, directory="my_path_for_website")
 
     my_crawler.load_proxies("path/to/my/proxies.json")
     my_crawler.set_url_validator(url_validator)
