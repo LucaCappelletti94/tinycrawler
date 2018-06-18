@@ -1,5 +1,6 @@
 """Handle ProxyJob dispatching with timeouts."""
 import json
+import os
 from multiprocessing import Pool, cpu_count
 from queue import Empty
 from time import sleep, time
@@ -21,6 +22,7 @@ class ProxyJob(Job):
     }
     CONNECTION_TIMEOUT = 5
     PROXY_TIMEOUT = 2
+    CACHE_FILENAME = "tmp_tested_proxy.json"
 
     def __init__(self, statistics):
         """Handle Dic ProxyJob dispatching with timeouts."""
@@ -70,21 +72,44 @@ class ProxyJob(Job):
         self.__put(proxy)
         return result
 
-    def load(self):
-        """Load and test the proxies in provided path."""
-        if not self._path:
-            return None
+    def _cache_is_valid(self):
+        return os.path.getctime(self.CACHE_FILENAME) > time() - 5 * 60
 
+    def _is_cached(self):
+        return os.path.exists(self.CACHE_FILENAME) and self._cache_is_valid()+
+
+    def _load_cache(self):
+        with open(self._path, 'r') as f:
+            proxies = json.load(f)
+        [self.__put(proxy) for proxy in proxies]
+
+    def _run_tests(self):
         with open(self._path, 'r') as f:
             proxies_data = json.load(f)
 
         self._statistics.set(self._name, "Testing proxies on", self._test_url)
 
+        tmp = []
+
         for proxy_data in proxies_data:
             proxy = self._test_proxy(proxy_data)
             if proxy:
+                tmp.append(proxy)
                 self.__put(proxy)
                 self._statistics.add(self._name, "Total %s" % self._name)
+
+        with open(self.CACHE_FILENAME, "w") as f:
+            json.dump(tmp, f)
+
+    def load(self):
+        """Load and test the proxies in provided path."""
+        if not self._path:
+            return None
+
+        if self._is_cached():
+            self._load_cache()
+        else:
+            self._run_tests()
 
     def _test_proxy(self, proxy_data):
         """Return proxy that pass connection test."""
