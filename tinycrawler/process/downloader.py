@@ -17,7 +17,7 @@ class Downloader(ProcessHandler):
         self._proxies = proxies
         self._files = files
         self._graph = graph
-        self.MAXIMUM_PROCESSES = cpu_count() * 8
+        self.MAXIMUM_PROCESSES = cpu_count() * 4
 
     def _retry(self, status):
         """Define what to do in case of error."""
