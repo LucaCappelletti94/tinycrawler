@@ -2,6 +2,7 @@ import hashlib
 import json
 import os
 
+from ..statistics import Speed
 from .process_handler import ProcessHandler
 
 
