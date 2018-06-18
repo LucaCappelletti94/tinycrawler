@@ -6,7 +6,8 @@ from queue import Empty
 from time import sleep, time
 
 from requests import get as require
-from requests.exceptions import ConnectionError, SSLError, Timeout
+from requests.exceptions import (ConnectionError, SSLError, Timeout,
+                                 TooManyRedirects)
 
 from .job import Job
 
@@ -128,7 +129,7 @@ class ProxyJob(Job):
                            headers=self.HEADERS,
                            timeout=self.CONNECTION_TIMEOUT
                            )
-        except (ConnectionError, Timeout, SSLError):
+        except (ConnectionError, Timeout, SSLError, TooManyRedirects):
             return None
 
     def _proxy_data_to_proxy(self, proxy_data):
