@@ -21,7 +21,7 @@ class Cli:
 
     def _init_curses(self):
         curses.initscr()
-        self._window = curses.newwin(70, 50, 0, 0)
+        self._window = curses.newwin(70, 70, 0, 0)
         curses.noecho()
         curses.cbreak()
 
@@ -102,21 +102,21 @@ class Cli:
         self._i += 1
 
     def _print_all(self):
-        padding = 5
+        padding = 8
         max_len = self._max_len + padding
         for k, v in self._outputs.items():
             self._window.addstr(k, 0, "|", curses.A_DIM)
-            self._window.addstr(k, max_len + padding, "|", curses.A_DIM)
+            self._window.addstr(k, max_len, "|", curses.A_DIM)
             if "$$$" == v:
-                v = ("-" * (max_len + padding - 1))
+                v = ("-" * (max_len - 1))
                 self._window.addstr(k, 1, v, curses.A_DIM)
             elif "@" in v:
                 a, b = v.split("@")
                 if len(b) == 0:
                     self._window.addstr(k, 2, a, curses.A_BOLD)
                 else:
-                    b = " " * padding + b + " "
-                    self._window.addstr(k, max_len + padding - len(b), b)
+                    b = " " * (max_len - len(b) - 3) + b + " "
+                    self._window.addstr(k, 2, b)
                     self._window.addstr(k, 2, a, curses.A_UNDERLINE)
                     self._window.addstr(k, 2 + len(a), ":")
 
@@ -124,7 +124,7 @@ class Cli:
 
     def _clear(self):
         for i in range(self._i):
-            self._window.addstr(i, 0, " " * self._max_len)
+            self._window.addstr(i, 0, " " * (self._max_len + 8 + 4))
 
         self._window.refresh()
         self._i = 1
