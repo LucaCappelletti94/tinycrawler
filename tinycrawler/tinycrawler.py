@@ -106,11 +106,12 @@ class TinyCrawler:
             raise ValueError("The given seed is not valid.")
 
     def _sleep_loop(self):
+        start = time()
         cryouts = 0
         try:
             while True:
                 self._statistics.set("time", "Elapsed time",
-                                     Time.seconds_to_string(time() - self._start))
+                                     Time.seconds_to_string(time() - start))
                 sleep(0.1)
                 if self._statistics.is_everything_dead():
                     cryouts += 1
@@ -122,9 +123,9 @@ class TinyCrawler:
             pass
 
     def run(self, seed):
-        self._start = time()
         if self._use_cli:
             self._cli.run()
+        self._proxies.load()
         self._add_seed(seed)
         self._sleep_loop()
         self._file_parser.join()
@@ -141,7 +142,7 @@ class TinyCrawler:
 
     def load_proxies(self, test_url, path):
         self._proxies.set_test_url(test_url)
-        self._proxies.load(path)
+        self._proxies.set_proxy_path(path)
 
     def set_proxy_timeout(self, timeout):
         self._proxies.set_proxy_timeout(timeout)

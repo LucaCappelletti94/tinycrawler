@@ -19,7 +19,6 @@ class ProxyJob(Job):
                        'AppleWebKit/537.36 (KHTML, like Gecko) '
                        'Chrome/45.0.2454.101 Safari/537.36'),
     }
-    WORKERS = cpu_count() * 4
     CONNECTION_TIMEOUT = 10
     PROXY_TIMEOUT = 2
 
@@ -28,6 +27,7 @@ class ProxyJob(Job):
         super().__init__("proxies", statistics)
         self.__put(self.LOCAL)
         self._test_url = None
+        self._path = None
         self._statistics.set(self._name, "Total proxies", self.len())
 
     def __get(self):
@@ -70,14 +70,18 @@ class ProxyJob(Job):
         self.__put(proxy)
         return result
 
-    def load(self, path):
-        """Load and test the proxies in given file."""
-        with open(path, 'r') as f:
+    def load(self):
+        """Load and test the proxies in provided path."""
+        if not self._path:
+            return None
+
+        with open(self._path, 'r') as f:
             proxies_data = json.load(f)
 
-        with Pool(self.WORKERS) as p:
-            [self._put(x) for x in p.imap(self._test_proxy, proxies_data) if x]
-        p.join()
+        for proxy_data in proxies_data:
+            proxy = self._test_proxy(proxy_data)
+            if proxy:
+                self.__put(proxy)
 
         self._statistics.set(self._name, "Total proxies", self.len())
 
@@ -86,7 +90,7 @@ class ProxyJob(Job):
         proxy = self._proxy_data_to_proxy(proxy_data)
         if self._require(self._test_url, proxy):
             return proxy
-        return False
+        return None
 
     def _require(self, url, proxy):
         """Download given url using given proxy."""
@@ -130,3 +134,7 @@ class ProxyJob(Job):
     def set_test_url(self, test_server):
         """"Set the test server."""
         self._test_url = test_server
+
+    def set_proxy_path(self, path):
+        """"Set the test server."""
+        self._path = path
