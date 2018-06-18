@@ -12,6 +12,7 @@ class Parser(ProcessHandler):
         self._path = path
         self._file_number = 0
         self._counter = 0
+        self.MAXIMUM_PROCESSES = 2
         if not os.path.exists(path):
             os.makedirs(path)
 

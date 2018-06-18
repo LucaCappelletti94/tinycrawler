@@ -72,7 +72,6 @@ class TinyCrawler:
         )
         self._file_parser.set_statistics(self._statistics)
         self._file_parser.set_logger(self._logger)
-        self._file_parser.bind()
 
     def _start_url_parser(self):
         self._url_parser = UrlParser(
@@ -82,7 +81,6 @@ class TinyCrawler:
         )
         self._url_parser.set_statistics(self._statistics)
         self._url_parser.set_logger(self._logger)
-        self._url_parser.bind()
 
     def _start_downloader(self):
         self._downloader = Downloader(
@@ -93,7 +91,6 @@ class TinyCrawler:
         )
         self._downloader.set_statistics(self._statistics)
         self._downloader.set_logger(self._logger)
-        self._downloader.bind()
 
     def _add_seed(self, seed):
         if isinstance(seed, str):
@@ -125,6 +122,9 @@ class TinyCrawler:
     def run(self, seed):
         if self._use_cli:
             self._cli.run()
+        self._file_parser.bind()
+        self._downloader.bind()
+        self._url_parser.bind()
         self._proxies.load()
         self._add_seed(seed)
         self._sleep_loop()
