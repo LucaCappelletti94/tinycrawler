@@ -13,6 +13,7 @@ class Parser(ProcessHandler):
         self._file_number = 0
         self._counter = 0
         self.MAXIMUM_PROCESSES = 2
+        self._writing_data_speed = Speed("B")
         if not os.path.exists(path):
             os.makedirs(path)
 
@@ -23,6 +24,9 @@ class Parser(ProcessHandler):
         filename = hashlib.md5(url.encode('utf-8')).hexdigest()
         content = self._parser(response, self._logger)
         if content is not None:
+            self._writing_data_speed.update(len(content))
+            self._statistics.set("files", "Writing data speed",
+                                 self._writing_data_speed.get_formatted_speed())
             self._write(filename, {
                 "url": url,
                 "content": content
