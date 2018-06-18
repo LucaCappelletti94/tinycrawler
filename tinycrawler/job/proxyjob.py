@@ -19,7 +19,7 @@ class ProxyJob(Job):
                        'AppleWebKit/537.36 (KHTML, like Gecko) '
                        'Chrome/45.0.2454.101 Safari/537.36'),
     }
-    CONNECTION_TIMEOUT = 10
+    CONNECTION_TIMEOUT = 5
     PROXY_TIMEOUT = 2
 
     def __init__(self, statistics):
