@@ -1,5 +1,5 @@
-from tinycrawler import TinyCrawler
 from bs4 import BeautifulSoup
+from tinycrawler import TinyCrawler
 
 
 def soft_validator(url: str):
@@ -14,7 +14,7 @@ def strong_validator(url: str):
 
 def file_parser(response, logger):
     if not strong_validator(response.url):
-        logger.error("I don't wanna parse %s" % response.url)
+        logger.log("I don't wanna parse %s" % response.url)
         return None
     soup = BeautifulSoup(response.text, "lxml")
     section = soup.find("div", attrs={"class": "entry"})
@@ -22,8 +22,9 @@ def file_parser(response, logger):
         [s.extract() for s in section('script')]
         ps = section.find_all("p", recursive=False)
         return "\n".join([p.get_text() for p in ps])
-    logger.error("Unable to parse %s" % response.url)
+    logger.log("Unable to parse %s" % response.url)
     return None
+
 
 seed = "https://www.example.com/recipes/my/salad/"
 
