@@ -82,8 +82,7 @@ class ProxyJob(Job):
             proxy = self._test_proxy(proxy_data)
             if proxy:
                 self.__put(proxy)
-
-        self._statistics.set(self._name, "Total proxies", self.len())
+                self._statistics.add(self._name, "Total %s" % self._name)
 
     def _test_proxy(self, proxy_data):
         """Return proxy that pass connection test."""
