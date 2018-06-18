@@ -83,6 +83,7 @@ class ProxyJob(Job):
         with open(self._path, 'r') as f:
             proxies = json.load(f)
         [self.__put(proxy) for proxy in proxies]
+        self._statistics.set(self._name, "Total proxies", self.len())
 
     def _run_tests(self):
         with open(self._path, 'r') as f:
