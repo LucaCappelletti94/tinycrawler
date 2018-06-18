@@ -10,6 +10,7 @@ class Parser(ProcessHandler):
 
     def __init__(self, path, name, jobs):
         super().__init__(name, jobs)
+        self._statistics.set(name, "Saving %s to" % name, path)
         self._path = path
         self._file_number = 0
         self._counter = 0
