@@ -76,7 +76,7 @@ class ProxyJob(Job):
         return os.path.getctime(self.CACHE_FILENAME) > time() - 5 * 60
 
     def _is_cached(self):
-        return os.path.exists(self.CACHE_FILENAME) and self._cache_is_valid()+
+        return os.path.exists(self.CACHE_FILENAME) and self._cache_is_valid()
 
     def _load_cache(self):
         with open(self._path, 'r') as f:
