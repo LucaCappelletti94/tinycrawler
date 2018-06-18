@@ -13,7 +13,6 @@ class Parser(ProcessHandler):
         self._path = path
         self._file_number = 0
         self._counter = 0
-        self.MAXIMUM_PROCESSES = 2
         self._writing_data_speed = Speed("B")
         if not os.path.exists(path):
             os.makedirs(path)
