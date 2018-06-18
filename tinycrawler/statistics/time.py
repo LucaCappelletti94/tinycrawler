@@ -6,10 +6,8 @@ class Time:
     def get_remaining_time(growing_speed, shrinking_speed, total):
         speed_delta = shrinking_speed - growing_speed
 
-        if growing_speed <= 5 or total <= 10:
+        if total <= 10:
             return "now"
-        if abs(speed_delta) <= 5:
-            return "standoff"
         if speed_delta <= 0:
             return "infinite"
 
