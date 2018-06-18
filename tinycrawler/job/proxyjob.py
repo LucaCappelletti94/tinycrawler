@@ -78,6 +78,8 @@ class ProxyJob(Job):
         with open(self._path, 'r') as f:
             proxies_data = json.load(f)
 
+        self._statistics.set(self._name, "Testing proxies on", self._test_url)
+
         for proxy_data in proxies_data:
             proxy = self._test_proxy(proxy_data)
             if proxy:
