@@ -1,4 +1,5 @@
 """Create a ProcessHandler for a specific target and name."""
+import math
 import time
 import traceback
 from abc import ABC
@@ -14,7 +15,7 @@ class ProcessHandler:
         self._processes = []
         self._name = name
         self._jobs = jobs
-        self.MAXIMUM_PROCESSES = cpu_count()
+        self.MAXIMUM_PROCESSES = math.ceil(cpu_count() / 2)
 
     def set_statistics(self, statistics):
         self._statistics = statistics
