@@ -19,7 +19,7 @@ LINKS_PER_PAGE = 10
 download_directory = "local_test"
 
 root = "https://www.example.com"
-anchor = "<a href='%s'>Link to page alias number %s</a>"
+anchor = '<a href="%s">Link to page alias number %s</a>'
 
 
 @all_requests
