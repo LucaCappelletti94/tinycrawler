@@ -123,12 +123,11 @@ class ProxyJob(Job):
     def _require(self, url, proxy):
         """Download given url using given proxy."""
         try:
-            params = {
-                "proxies": proxy,
-                "headers": self.HEADERS,
-                "timeout": self.CONNECTION_TIMEOUT
-            }
-            return require(url, params)
+            return require(url,
+                           proxies=proxy,
+                           headers=self.HEADERS,
+                           timeout=self.CONNECTION_TIMEOUT
+                           )
         except (ConnectionError, Timeout, SSLError):
             return None
 

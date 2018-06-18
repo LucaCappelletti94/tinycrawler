@@ -15,6 +15,7 @@ path = os.path.dirname(__file__) + "/../test_data/base_test.html"
 empty_proxy_path = os.path.dirname(__file__) + "/../test_data/empty_proxy.json"
 
 WEBSITE_SIZE = 500
+LINKS_PER_PAGE = 10
 download_directory = "local_test"
 
 root = "https://www.example.com"
@@ -27,6 +28,7 @@ def example_mock(url, request):
     global root
     global anchor
     global WEBSITE_SIZE
+    global LINKS_PER_PAGE
     headers = {'content-type': 'text/html'}
 
     with open(path, "r") as f:
@@ -35,7 +37,7 @@ def example_mock(url, request):
     links = ""
     rand = random.Random()
     rand.seed(int(url.path.split('/')[-1]))
-    for i in range(10):
+    for i in range(LINKS_PER_PAGE):
         j = rand.randint(0, WEBSITE_SIZE)
         link = "%s/%s" % (root, j)
         links += anchor % (link, j)
@@ -44,7 +46,10 @@ def example_mock(url, request):
     return response(200, body, headers, None, 5, request)
 
 
-def check_files(path, root, anchor, download_directory, size):
+def check_files(path, root, anchor, download_directory):
+    global WEBSITE_SIZE
+    global LINKS_PER_PAGE
+
     errors = []
 
     with open(path, "r") as f:
@@ -52,12 +57,12 @@ def check_files(path, root, anchor, download_directory, size):
 
     rand = random.Random()
 
-    for k in range(0, size - 1):
+    for k in range(0, WEBSITE_SIZE - 1):
         links = ""
         url = "%s/%s" % (root, k)
         rand.seed(k)
-        for i in range(10):
-            j = rand.randint(0, size)
+        for i in range(LINKS_PER_PAGE):
+            j = rand.randint(0, WEBSITE_SIZE)
             link = "%s/%s" % (root, j)
             links += anchor % (link, j)
         body = model.replace("{PLACEHOLDER}", links)
@@ -70,7 +75,8 @@ def check_files(path, root, anchor, download_directory, size):
         }
 
         if not os.path.exists(file_name):
-            errors.append("File %s does not exist." % file_name)
+            errors.append("File %s from url %s does not exist." %
+                          (file_name, url))
             break
 
         with open(file_name, "r") as f:
@@ -101,7 +107,6 @@ def test_base_tinycrawler():
         my_crawler.load_proxies(root, empty_proxy_path)
         my_crawler.run(root + "/%s" % WEBSITE_SIZE)
 
-    file_count = check_files(
-        path, root, anchor, download_directory, WEBSITE_SIZE)
+    file_count = check_files(path, root, anchor, download_directory)
 
     assert not file_count, "errors occured:\n{}".format("\n".join(file_count))

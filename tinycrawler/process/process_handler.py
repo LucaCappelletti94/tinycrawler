@@ -57,8 +57,14 @@ class ProcessHandler:
                 self._log_finish_queue(name)
                 break
             self._statistics.add("processes", self._name + " working")
-            self._target(job)
-            self._statistics.remove("processes", self._name + " working")
+            try:
+                self._target(job)
+            except KeyboardInterrupt:
+                pass
+            except Exception as e:
+                self._log_process_exception(name)
+            finally:
+                self._statistics.remove("processes", self._name + " working")
 
     def _job_starter(self, name):
         """Generic process wrapper."""
