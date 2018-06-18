@@ -6,7 +6,7 @@ class UrlJob(DictJob):
     """Handle UrlJob."""
 
     def __init__(self, statistics):
-        super().__init__("url", statistics)
+        super().__init__("urls", statistics)
 
     def _update_put_statistics(self, value):
         super()._update_put_statistics(value)
