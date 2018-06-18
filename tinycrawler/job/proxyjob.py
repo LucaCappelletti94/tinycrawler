@@ -22,6 +22,7 @@ class ProxyJob(Job):
     }
     CONNECTION_TIMEOUT = 5
     PROXY_TIMEOUT = 2
+    CACHE_LIFETIME = 12 * 60 * 60
     CACHE_FILENAME = "tmp_tested_proxy.json"
 
     def __init__(self, statistics):
@@ -73,7 +74,7 @@ class ProxyJob(Job):
         return result
 
     def _cache_is_valid(self):
-        return os.path.getctime(self.CACHE_FILENAME) > time() - 5 * 60
+        return os.path.getctime(self.CACHE_FILENAME) > time() - self.CACHE_LIFETIME
 
     def _is_cached(self):
         return os.path.exists(self.CACHE_FILENAME) and self._cache_is_valid()
