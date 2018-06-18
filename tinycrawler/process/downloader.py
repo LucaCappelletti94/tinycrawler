@@ -2,9 +2,6 @@ import queue
 import time
 from multiprocessing import cpu_count
 
-from requests import get
-from requests.exceptions import ConnectionError, SSLError, Timeout
-
 from .process_handler import ProcessHandler
 
 
@@ -30,28 +27,34 @@ class Downloader(ProcessHandler):
         """Set retry policy."""
         self._retry = retry_policy
 
-    def _request_is_binary(self, request):
-        return 'text/html' not in request.headers['content-type']
+    def _has_content_type(self, headers):
+        return 'content-type' in headers
+
+    def _is_text(self, headers):
+        return 'text/html' in headers['content-type']
+
+    def _response_is_binary(self, headers):
+        return self._has_content_type(headers) and not self._is_text(headers)
 
     def _target(self, url):
         """Tries to download an url with a proxy n times"""
         attempts = 0
 
         while attempts < self.MAX_ATTEMPTS:
-            request = self._proxies.use(url)
-            if request is None:
+            response = self._proxies.use(url)
+            if response is None:
                 attempts += 1
                 continue
 
-            status = request.status_code
+            status = response.status_code
 
-            if self._request_is_binary(request):
+            if self._response_is_binary(response.headers):
                 self._statistics.add("error", "binary files")
                 break
 
             if status == self.SUCCESS_STATUS:
-                self._files.put(request)
-                self._graph.put(request)
+                self._files.put(response)
+                self._graph.put(response)
                 break
             self._statistics.add("error", "error code %s" % status)
             if self._retry(status):
