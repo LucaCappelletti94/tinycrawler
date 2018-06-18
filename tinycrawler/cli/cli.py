@@ -55,11 +55,17 @@ class Cli:
                 cryouts = 0
             if cryouts == self.CRYOUTS:
                 break
-            self._clear()
+            try:
+                self._clear()
+            except curses.error:
+                pass
 
             self._print_informations()
 
-            self._print_all()
+            try:
+                self._print_all()
+            except curses.error:
+                pass
 
     def _cli(self):
         self._init_curses()
