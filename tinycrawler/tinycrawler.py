@@ -35,7 +35,7 @@ TinyCrawlerManager.register('ProxyJob', ProxyJob)
 
 
 class TinyCrawler:
-    CRYOUTS = 2
+    CRYOUTS = 4
 
     def __init__(self, use_cli=False, directory="downloaded_websites"):
 
@@ -109,7 +109,7 @@ class TinyCrawler:
             while True:
                 self._statistics.set("time", "Elapsed time",
                                      Time.seconds_to_string(time() - start))
-                sleep(0.1)
+                sleep(0.5)
                 if self._statistics.is_everything_dead():
                     cryouts += 1
                 else:
