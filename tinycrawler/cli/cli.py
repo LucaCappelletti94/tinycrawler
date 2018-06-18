@@ -23,11 +23,9 @@ class Cli:
         curses.initscr()
         self._window = curses.newwin(70, 70, 0, 0)
         curses.noecho()
-        curses.cbreak()
 
     def _close_curses(self):
         curses.echo()
-        curses.nocbreak()
         curses.endwin()
 
     def _print_informations(self):
