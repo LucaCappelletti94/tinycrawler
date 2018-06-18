@@ -77,7 +77,8 @@ class ProcessHandler:
             pass
         except Exception:
             self._log_process_exception(name)
-        self._statistics.remove("processes", self._name + " alive")
+        finally:
+            self._statistics.remove("processes", self._name + " alive")
 
     def alives(self):
         return sum([int(p.is_alive()) for p in self._processes])
