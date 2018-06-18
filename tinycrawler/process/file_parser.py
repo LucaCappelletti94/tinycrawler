@@ -11,7 +11,7 @@ from .parser import Parser
 class FileParser(Parser):
 
     def __init__(self, path, jobs):
-        super().__init__(path + "/website", "file parser", jobs)
+        super().__init__(path + "/website", "files parser", jobs)
 
     def _parser(self, response: 'Response', logger: 'Log')->str:
         """Parse downloaded page into document to be saved.
