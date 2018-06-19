@@ -44,8 +44,6 @@ def example_mock(url, request):
         links += anchor % (link, j)
 
     body = model.replace("{PLACEHOLDER}", links)
-    if rand.uniform(0, 1) > 0.9:
-        return None
     return response(200, body, headers, None, 5, request)
 
 
