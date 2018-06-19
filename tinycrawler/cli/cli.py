@@ -78,16 +78,6 @@ class Cli:
             self._close_curses()
             print("Shutting down crawler.")
 
-    def _print_fraction(self, label, v1, v2):
-        if v2 != 0:
-            perc = str(round(v1 / v2 * 100, 1)) + "%"
-
-            self._print_label(label, "%s/%s %s" % (
-                v1,
-                v2,
-                perc
-            ))
-
     def _print_frame(self, pos=None):
         self._print("$$$", pos)
 

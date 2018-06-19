@@ -7,8 +7,9 @@ import traceback
 
 import pytest
 import requests
-import tinycrawler
 from httmock import HTTMock, all_requests, response
+
+import tinycrawler
 from tinycrawler import TinyCrawler
 
 path = os.path.dirname(__file__) + "/../test_data/base_test.html"
@@ -43,6 +44,8 @@ def example_mock(url, request):
         links += anchor % (link, j)
 
     body = model.replace("{PLACEHOLDER}", links)
+    if rand.uniform(0, 1) > 0.9:
+        return None
     return response(200, body, headers, None, 5, request)
 
 
@@ -98,15 +101,31 @@ def test_base_tinycrawler():
     global empty_proxy_path
     global WEBSITE_SIZE
 
+    errors = []
+
     with HTTMock(example_mock):
         my_crawler = TinyCrawler(use_cli=True, directory=download_directory)
+
+        try:
+            my_crawler._proxies.get()
+            errors.append("proxies get should raise NotImplementedError.")
+        except NotImplementedError:
+            pass
+
+        try:
+            my_crawler._proxies.put(None)
+            errors.append("proxies put should raise NotImplementedError.")
+        except NotImplementedError:
+            pass
+
         my_crawler.set_proxy_timeout(0)
         my_crawler.set_url_validator(my_crawler._url_parser._tautology)
         my_crawler.set_file_parser(my_crawler._file_parser._parser)
         my_crawler.set_retry_policy(my_crawler._downloader._retry)
+        my_crawler.set_url_extractor(my_crawler._url_parser._url_extractor)
         my_crawler.load_proxies(root, empty_proxy_path)
         my_crawler.run(root + "/%s" % WEBSITE_SIZE)
 
-    file_count = check_files(path, root, anchor, download_directory)
+    errors += check_files(path, root, anchor, download_directory)
 
-    assert not file_count, "errors occured:\n{}".format("\n".join(file_count))
+    assert not errors, "errors occured:\n{}".format("\n".join(errors))

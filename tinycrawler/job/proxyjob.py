@@ -60,9 +60,6 @@ class ProxyJob(Job):
             "timestamp": time()
         })
 
-    def _put_statistics(self):
-        self._put_update_add_statistics()
-
     def put(self, value):
         """Disable put on ProxyJob."""
         raise NotImplementedError("Use 'use' method instead of put!")
