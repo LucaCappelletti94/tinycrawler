@@ -8,6 +8,8 @@ import traceback
 from datetime import datetime, timedelta
 from multiprocessing import Process
 
+from ..__version__ import __version__
+
 
 class Cli:
     CRYOUTS = 2
@@ -31,7 +33,7 @@ class Cli:
     def _print_informations(self):
         informations = self._statistics.get_informations()
         self._print_frame()
-        self._print("TINYCRAWLER@")
+        self._print("TINYCRAWLER %s@" % __version__)
         self._print_frame()
         sorted_sections = sorted(informations.keys(), key=str.lower)
         for section in sorted_sections:
