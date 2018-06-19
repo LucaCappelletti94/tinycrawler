@@ -1,11 +1,1 @@
-[{
-    "ip": "78.38.241.9",
-    "port": 1080,
-    "support": {
-        "http": false,
-        "https": false,
-        "socks4": true,
-        "socks5": false
-    },
-    "anonymous": true
-}]
+[]
