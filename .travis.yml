@@ -12,7 +12,9 @@ install:
 - pip install -r test_requirements.txt
 - pip install .
 script:
-- pytest --cov=./tinycrawler --cov-report xml --cov-report term
+- pytest --cov=./tinycrawler --cov-report xml
+- coverage combine
+- coverage report
 - sonar-scanner
 
 notifications:

@@ -1,4 +1,4 @@
 [run]
-concurrency = multiprocessing
-omit = /home/travis/virtualenv/python3.6.3/lib/python3.6/site-packages/*
-       *__pycache__*
+concurrency=multiprocessing
+parallel=true
+omit=/home/travis/virtualenv/python3.6.3/lib/python3.6/site-packages/*
