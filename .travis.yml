@@ -17,6 +17,9 @@ script:
 - coverage report
 - sonar-scanner
 
+after_success:
+  - coveralls
+
 notifications:
   webhooks: https://fathomless-fjord-24024.herokuapp.com/notify
   email: false
