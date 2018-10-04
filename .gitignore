@@ -5,3 +5,5 @@ local_test
 __pycache__
 dist/
 tinycrawler.egg-*
+
+\.ipynb_checkpoints/
