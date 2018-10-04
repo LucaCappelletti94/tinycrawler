@@ -17,11 +17,12 @@ class UrlParser(Parser):
         self._regex = re.compile(r"href=\"([^\"#]+)\"")
         self._val = self._tautology
         self._urls = urls
+        self._url_extractor = self._default_url_extractor
 
     def _tautology(self, url):
         return True
 
-    def _url_extractor(self, response, urls, logger):
+    def _default_url_extractor(self, response, urls, logger):
         url = response.url
         for partial_link in re.findall(self._regex, response.text):
             link = urljoin(url, partial_link)
