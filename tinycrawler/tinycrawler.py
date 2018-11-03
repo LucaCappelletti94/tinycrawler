@@ -56,7 +56,8 @@ class TinyCrawler:
             "files", self._statistics)
         self._graph = self._tinycrawler_manager.FileJob(
             "graph", self._statistics)
-        self._proxies = self._tinycrawler_manager.ProxyJob(self._statistics)
+        self._proxies = self._tinycrawler_manager.ProxyJob(
+            self._statistics, self._logger)
 
         self._start_file_parser()
         self._start_url_parser()
