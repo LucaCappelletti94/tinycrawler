@@ -6,9 +6,9 @@ class Log:
     def __init__(self, directory):
         self._lock = Lock()
         self._path = "%s/error.log" % (directory)
-        logging.basicConfig(filename=self._path)
+        logging.basicConfig(filename=self._path,  level=logging.INFO)
         with open(self._path, 'w') as f:
-            f.write("")
+            pass
 
     def _log(self, logger, message):
         self._lock.acquire()
