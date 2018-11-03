@@ -58,26 +58,27 @@ class Cli:
             try:
                 self._clear()
             except curses.error:
-                pass
+                self._logger.error("cli: %s" % traceback.format_exc())
 
             self._print_informations()
 
             try:
                 self._print_all()
             except curses.error:
-                pass
+                self._logger.error("cli: %s" % traceback.format_exc())
 
     def _cli(self):
         self._init_curses()
         try:
             self._cli_loop()
             self._close_curses()
-        except Exception as e:
+        except Exception:
             self._close_curses()
             self._logger.error("cli: %s" % traceback.format_exc())
             print("Cli has crashed, checkout log for more informations.")
         except KeyboardInterrupt:
             self._close_curses()
+            self._logger.error("Shutting down crawler.")
             print("Shutting down crawler.")
 
     def _print_frame(self, pos=None):
