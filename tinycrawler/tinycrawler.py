@@ -121,6 +121,7 @@ class TinyCrawler:
             pass
 
     def run(self, seed):
+        self._logger.log("Starting crawler.")
         if self._use_cli:
             self._cli.run()
         self._file_parser.bind()
