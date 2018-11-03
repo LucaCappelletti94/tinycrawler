@@ -9,6 +9,7 @@ from requests import get as require
 from requests.exceptions import (ConnectionError, SSLError, Timeout,
                                  TooManyRedirects)
 
+from ..log import Log
 from .job import Job
 
 
@@ -26,12 +27,13 @@ class ProxyJob(Job):
     CACHE_LIFETIME = 12 * 60 * 60
     CACHE_FILENAME = "tmp_tested_proxy.json"
 
-    def __init__(self, statistics):
+    def __init__(self, statistics, logger: Log):
         """Handle Dic ProxyJob dispatching with timeouts."""
         super().__init__("proxies", statistics)
         self.__put(self.LOCAL)
         self._test_url = None
         self._path = None
+        self._logger = logger
         self._statistics.set(self._name, "Total proxies", self.len())
 
     def __get(self):
@@ -90,19 +92,37 @@ class ProxyJob(Job):
         self._statistics.set(self._name, "Testing proxies on", self._test_url)
 
         tmp = []
+        n = len(proxies_data)
 
-        for proxy_data in proxies_data:
+        self._statistics.set(
+            self._name, "Total proxies to test", n)
+
+        for i, proxy_data in enumerate(proxies_data):
+            self._logger.log(
+                "Testing proxy {i}/{n} with data:{data}.".format(
+                    i=i, n=n, data=proxy_data))
             proxy = self._test_proxy(proxy_data)
+            self._logger.log(
+                "Test {i}/{n} had result {result}.".format(
+                    i=i, n=n, result=bool(proxy)))
+            self._statistics.add(
+                self._name, "Tested proxies")
             if proxy:
                 tmp.append(proxy)
                 self.__put(proxy)
-                self._statistics.add(self._name, "Total %s" % self._name)
+                self._statistics.add(
+                    self._name, "Total proxies")
+            else:
+                self._statistics.add(
+                    self._name, "Failed proxies")
 
         with open(self.CACHE_FILENAME, "w") as f:
             json.dump(tmp, f)
 
     def load(self):
         """Load and test the proxies in provided path."""
+        self._logger.log(
+            "Starting to load proxies from {path}.".format(path=self._path))
         if not self._path:
             return None
 
