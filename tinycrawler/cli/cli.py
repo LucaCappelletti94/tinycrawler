@@ -23,7 +23,7 @@ class Cli:
 
     def _init_curses(self):
         curses.initscr()
-        self._window = curses.newwin(70, 70, 0, 0)
+        self._window = curses.newwin(100, 100, 0, 0)
         curses.noecho()
 
     def _close_curses(self):
