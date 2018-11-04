@@ -18,7 +18,8 @@ from ..job import UrlJob, FileJob
 class UrlParser(Parser):
 
     def __init__(self, path: str, jobs: FileJob, urls: UrlJob):
-        super().__init__(path + "/graph", "urls parser", jobs)
+        super().__init__(
+            "{path}/graph".format(path=path), "urls parser", jobs)
         self._val = self._tautology
         self._urls = urls
         self._url_extractor = self._default_url_extractor
