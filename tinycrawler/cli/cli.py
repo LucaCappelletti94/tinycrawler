@@ -13,6 +13,7 @@ from ..__version__ import __version__
 
 class Cli:
     CRYOUTS = 2
+    WINDOW_SIZE = 100
 
     def __init__(self, statistics, logger):
         self._statistics = statistics
@@ -23,23 +24,23 @@ class Cli:
 
     def _init_curses(self):
         curses.initscr()
-        self._window = curses.newwin(100, 100, 0, 0)
+        self._window = curses.newwin(self.WINDOW_SIZE, self.WINDOW_SIZE, 0, 0)
         curses.noecho()
 
     def _close_curses(self):
         curses.echo()
         curses.endwin()
 
-    def _print_informations(self):
-        informations = self._statistics.get_informations()
+    def _print_info(self):
+        info = self._statistics.get_info()
         self._print_frame()
         self._print("TINYCRAWLER %s@" % __version__)
         self._print_frame()
-        sorted_sections = sorted(informations.keys(), key=str.lower)
+        sorted_sections = sorted(info.keys(), key=str.lower)
         for section in sorted_sections:
             self._print(section.upper() + "@")
             self._print_frame()
-            sub_dict = informations[section]
+            sub_dict = info[section]
             sorted_keys = sorted(sub_dict.keys(), key=str.lower)
             for label in sorted_keys:
                 self._print_label(label.capitalize(), sub_dict[label])
@@ -60,7 +61,7 @@ class Cli:
             except curses.error:
                 self._logger.error("cli: %s" % traceback.format_exc())
 
-            self._print_informations()
+            self._print_info()
 
             try:
                 self._print_all()
@@ -75,7 +76,7 @@ class Cli:
         except Exception:
             self._close_curses()
             self._logger.error("cli: %s" % traceback.format_exc())
-            print("Cli has crashed, checkout log for more informations.")
+            print("Cli has crashed, checkout log for more info.")
         except KeyboardInterrupt:
             self._close_curses()
             self._logger.error("Shutting down crawler.")
