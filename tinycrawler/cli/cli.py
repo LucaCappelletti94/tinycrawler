@@ -14,6 +14,7 @@ from ..__version__ import __version__
 class Cli:
     CRYOUTS = 2
     WINDOW_SIZE = 100
+    PADDING = 8
 
     def __init__(self, statistics, logger):
         self._statistics = statistics
@@ -86,7 +87,8 @@ class Cli:
         self._print("$$$", pos)
 
     def _print_label(self, label, value, pos=None):
-        self._print("%s@%s" % (label, value), pos)
+        self._print("{label}@{value}".format(label=label, value=value)[:
+                                                                       self.WINDOW_SIZE - self.PADDING*2], pos)
 
     def _print(self, value, pos=None):
         if pos is None:
@@ -100,8 +102,7 @@ class Cli:
         self._i += 1
 
     def _print_all(self):
-        padding = 8
-        max_len = self._max_len + padding
+        max_len = self._max_len + self.PADDING
         for k, v in self._outputs.items():
             self._window.addstr(k, 0, "|", curses.A_DIM)
             self._window.addstr(k, max_len, "|", curses.A_DIM)
@@ -122,7 +123,7 @@ class Cli:
 
     def _clear(self):
         for i in range(self._i):
-            self._window.addstr(i, 0, " " * (self._max_len + 8 + 4))
+            self._window.addstr(i, 0, " " * (self._max_len + self.PADDING))
 
         self._window.refresh()
         self._i = 1
