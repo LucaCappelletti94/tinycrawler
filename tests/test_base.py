@@ -117,7 +117,8 @@ def test_base_tinycrawler():
             pass
 
         my_crawler.set_proxy_timeout(0)
-        my_crawler.set_url_validator(my_crawler._url_parser._tautology)
+        my_crawler.set_url_validator(
+            my_crawler._url_parser._default_url_validator)
         my_crawler.set_file_parser(my_crawler._file_parser._parser)
         my_crawler.set_retry_policy(my_crawler._downloader._retry)
         my_crawler.set_url_extractor(my_crawler._url_parser._url_extractor)

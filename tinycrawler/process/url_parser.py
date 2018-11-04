@@ -20,11 +20,11 @@ class UrlParser(Parser):
     def __init__(self, path: str, jobs: FileJob, urls: UrlJob):
         super().__init__(
             "{path}/graph".format(path=path), "urls parser", jobs)
-        self._val = self._tautology
+        self._val = self._default_url_validator
         self._urls = urls
         self._url_extractor = self._default_url_extractor
 
-    def _tautology(self, url: str, logger: Log, statistics: Statistics):
+    def _default_url_validator(self, url: str, logger: Log, statistics: Statistics):
         return True
 
     def _default_url_extractor(self, response: Response, urls: UrlJob, logger: Log, statistics: Statistics):
