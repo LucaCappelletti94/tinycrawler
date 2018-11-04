@@ -25,7 +25,20 @@ multiprocessing.managers.AutoProxy = redefined_autoproxy
 
 
 class TinyCrawlerManager(BaseManager):
-    pass
+    def Log(self, path: str):
+        pass
+
+    def Statistics(self):
+        pass
+
+    def UrlJob(self, statistics: Statistics, bloom_filters_number: int, bloom_filters_capacity: int):
+        pass
+
+    def FileJob(self, path: str, statistics: Statistics):
+        pass
+
+    def ProxyJob(self, statistics: Statistics, logger: Log):
+        pass
 
 
 TinyCrawlerManager.register('Statistics', Statistics)
