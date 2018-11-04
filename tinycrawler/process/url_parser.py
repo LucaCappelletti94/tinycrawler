@@ -1,7 +1,6 @@
 import hashlib
 import json
 import os
-import re
 from multiprocessing import cpu_count
 from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
@@ -20,7 +19,6 @@ class UrlParser(Parser):
 
     def __init__(self, path: str, jobs: FileJob, urls: UrlJob):
         super().__init__(path + "/graph", "urls parser", jobs)
-        self._regex = re.compile(r"href=\"([^\"#]+)\"")
         self._val = self._tautology
         self._urls = urls
         self._url_extractor = self._default_url_extractor
