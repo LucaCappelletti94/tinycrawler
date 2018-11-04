@@ -4,6 +4,7 @@ import traceback
 from multiprocessing.managers import BaseManager
 from time import sleep, time
 from urllib.parse import urlparse
+from typing import Callable
 
 from .cli import Cli
 from .job import FileJob, ProxyJob, UrlJob
@@ -140,14 +141,14 @@ class TinyCrawler:
     def _domain(self, url):
         return '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(url))
 
-    def set_url_validator(self, url_validator):
+    def set_url_validator(self, url_validator: Callable[[str, Log], bool]):
         self._url_parser.set_validator(url_validator)
 
-    def load_proxies(self, test_url, path):
+    def load_proxies(self, test_url: str, path: str):
         self._proxies.set_test_url(test_url)
         self._proxies.set_proxy_path(path)
 
-    def set_proxy_timeout(self, timeout):
+    def set_proxy_timeout(self, timeout: int):
         self._proxies.set_proxy_timeout(timeout)
 
     def set_url_extractor(self, file_parser):

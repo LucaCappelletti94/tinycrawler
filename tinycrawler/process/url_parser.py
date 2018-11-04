@@ -6,6 +6,7 @@ from multiprocessing import cpu_count
 from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
 from requests import Response
+from typing import Callable
 
 from validators import url as valid
 
@@ -35,7 +36,7 @@ class UrlParser(Parser):
     def _parser(self, response: Response, logger: Log):
         self._url_extractor(response, self._urls, logger)
 
-    def set_validator(self, url_validator):
+    def set_validator(self, url_validator: Callable[[str, Log], bool]):
         """Set custom url validator."""
         self._val = url_validator
 
