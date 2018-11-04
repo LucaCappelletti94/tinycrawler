@@ -9,7 +9,7 @@ class Statistics:
         self.info = {}
         self._lock = Lock()
 
-    def add(self, category, name, value=1):
+    def add(self, category: str, name: str, value: int=1):
         """Add value to category/name and updates total."""
         self._lock.acquire()
         if category not in self.info:
@@ -18,7 +18,7 @@ class Statistics:
         self.info[category][name] += value
         self._lock.release()
 
-    def set(self, category, name, value=1):
+    def set(self, category: str, name: str, value: int=1):
         """Add value to category/name and updates total."""
         self._lock.acquire()
         if category not in self.info:
@@ -27,13 +27,13 @@ class Statistics:
         self.info[category][name] = value
         self._lock.release()
 
-    def remove(self, category, name, value=1):
+    def remove(self, category: str, name: str, value: int=1):
         """Remove value to category/name."""
         self._lock.acquire()
         self.info[category][name] -= value
         self._lock.release()
 
-    def get(self, category, name):
+    def get(self, category: str, name: str):
         """Remove value to category/name."""
         return self.info[category][name]
 
