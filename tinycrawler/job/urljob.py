@@ -6,10 +6,11 @@ from ..bloom import Bloom
 class UrlJob(Job):
     """Handle UrlJob."""
 
-    def __init__(self, statistics):
+    def __init__(self, statistics, bloom_filters_number: int, bloom_filters_capacity: int):
         super().__init__("urls", statistics)
         self._hash = self._default_hash
-        self._bloom = Bloom()
+        self._bloom = Bloom(n=bloom_filters_number,
+                            capacity=bloom_filters_capacity)
 
     def _update_put_statistics(self, value):
         super()._update_put_statistics(value)

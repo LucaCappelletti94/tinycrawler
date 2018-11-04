@@ -37,7 +37,7 @@ TinyCrawlerManager.register('ProxyJob', ProxyJob)
 class TinyCrawler:
     CRYOUTS = 4
 
-    def __init__(self, use_cli=False, directory="downloaded_websites"):
+    def __init__(self, use_cli: bool=False, directory: str="downloaded_websites", bloom_filters_number: int=3, bloom_filters_capacity: int=1e9):
 
         self._use_cli = use_cli
         self._directory = directory
@@ -51,7 +51,8 @@ class TinyCrawler:
         self._logger = self._tinycrawler_manager.Log(self._directory)
         self._statistics = self._tinycrawler_manager.Statistics()
 
-        self._urls = self._tinycrawler_manager.UrlJob(self._statistics)
+        self._urls = self._tinycrawler_manager.UrlJob(
+            self._statistics, bloom_filters_number, bloom_filters_capacity)
         self._files = self._tinycrawler_manager.FileJob(
             "files", self._statistics)
         self._graph = self._tinycrawler_manager.FileJob(
