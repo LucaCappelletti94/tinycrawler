@@ -25,6 +25,7 @@ multiprocessing.managers.AutoProxy = redefined_autoproxy
 
 
 class TinyCrawlerManager(BaseManager):
+
     def Log(self, path: str):
         pass
 
@@ -154,7 +155,7 @@ class TinyCrawler:
     def _domain(self, url):
         return '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(url))
 
-    def set_url_validator(self, url_validator: Callable[[str, Log], bool]):
+    def set_url_validator(self, url_validator: Callable[[str, Log, Statistics], bool]):
         self._url_parser.set_validator(url_validator)
 
     def load_proxies(self, test_url: str, path: str):
