@@ -1,19 +1,17 @@
-import hashlib
-import json
-import os
-from urllib.parse import urljoin, urlparse
-
-from validators import url
-
 from .parser import Parser
+from ..log import Log
+from requests import Response
+from ..statistics import Statistics
+from typing import Callable
 
 
 class FileParser(Parser):
 
     def __init__(self, path, jobs):
-        super().__init__(path + "/website", "files parser", jobs)
+        super().__init__(
+            "{path}/website".format(path=path), "files parser", jobs)
 
-    def _parser(self, response: 'Response', logger: 'Log')->str:
+    def _parser(self, response: Response, logger: Log, statistics: Statistics)->str:
         """Parse downloaded page into document to be saved.
             response: 'Response', response object from requests.models.Response
             logger: 'Log', a logger to log eventual errors or infos
@@ -22,6 +20,6 @@ class FileParser(Parser):
         """
         return response.text
 
-    def set_file_parser(self, file_parser):
+    def set_file_parser(self, file_parser: Callable[[Response, Log, Statistics], str]):
         """Set custom file parser."""
         self._parser = file_parser
