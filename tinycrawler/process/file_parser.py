@@ -10,8 +10,9 @@ class FileParser(Parser):
     def __init__(self, path, jobs):
         super().__init__(
             "{path}/website".format(path=path), "files parser", jobs)
+        self._parser = self._default_parser
 
-    def _parser(self, response: Response, logger: Log, statistics: Statistics)->str:
+    def _default_parser(self, response: Response, logger: Log, statistics: Statistics)->str:
         """Parse downloaded page into document to be saved.
             response: 'Response', response object from requests.models.Response
             logger: 'Log', a logger to log eventual errors or infos
