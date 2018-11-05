@@ -1,8 +1,5 @@
-import hashlib
-import json
-import os
-from multiprocessing import cpu_count
 from urllib.parse import urljoin, urlparse
+from urllib.robotparser import RobotFileParser
 from bs4 import BeautifulSoup
 from requests import Response
 from typing import Callable
