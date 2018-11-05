@@ -1,6 +1,5 @@
 import multiprocessing
 import os
-import traceback
 from multiprocessing.managers import BaseManager
 from time import sleep, time
 from urllib.parse import urlparse
