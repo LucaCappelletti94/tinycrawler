@@ -5,7 +5,7 @@ from time import sleep, time
 from typing import Callable
 from .utils import get_domain
 from .cli import Cli
-from .job import FileJob, ProxyJob, UrlJob
+from .job import FileJob, ProxyJob, UrlJob, RobotsJob
 from .log import Log
 from .process import Downloader, FileParser, UrlParser
 from .statistics import Statistics, Time
