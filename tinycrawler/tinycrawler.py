@@ -2,9 +2,8 @@ import multiprocessing
 import os
 from multiprocessing.managers import BaseManager
 from time import sleep, time
-from urllib.parse import urlparse
 from typing import Callable
-
+from .utils import get_domain
 from .cli import Cli
 from .job import FileJob, ProxyJob, UrlJob
 from .log import Log
@@ -110,10 +109,10 @@ class TinyCrawler:
 
     def _add_seed(self, seed):
         if isinstance(seed, str):
-            self._statistics.set("info", "Working on", self._domain(seed))
+            self._statistics.set("info", "Working on", get_domain(seed))
             self._urls.put(seed)
         elif isinstance(seed, list):
-            self._statistics.set("info", "Working on", self._domain(seed[0]))
+            self._statistics.set("info", "Working on", get_domain(seed[0]))
             [self._urls.put(s) for s in seed]
         else:
             raise ValueError("The given seed is not valid.")
@@ -150,9 +149,6 @@ class TinyCrawler:
         self._downloader.join()
         if self._use_cli:
             self._cli.join()
-
-    def _domain(self, url):
-        return '{uri.scheme}://{uri.netloc}/'.format(uri=urlparse(url))
 
     def set_url_validator(self, url_validator: Callable[[str, Log, Statistics], bool]):
         self._url_parser.set_validator(url_validator)
