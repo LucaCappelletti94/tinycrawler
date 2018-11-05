@@ -78,6 +78,10 @@ class ProcessHandler:
         finally:
             self._statistics.remove("processes", self._name + " alive")
 
+    def _target(self, job):
+        raise NotImplementedError(
+            "Subclasses of ProcessHandler must implemented method _target.")
+
     def alives(self):
         return sum([int(p.is_alive()) for p in self._processes])
 
