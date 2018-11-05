@@ -13,8 +13,9 @@ class Downloader(ProcessHandler):
         self._files = files
         self._graph = graph
         self.MAXIMUM_PROCESSES = cpu_count() * 4
+        self._retry_policy = self._default_retry_policy
 
-    def _retry(self, status):
+    def _default_retry_policy(self, status):
         """Define what to do in case of error."""
         return False
 
@@ -23,7 +24,7 @@ class Downloader(ProcessHandler):
 
     def set_retry_policy(self, retry_policy):
         """Set retry policy."""
-        self._retry = retry_policy
+        self._retry_policy = retry_policy
 
     def _has_content_type(self, headers):
         return 'content-type' in headers
@@ -55,7 +56,7 @@ class Downloader(ProcessHandler):
                 self._graph.put(response)
                 break
             self._statistics.add("error", "error code %s" % status)
-            if self._retry(status):
+            if self._retry_policy(status):
                 attempts += 1
                 continue
             break
