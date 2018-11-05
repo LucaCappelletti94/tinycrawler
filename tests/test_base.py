@@ -24,7 +24,7 @@ anchor = '<a href="%s">Link to page alias number %s</a>'
 
 
 @all_requests
-def example_mock(url, request):
+def example_mock(url: str, request):
     global path
     global root
     global anchor
@@ -47,7 +47,7 @@ def example_mock(url, request):
     return response(200, body, headers, None, 5, request)
 
 
-def check_files(path, root, anchor, download_directory):
+def check_files(path, root: str, anchor: str, download_directory: str):
     global WEBSITE_SIZE
     global LINKS_PER_PAGE
 
@@ -68,7 +68,8 @@ def check_files(path, root, anchor, download_directory):
             links += anchor % (link, j)
         body = model.replace("{PLACEHOLDER}", links)
         h = hashlib.md5(url.encode('utf-8')).hexdigest()
-        file_name = "%s/website/1/%s.json" % (download_directory, h)
+        file_name = "{download_directory}/website/1/{h}.json".format(
+            download_directory=download_directory, h=h)
 
         content = {
             "url": url,
@@ -76,8 +77,8 @@ def check_files(path, root, anchor, download_directory):
         }
 
         if not os.path.exists(file_name):
-            errors.append("File %s from url %s does not exist." %
-                          (file_name, url))
+            errors.append("File {file_name} from url {url} does not exist.".format(
+                file_name=file_name, url=url))
             break
 
         with open(file_name, "r") as f:
