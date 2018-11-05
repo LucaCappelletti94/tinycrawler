@@ -28,7 +28,7 @@ class UrlParser(Parser):
         url = response.url
         for partial_link in BeautifulSoup(response.text, "lxml").findAll("a",  href=True):
             link = urljoin(url, partial_link["href"])
-            if valid(link) and self._val(link, self._logger) and self._robots.can_fetch(link):
+            if valid(link) and self._val(link, self._logger, self._statistics) and self._robots.can_fetch(link):
                 urls.put(link)
 
     def _parser(self, response: Response, logger: Log, statistics: Statistics):
