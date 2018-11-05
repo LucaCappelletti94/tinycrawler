@@ -32,6 +32,10 @@ class Parser(ProcessHandler):
                 "content": content
             })
 
+    def _parser(self):
+        raise NotImplementedError(
+            "Method _parser must be implemented by subclasses.")
+
     def _write(self, filename, content):
         """Parse the downloaded files, cleans them and extracts urls"""
         if self._file_number % 10000 == 0:
