@@ -1,5 +1,4 @@
 from urllib.parse import urljoin, urlparse
-from urllib.robotparser import RobotFileParser
 from bs4 import BeautifulSoup
 from requests import Response
 from typing import Callable
@@ -9,17 +8,18 @@ from validators import url as valid
 from .parser import Parser
 from ..log import Log
 from ..statistics import Statistics
-from ..job import UrlJob, FileJob
+from ..job import UrlJob, FileJob, RobotsJob
 
 
 class UrlParser(Parser):
 
-    def __init__(self, path: str, jobs: FileJob, urls: UrlJob):
+    def __init__(self, path: str, jobs: FileJob, urls: UrlJob, robots: RobotsJob):
         super().__init__(
             "{path}/graph".format(path=path), "urls parser", jobs)
         self._val = self._default_url_validator
         self._urls = urls
         self._url_extractor = self._default_url_extractor
+        self._robots = robots
 
     def _default_url_validator(self, url: str, logger: Log, statistics: Statistics):
         return True
@@ -28,7 +28,7 @@ class UrlParser(Parser):
         url = response.url
         for partial_link in BeautifulSoup(response.text, "lxml").findAll("a",  href=True):
             link = urljoin(url, partial_link["href"])
-            if valid(link) and self._val(link, self._logger):
+            if valid(link) and self._val(link, self._logger) and self._robots.can_fetch(link):
                 urls.put(link)
 
     def _parser(self, response: Response, logger: Log, statistics: Statistics):

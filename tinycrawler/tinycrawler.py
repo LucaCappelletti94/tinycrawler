@@ -39,12 +39,16 @@ class TinyCrawlerManager(BaseManager):
     def ProxyJob(self, statistics: Statistics, logger: Log):
         pass
 
+    def RobotsJob(self, statistics: Statistics, logger: Log):
+        pass
+
 
 TinyCrawlerManager.register('Statistics', Statistics)
 TinyCrawlerManager.register('Log', Log)
 TinyCrawlerManager.register('UrlJob', UrlJob)
 TinyCrawlerManager.register('FileJob', FileJob)
 TinyCrawlerManager.register('ProxyJob', ProxyJob)
+TinyCrawlerManager.register('RobotsJob', RobotsJob)
 
 
 class TinyCrawler:
@@ -70,6 +74,8 @@ class TinyCrawler:
             "files", self._statistics)
         self._graph = self._tinycrawler_manager.FileJob(
             "graph", self._statistics)
+        self._robots = self._tinycrawler_manager.RobotsJob(
+            self._statistics, self._logger)
         self._proxies = self._tinycrawler_manager.ProxyJob(
             self._statistics, self._logger)
 
@@ -92,7 +98,8 @@ class TinyCrawler:
         self._url_parser = UrlParser(
             path=self._directory,
             jobs=self._graph,
-            urls=self._urls
+            urls=self._urls,
+            robots=self._robots
         )
         self._url_parser.set_statistics(self._statistics)
         self._url_parser.set_logger(self._logger)
