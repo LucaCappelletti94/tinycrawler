@@ -4,6 +4,9 @@ import os
 
 from ..statistics import Speed
 from .process_handler import ProcessHandler
+from ..log import Log
+from ..statistics import Statistics
+from requests import Response
 
 
 class Parser(ProcessHandler):
@@ -17,12 +20,12 @@ class Parser(ProcessHandler):
         if not os.path.exists(path):
             os.makedirs(path)
 
-    def _target(self, response: 'Response'):
+    def _target(self, response: Response):
         """Parse the downloaded files, cleans them and extracts urls"""
         url = response.url
 
         filename = hashlib.md5(url.encode('utf-8')).hexdigest()
-        content = self._parser(response, self._logger)
+        content = self._parser(response, self._logger, self._statistics)
         if content is not None:
             self._writing_data_speed.update(len(content))
             self._statistics.set("files", "Writing data speed",
@@ -32,7 +35,7 @@ class Parser(ProcessHandler):
                 "content": content
             })
 
-    def _parser(self):
+    def _parser(self, response: Response, logger: Log, statistics: Statistics):
         raise NotImplementedError(
             "Method _parser must be implemented by subclasses.")
 
