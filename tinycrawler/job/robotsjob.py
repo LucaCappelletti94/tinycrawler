@@ -18,7 +18,7 @@ class RobotsJob(dict):
         """
         domain = get_domain(url)
         if domain not in self:
-            self._retrieve_robots_txt(url)
+            self._retrieve_robots_txt(domain)
         return self[domain].can_fetch("*", url)
 
     def _retrieve_robots_txt(self, domain: str):
