@@ -1,11 +1,6 @@
-from __future__ import division
-
 import curses
-import json
-import sys
 import time
 import traceback
-from datetime import datetime, timedelta
 from multiprocessing import Process
 
 from ..__version__ import __version__
@@ -35,7 +30,7 @@ class Cli:
     def _print_info(self):
         info = self._statistics.get_info()
         self._print_frame()
-        self._print("TINYCRAWLER %s@" % __version__)
+        self._print("TINYCRAWLER {version}@".format(version=__version__))
         self._print_frame()
         sorted_sections = sorted(info.keys(), key=str.lower)
         for section in sorted_sections:
