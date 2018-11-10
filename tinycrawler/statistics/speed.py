@@ -44,7 +44,7 @@ class Speed:
             total += info["value"]
         self._total = self._total[i:]
 
-        if delta:
+        if delta == 0:
             return 0
 
         return total / delta
