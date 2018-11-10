@@ -26,7 +26,7 @@ class Speed:
         if abs(speed) > 1:
             unit = "%s/%s" % (self._unit, self.SECONDS)
         elif speed == 0:
-            pass
+            unit = "%s/%s" % (self.SECONDS, self._unit)
         else:
             unit = "%s/%s" % (self.SECONDS, self._unit)
             speed = 1 / speed
