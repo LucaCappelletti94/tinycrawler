@@ -13,7 +13,7 @@ class ProcessHandler:
         self._processes = []
         self._name = name
         self._jobs = jobs
-        self.MAXIMUM_PROCESSES = math.ceil(cpu_count() / 2)
+        self.MAXIMUM_PROCESSES = math.ceil(cpu_count())
 
     def set_statistics(self, statistics):
         self._statistics = statistics
