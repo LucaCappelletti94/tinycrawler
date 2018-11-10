@@ -1,5 +1,5 @@
 from urllib.parse import urljoin
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, SoupStrainer
 from requests import Response
 from typing import Callable
 
@@ -20,13 +20,14 @@ class UrlParser(Parser):
         self._urls = urls
         self._url_extractor = self._default_url_extractor
         self._robots = robots
+        self._strainer = SoupStrainer('a', href=True)
 
     def _default_url_validator(self, url: str, logger: Log, statistics: Statistics):
         return True
 
     def _default_url_extractor(self, response: Response, urls: UrlJob, logger: Log, statistics: Statistics):
         url = response.url
-        for partial_link in BeautifulSoup(response.text, "lxml").findAll("a",  href=True):
+        for partial_link in BeautifulSoup(response.text, "lxml", parse_only=self._strainer).findAll("a",  href=True):
             link = urljoin(url, partial_link["href"])
             if valid(link) and self._val(link, self._logger, self._statistics) and self._robots.can_fetch(link):
                 urls.put(link)
