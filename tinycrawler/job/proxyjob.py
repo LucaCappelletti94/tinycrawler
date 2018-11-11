@@ -34,7 +34,6 @@ class ProxyJob(Job):
         self._test_url = None
         self._path = None
         self._logger = logger
-        self._statistics.set(self._name, "Total proxies", self.len())
 
     def __get(self):
         """Private get method for ProxyJob that handle timestamp."""
@@ -83,7 +82,6 @@ class ProxyJob(Job):
         with open(self._path, 'r') as f:
             proxies = json.load(f)
         [self.__put(proxy) for proxy in proxies]
-        self._statistics.set(self._name, "Total proxies", self.len())
 
     def _run_tests(self):
         with open(self._path, 'r') as f:
@@ -130,6 +128,7 @@ class ProxyJob(Job):
             self._load_cache()
         else:
             self._run_tests()
+        self._statistics.set(self._name, "Total proxies", self.len())
 
     def _test_proxy(self, proxy_data):
         """Return proxy that pass connection test."""
