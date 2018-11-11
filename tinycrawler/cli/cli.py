@@ -45,7 +45,7 @@ class Cli:
     def _cli_loop(self):
         cryouts = 0
         while True:
-            time.sleep(0.1)
+            time.sleep(0.5)
             if self._statistics.is_everything_dead():
                 cryouts += 1
             else:
