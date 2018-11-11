@@ -20,14 +20,19 @@ LINKS_PER_PAGE = 10
 download_directory = "local_test"
 
 root = "https://www.example.com"
-anchor = '<a href="%s">Link to page alias number %s</a>'
+anchor = '<{tag} href="{root}/{page_number}">Link to page alias number {page_number}, {child_node}</{tag}>'
+
+
+def generate_links(link_number: int, rand: random.Random):
+    global root
+    global anchor
+    return "".join(
+        [anchor.format(tag=rand.choice(['a', 'p', 'span']), root=root, page_number=rand.randint(0, WEBSITE_SIZE), child_node=generate_links(rand.randint(0, 1), rand)) for i in range(link_number)])
 
 
 @all_requests
 def example_mock(url: str, request):
     global path
-    global root
-    global anchor
     global WEBSITE_SIZE
     global LINKS_PER_PAGE
     headers = {'content-type': 'text/html'}
@@ -35,16 +40,15 @@ def example_mock(url: str, request):
     with open(path, "r") as f:
         model = f.read()
 
-    links = ""
     rand = random.Random()
-    rand.seed(int(url.path.split('/')[-1]))
-    for i in range(LINKS_PER_PAGE):
-        j = rand.randint(0, WEBSITE_SIZE)
-        link = "%s/%s" % (root, j)
-        links += anchor % (link, j)
+    seed = int(url.path.split('/')[-1])
+    rand.seed(seed)
 
-    body = model.replace("{PLACEHOLDER}", links)
-    return response(200, body, headers, None, 5, request)
+    links = str(seed) + generate_links(LINKS_PER_PAGE, rand)
+
+    body = model.format(PLACEHOLDER=links)
+    return response(status_code=200, content=body, headers=headers, reason=None, elapsed=0,
+                    request=request, stream=False)
 
 
 def check_files(path, root: str, anchor: str, download_directory: str):
@@ -56,17 +60,12 @@ def check_files(path, root: str, anchor: str, download_directory: str):
     with open(path, "r") as f:
         model = f.read()
 
-    rand = random.Random()
-
     for k in range(0, WEBSITE_SIZE - 1):
-        links = ""
-        url = "%s/%s" % (root, k)
+        url = "{root}/{page_number}".format(root=root, page_number=k)
+        rand = random.Random()
         rand.seed(k)
-        for i in range(LINKS_PER_PAGE):
-            j = rand.randint(0, WEBSITE_SIZE)
-            link = "%s/%s" % (root, j)
-            links += anchor % (link, j)
-        body = model.replace("{PLACEHOLDER}", links)
+        links = str(k) + generate_links(LINKS_PER_PAGE, rand)
+        body = model.format(PLACEHOLDER=links)
         h = hashlib.md5(url.encode('utf-8')).hexdigest()
         file_name = "{download_directory}/website/1/{h}.json".format(
             download_directory=download_directory, h=h)
