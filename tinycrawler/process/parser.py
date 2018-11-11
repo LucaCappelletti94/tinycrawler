@@ -43,13 +43,15 @@ class Parser(ProcessHandler):
         """Parse the downloaded files, cleans them and extracts urls"""
         if self._file_number % 10000 == 0:
             self._counter += 1
-            directory = "%s/%s" % (self._path, self._counter)
+            directory = "{path}/{counter}".format(
+                path=self._path, counter=self._counter)
             if not os.path.exists(directory):
                 os.makedirs(directory)
 
         self._file_number += 1
 
-        path = "%s/%s/%s.json" % (self._path, self._counter, filename)
+        path = "{path}/{counter}/{filename}.json".format(
+            path=self._path, counter=self._counter, filename=filename)
 
         with open(path, "w") as f:
             json.dump(content, f)

@@ -37,7 +37,7 @@ class ProcessHandler:
 
     def _get_name(self):
         """Return new process identifier name."""
-        return "%s n.%s" % (self._name, self.alives())
+        return "{name} n.{alive}".format(name=self._name, alive=self.alives())
 
     def _log_finish_queue(self, name):
         """Log process has finished jobs."""
