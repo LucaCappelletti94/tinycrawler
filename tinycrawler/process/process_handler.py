@@ -79,7 +79,9 @@ class ProcessHandler:
         try:
             self._job_loop(name)
         except KeyboardInterrupt:
-            return
+            self._statistics.remove(
+                "processes", "{name} alive".format(name=self._name))
+            return None
         except Exception:
             self._log_process_exception(name)
         finally:
