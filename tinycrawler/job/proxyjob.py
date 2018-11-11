@@ -24,7 +24,7 @@ class ProxyJob(Job):
     }
     CONNECTION_TIMEOUT = 5
     PROXY_TIMEOUT = 2
-    CACHE_LIFETIME = 12 * 60 * 60
+    CACHE_LIFETIME = 2 * 24 * 60 * 60
     CACHE_FILENAME = "tmp_tested_proxy.json"
 
     def __init__(self, statistics, logger: Log):
