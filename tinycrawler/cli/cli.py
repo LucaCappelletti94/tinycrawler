@@ -117,8 +117,8 @@ class Cli:
         self._window.refresh()
 
     def _clear(self):
-        for i in range(self._i):
-            self._window.addstr(i, 0, " " * (self._max_len + self.PADDING))
+        for i in range(self.WINDOW_SIZE):
+            self._window.addstr(i, 0, " " * (self.WINDOW_SIZE-1))
 
         self._window.refresh()
         self._i = 1
