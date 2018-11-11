@@ -32,7 +32,7 @@ class TinyCrawler:
         self._files = self._tinycrawler_manager.FileJob(
             "files", self._statistics)
         self._graph = self._tinycrawler_manager.FileJob(
-            "graph", self._statistics)
+            "pages", self._statistics)
         self._robots = self._tinycrawler_manager.RobotsJob(
             self._statistics, self._logger)
         self._proxies = self._tinycrawler_manager.ProxyJob(
