@@ -1,12 +1,13 @@
 """Handle UrlJob."""
 from .job import Job
 from ..bloom import Bloom
+from ..statistics import Statistics
 
 
 class UrlJob(Job):
     """Handle UrlJob."""
 
-    def __init__(self, statistics, bloom_filters_number: int, bloom_filters_capacity: int):
+    def __init__(self, statistics: Statistics, bloom_filters_number: int, bloom_filters_capacity: int):
         super().__init__("urls", statistics)
         self._bloom = Bloom(n=bloom_filters_number,
                             capacity=bloom_filters_capacity)
