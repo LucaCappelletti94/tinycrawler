@@ -27,7 +27,7 @@ class UrlParser(Parser):
 
     def _default_url_extractor(self, response: Response, urls: UrlJob, logger: Log, statistics: Statistics):
         url = response.url
-        for partial_link in BeautifulSoup(response.text, "lxml", parse_only=self._strainer).findAll("a",  href=True):
+        for partial_link in BeautifulSoup(response.text, "lxml", parse_only=self._strainer).findAll():
             link = urljoin(url, partial_link["href"])
             if valid(link) and self._val(link, self._logger, self._statistics) and self._robots.can_fetch(link):
                 urls.put(link)
