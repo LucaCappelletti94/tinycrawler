@@ -13,18 +13,18 @@ from ..job import UrlJob, FileJob, RobotsJob
 
 class UrlParser(Parser):
 
-    def __init__(self, path: str, jobs: FileJob, urls: UrlJob, robots: RobotsJob, use_beautiful_soup: bool=False):
+    def __init__(self, path: str, jobs: FileJob, urls: UrlJob, robots: RobotsJob, use_beautiful_soup: bool):
         super().__init__(
             "{path}/graph".format(path=path), "urls parser", jobs)
         self._val = self._default_url_validator
         self._urls = urls
+        self._robots = robots
         if use_beautiful_soup:
             self._url_extractor = self._soup_url_extractor
+            self._strainer = SoupStrainer('a', href=True)
         else:
             self._url_extractor = self._regex_url_extractor
-        self._robots = robots
-        self._regex = re.compile(r"href=[\"\']?([^ >]+)[\"\']?")
-        self._strainer = SoupStrainer('a', href=True)
+            self._regex = re.compile(r"href=[\"\']?([^ >\"]+)[\"\']?")
 
     def _default_url_validator(self, url: str, logger: Log, statistics: Statistics):
         return True
