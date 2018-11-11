@@ -13,7 +13,8 @@ class UrlJob(Job):
 
     def _update_put_statistics(self, value):
         super()._update_put_statistics(value)
-        self._statistics.add(self._name, "Total %s" % self._name)
+        self._statistics.add(
+            self._name, "Total {name}".format(name=self._name))
 
     def put(self, value):
         """Add element to jobs using dictionary keys."""

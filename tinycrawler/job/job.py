@@ -27,17 +27,19 @@ class Job(Queue):
         self._callback = handler
 
     def _update_put_statistics(self, value):
-        self._statistics.add(self._name, "Queue %s" % self._name)
+        self._statistics.add(
+            self._name, "Queue {name}".format(name=self._name))
         self._growing_speed.update(1)
         self._statistics.set(self._name, "Growing speed",
                              self._growing_speed.get_formatted_speed())
 
     def _update_get_statistics(self, value):
-        self._statistics.remove(self._name, "Queue %s" % self._name)
+        self._statistics.remove(
+            self._name, "Queue {name}".format(name=self._name))
         self._shrinking_speed.update(1)
         self._statistics.set(self._name, "Shrinking speed",
                              self._shrinking_speed.get_formatted_speed())
-        self._statistics.set("time", "Remaining %s time" % self._name,
+        self._statistics.set("time", "Remaining {name} time".format(name=self._name),
                              Time.get_remaining_time(self._growing_speed.get_speed(), self._shrinking_speed.get_speed(), self.len()))
 
     def put(self, value):
