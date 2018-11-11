@@ -40,9 +40,3 @@ class UrlParser(Parser):
             url_validator: Callable[[str, Log, Statistics], bool], the function used to validate urls.
         """
         self._val = url_validator
-
-    def set_url_extractor(self, url_extractor: Callable[[Response, UrlJob, Log, Statistics], None]):
-        """Set custom url extractor.
-            url_extractor: Callable[[Response, UrlJob, Log, Statistics], None], the function used to extract urls.
-        """
-        self._url_extractor = url_extractor

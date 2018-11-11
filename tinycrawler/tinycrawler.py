@@ -167,9 +167,6 @@ class TinyCrawler:
     def set_proxy_timeout(self, timeout: int):
         self._proxies.set_proxy_timeout(timeout)
 
-    def set_url_extractor(self, file_parser):
-        self._url_parser.set_url_extractor(file_parser)
-
     def set_file_parser(self, file_parser):
         self._file_parser.set_file_parser(file_parser)
 

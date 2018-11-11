@@ -123,7 +123,6 @@ def test_base_tinycrawler():
         my_crawler.set_file_parser(my_crawler._file_parser._parser)
         my_crawler.set_retry_policy(
             my_crawler._downloader._default_retry_policy)
-        my_crawler.set_url_extractor(my_crawler._url_parser._url_extractor)
         my_crawler.load_proxies(root, empty_proxy_path)
         my_crawler.run(
             root + "/{website_size}".format(website_size=WEBSITE_SIZE))
