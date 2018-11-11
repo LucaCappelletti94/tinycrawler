@@ -2,8 +2,10 @@
 import hashlib
 import json
 import os
+import re
 import random
 import traceback
+import shutil
 
 import pytest
 import requests
@@ -21,6 +23,12 @@ download_directory = "local_test"
 
 root = "https://www.example.com"
 anchor = '<{tag} href="{root}/{page_number}">Link to page alias number {page_number}, {child_node}</{tag}>'
+
+
+def purge(pattern):
+    for f in os.listdir():
+        if re.search(pattern, f):
+            shutil.rmtree(f)
 
 
 def generate_links(link_number: int, rand: random.Random):
@@ -127,5 +135,7 @@ def test_base_tinycrawler():
             root + "/{website_size}".format(website_size=WEBSITE_SIZE))
 
     errors += check_files(path, root, anchor, download_directory)
+
+    purge("local_test")
 
     assert not errors, "errors occured:\n{}".format("\n".join(errors))
