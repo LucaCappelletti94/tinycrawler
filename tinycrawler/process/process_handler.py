@@ -64,12 +64,15 @@ class ProcessHandler:
 
             try:
                 self._target(job)
+            except KeyboardInterrupt:
                 self._statistics.remove(
                     "processes", "{name} working".format(name=self._name))
-            except KeyboardInterrupt:
                 break
             except Exception:
                 self._log_process_exception(name)
+            finally:
+                self._statistics.remove(
+                    "processes", "{name} working".format(name=self._name))
 
     def _job_starter(self, name):
         """Generic process wrapper."""
