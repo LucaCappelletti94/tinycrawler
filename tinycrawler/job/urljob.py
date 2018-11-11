@@ -8,7 +8,7 @@ class UrlJob(Job):
     """Handle UrlJob."""
 
     def __init__(self, statistics: Statistics, bloom_filters_number: int, bloom_filters_capacity: int):
-        super().__init__("urls", statistics)
+        super().__init__("Urls queue", "urls", statistics)
         self._bloom = Bloom(n=bloom_filters_number,
                             capacity=bloom_filters_capacity)
 

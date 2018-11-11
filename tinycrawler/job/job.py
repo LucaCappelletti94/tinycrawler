@@ -3,7 +3,7 @@ from multiprocessing import Lock
 from queue import Empty, Queue
 from time import sleep, time
 
-from ..statistics import Speed, Time
+from ..statistics import Speed, Time, Statistics
 
 
 class Job(Queue):
@@ -11,15 +11,15 @@ class Job(Queue):
 
     ATTEMPTS = 5
 
-    def __init__(self, name, statistics):
+    def __init__(self, name:str, unit:str, statistics:Statistics):
         """Handle Job dispatching."""
         super().__init__()
         self._callback = None
         self._counter = 0
         self._name = name
         self._statistics = statistics
-        self._growing_speed = Speed(name)
-        self._shrinking_speed = Speed(name)
+        self._growing_speed = Speed(unit)
+        self._shrinking_speed = Speed(unit)
         self._lock = Lock()
 
     def set_callback(self, handler):

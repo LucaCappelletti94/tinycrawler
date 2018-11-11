@@ -29,7 +29,7 @@ class ProxyJob(Job):
 
     def __init__(self, statistics, logger: Log):
         """Handle Dic ProxyJob dispatching with timeouts."""
-        super().__init__("proxies", statistics)
+        super().__init__("proxies", "proxy", statistics)
         self.__put(self.LOCAL)
         self._test_url = None
         self._path = None

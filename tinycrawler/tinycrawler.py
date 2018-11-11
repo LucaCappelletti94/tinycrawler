@@ -30,9 +30,9 @@ class TinyCrawler:
         self._urls = self._tinycrawler_manager.UrlJob(
             self._statistics, bloom_filters_number, bloom_filters_capacity)
         self._files = self._tinycrawler_manager.FileJob(
-            "files", self._statistics)
+            "data extraction", self._statistics)
         self._graph = self._tinycrawler_manager.FileJob(
-            "pages", self._statistics)
+            "urls extraction", self._statistics)
         self._robots = self._tinycrawler_manager.RobotsJob(
             self._statistics, self._logger)
         self._proxies = self._tinycrawler_manager.ProxyJob(

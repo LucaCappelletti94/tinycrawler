@@ -1,13 +1,13 @@
 """Handle FileJob."""
-from ..statistics import Speed
+from ..statistics import Speed, Statistics
 from .job import Job
 
 
 class FileJob(Job):
     """Handle FileJob."""
 
-    def __init__(self, name, statistics):
-        super().__init__(name, statistics)
+    def __init__(self, name: str, statistics: Statistics):
+        super().__init__(name, "document", statistics)
         self._growing_data_speed = Speed("B")
         self._shrinking_data_speed = Speed("B")
 
