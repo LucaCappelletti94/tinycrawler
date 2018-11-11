@@ -7,3 +7,5 @@ dist/
 tinycrawler.egg-*
 
 \.ipynb_checkpoints/
+
+tmp_tested_proxy\.json
