@@ -52,7 +52,8 @@ class ProcessHandler:
         while(True):
             try:
                 job = self._jobs.get()
-                self._statistics.add("processes", self._name + " working")
+                self._statistics.add(
+                    "processes", "{name} working".format(name=self._name))
             except Empty:
                 self._log_finish_queue(name)
                 break
@@ -63,7 +64,8 @@ class ProcessHandler:
 
             try:
                 self._target(job)
-                self._statistics.remove("processes", self._name + " working")
+                self._statistics.remove(
+                    "processes", "{name} working".format(name=self._name))
             except KeyboardInterrupt:
                 break
             except Exception:
@@ -71,16 +73,18 @@ class ProcessHandler:
 
     def _job_starter(self, name):
         """Generic process wrapper."""
-        self._logger.log("Starting process %s" % name)
-        self._statistics.add("processes", self._name + " alive")
+        self._logger.log("Starting process {name}".format(name=name))
+        self._statistics.add(
+            "processes", "{name} alive".format(name=self._name))
         try:
             self._job_loop(name)
         except KeyboardInterrupt:
-            pass
+            return
         except Exception:
             self._log_process_exception(name)
         finally:
-            self._statistics.remove("processes", self._name + " alive")
+            self._statistics.remove(
+                "processes", "{name} alive".format(name=self._name))
 
     def _target(self, job):
         raise NotImplementedError(
