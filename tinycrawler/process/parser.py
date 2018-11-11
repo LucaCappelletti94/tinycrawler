@@ -28,7 +28,7 @@ class Parser(ProcessHandler):
         content = self._parser(response, self._logger, self._statistics)
         if content is not None:
             self._writing_data_speed.update(len(content))
-            self._statistics.set("files", "Writing data speed",
+            self._statistics.set(self._name, "Writing data speed",
                                  self._writing_data_speed.get_formatted_speed())
             self._write(filename, {
                 "url": url,
