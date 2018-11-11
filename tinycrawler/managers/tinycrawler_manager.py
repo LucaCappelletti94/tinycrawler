@@ -1,8 +1,8 @@
 from multiprocessing.managers import BaseManager
 import multiprocessing
-from ..statistics import Statistics
-from ..log import Log
-from ..job import UrlJob, FileJob, ProxyJob, RobotsJob
+from ..statistics import Statistics as OldStatistics
+from ..log import Log as OldLog
+from ..job import UrlJob as OldUrlJob, FileJob as OldFileJob, ProxyJob as OldProxyJob, RobotsJob as OldRobotsJob
 
 backup_autoproxy = multiprocessing.managers.AutoProxy
 
@@ -18,28 +18,17 @@ multiprocessing.managers.AutoProxy = redefined_autoproxy
 
 class TinyCrawlerManager(BaseManager):
 
-    def Log(self, path: str):
-        pass
-
-    def Statistics(self):
-        pass
-
-    def UrlJob(self, statistics: Statistics, bloom_filters_number: int, bloom_filters_capacity: int):
-        pass
-
-    def FileJob(self, path: str, statistics: Statistics):
-        pass
-
-    def ProxyJob(self, statistics: Statistics, logger: Log):
-        pass
-
-    def RobotsJob(self, statistics: Statistics, logger: Log):
-        pass
+    Log = OldLog.__init__
+    Statistics = OldStatistics.__init__
+    UrlJob = OldUrlJob.__init__
+    FileJob = OldFileJob.__init__
+    ProxyJob = OldProxyJob.__init__
+    RobotsJob = OldRobotsJob.__init__
 
 
-TinyCrawlerManager.register('Statistics', Statistics)
-TinyCrawlerManager.register('Log', Log)
-TinyCrawlerManager.register('UrlJob', UrlJob)
-TinyCrawlerManager.register('FileJob', FileJob)
-TinyCrawlerManager.register('ProxyJob', ProxyJob)
-TinyCrawlerManager.register('RobotsJob', RobotsJob)
+TinyCrawlerManager.register('Statistics', OldStatistics)
+TinyCrawlerManager.register('Log', OldLog)
+TinyCrawlerManager.register('UrlJob', OldUrlJob)
+TinyCrawlerManager.register('FileJob', OldFileJob)
+TinyCrawlerManager.register('ProxyJob', OldProxyJob)
+TinyCrawlerManager.register('RobotsJob', OldRobotsJob)
