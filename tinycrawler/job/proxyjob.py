@@ -151,7 +151,7 @@ class ProxyJob(Job):
     def _proxy_data_to_proxy(self, proxy_data):
         """Return proxy urls obtained from proxy data."""
         support = proxy_data["support"]
-        url = "://%s:%s" % (proxy_data["ip"], proxy_data["port"])
+        url = "://{ip}:{port}".format(**proxy_data)
 
         proxy = {}
 
