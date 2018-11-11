@@ -10,6 +10,7 @@ from requests.exceptions import (ConnectionError, SSLError, Timeout,
                                  TooManyRedirects)
 
 from ..log import Log
+from ..statistics import Statistics
 from .job import Job
 
 
@@ -27,13 +28,12 @@ class ProxyJob(Job):
     CACHE_LIFETIME = 2 * 24 * 60 * 60
     CACHE_FILENAME = "tmp_tested_proxy.json"
 
-    def __init__(self, statistics, logger: Log):
+    def __init__(self, logger: Log, statistics: Statistics):
         """Handle Dic ProxyJob dispatching with timeouts."""
-        super().__init__("proxies", "proxy", statistics)
+        super().__init__("proxies", "proxy", logger, statistics)
         self.__put(self.LOCAL)
         self._test_url = None
         self._path = None
-        self._logger = logger
 
     def __get(self):
         """Private get method for ProxyJob that handle timestamp."""

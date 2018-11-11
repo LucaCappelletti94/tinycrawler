@@ -2,8 +2,9 @@
 from multiprocessing import Lock
 from queue import Empty, Queue
 from time import sleep, time
-
+import traceback
 from ..statistics import Speed, Time, Statistics
+from ..log import Log
 
 
 class Job(Queue):
@@ -11,12 +12,14 @@ class Job(Queue):
 
     ATTEMPTS = 5
 
-    def __init__(self, name:str, unit:str, statistics:Statistics):
+    def __init__(self, name: str, unit: str, logger: Log, statistics: Statistics):
         """Handle Job dispatching."""
         super().__init__()
         self._callback = None
         self._counter = 0
         self._name = name
+        self._time = Time()
+        self._logger = logger
         self._statistics = statistics
         self._growing_speed = Speed(unit)
         self._shrinking_speed = Speed(unit)
@@ -40,7 +43,7 @@ class Job(Queue):
         self._statistics.set(self._name, "Shrinking speed",
                              self._shrinking_speed.get_formatted_speed())
         self._statistics.set("time", "Remaining {name} time".format(name=self._name),
-                             Time.get_remaining_time(self._growing_speed.get_speed(), self._shrinking_speed.get_speed(), self.len()))
+                             self._time.get_remaining_time(self._growing_speed.get_speed(), self._shrinking_speed.get_speed(), self.len()))
 
     def put(self, value):
         """Add element to jobs, increase counter and update handler."""

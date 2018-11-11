@@ -1,19 +1,21 @@
 """Handle FileJob."""
 from ..statistics import Speed, Statistics
 from .job import Job
+from ..log import Log
 
 
 class FileJob(Job):
     """Handle FileJob."""
 
-    def __init__(self, name: str, statistics: Statistics):
-        super().__init__(name, "document", statistics)
+    def __init__(self, name: str, logger: Log, statistics: Statistics):
+        super().__init__(name, "document", logger, statistics)
         self._growing_data_speed = Speed("B")
         self._shrinking_data_speed = Speed("B")
 
     def _update_put_statistics(self, value):
         super()._update_put_statistics(value)
-        self._statistics.add(self._name, "Total %s" % self._name)
+        self._statistics.add(
+            self._name, "Total {name}".format(name=self._name))
         self._growing_data_speed.update(len(value.text))
         self._statistics.set(self._name, "Growing data speed",
                              self._growing_data_speed.get_formatted_speed())

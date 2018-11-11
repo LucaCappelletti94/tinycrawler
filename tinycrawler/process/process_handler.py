@@ -33,7 +33,7 @@ class ProcessHandler:
 
     def enough(self, c):
         n = self.alives()
-        return n * 50 > c or n >= self.MAXIMUM_PROCESSES
+        return n * 50 > c or n > self.MAXIMUM_PROCESSES
 
     def _get_name(self):
         """Return new process identifier name."""
@@ -52,18 +52,22 @@ class ProcessHandler:
         while(True):
             try:
                 job = self._jobs.get()
+                self._statistics.add("processes", self._name + " working")
             except Empty:
                 self._log_finish_queue(name)
                 break
-            self._statistics.add("processes", self._name + " working")
+            except KeyboardInterrupt:
+                break
+            except Exception:
+                self._log_process_exception(name)
+
             try:
                 self._target(job)
-            except KeyboardInterrupt:
-                pass
-            except Exception as e:
-                self._log_process_exception(name)
-            finally:
                 self._statistics.remove("processes", self._name + " working")
+            except KeyboardInterrupt:
+                break
+            except Exception:
+                self._log_process_exception(name)
 
     def _job_starter(self, name):
         """Generic process wrapper."""

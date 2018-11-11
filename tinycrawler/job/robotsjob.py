@@ -9,7 +9,7 @@ from urllib.robotparser import RobotFileParser
 class RobotsJob(dict):
     """Handle RobotsJob."""
 
-    def __init__(self, statistics: Statistics, logger: Log):
+    def __init__(self, logger: Log, statistics: Statistics):
         self._statistics, self._logger = statistics, logger
 
     def can_fetch(self, url: str)->bool:

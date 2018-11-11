@@ -2,7 +2,6 @@ from time import time
 
 
 class Speed:
-    SECONDS = "s"
     INTERVAL = 1 * 60
 
     def __init__(self, unit):
@@ -24,12 +23,12 @@ class Speed:
             speed /= 1024
 
         if abs(speed) > 1:
-            unit = "%s/%s" % (self._unit, self.SECONDS)
-        elif speed == 0:
-            unit = "%s/%s" % (self.SECONDS, self._unit)
+            unit_pattern = "{unit}/{seconds}"
         else:
-            unit = "%s/%s" % (self.SECONDS, self._unit)
+            unit_pattern = "{seconds}/{unit}"
             speed = 1 / speed
+
+        unit = unit_pattern.format(seconds="s", unit=self._unit)
 
         return "%s%s %s" % (round(speed, 2), u, unit)
 
@@ -43,9 +42,6 @@ class Speed:
                 break
             total += info["value"]
         self._total = self._total[i:]
-
-        if delta == 0:
-            return 0
 
         return total / delta
 

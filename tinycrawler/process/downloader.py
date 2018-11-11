@@ -55,7 +55,8 @@ class Downloader(ProcessHandler):
                 self._files.put(response)
                 self._graph.put(response)
                 break
-            self._statistics.add("error", "error code %s" % status)
+            self._statistics.add(
+                "error", "error code {status}".format(status=status))
             if self._retry_policy(status):
                 attempts += 1
                 continue
@@ -63,4 +64,5 @@ class Downloader(ProcessHandler):
 
         if attempts == self.MAX_ATTEMPTS:
             self._statistics.add("error", "Maximum attempts")
-            self._logger.log("Unable to download webpage at %s" % url)
+            self._logger.log(
+                "Unable to download webpage at {url}".format(url=url))

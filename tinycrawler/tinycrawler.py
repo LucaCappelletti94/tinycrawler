@@ -23,20 +23,21 @@ class TinyCrawler:
 
         self._tinycrawler_manager = TinyCrawlerManager()
         self._tinycrawler_manager.start()
+        self._time = Time()
 
         self._logger = self._tinycrawler_manager.Log(self._directory)
         self._statistics = self._tinycrawler_manager.Statistics()
 
         self._urls = self._tinycrawler_manager.UrlJob(
-            self._statistics, bloom_filters_number, bloom_filters_capacity)
+            self._logger, self._statistics, bloom_filters_number, bloom_filters_capacity)
         self._files = self._tinycrawler_manager.FileJob(
-            "data extraction", self._statistics)
+            "data extraction", self._logger, self._statistics)
         self._graph = self._tinycrawler_manager.FileJob(
-            "urls extraction", self._statistics)
+            "urls extraction", self._logger, self._statistics)
         self._robots = self._tinycrawler_manager.RobotsJob(
-            self._statistics, self._logger)
+            self._logger, self._statistics)
         self._proxies = self._tinycrawler_manager.ProxyJob(
-            self._statistics, self._logger)
+            self._logger, self._statistics)
 
         self._start_file_parser()
         self._start_url_parser(use_beautiful_soup)
@@ -90,7 +91,7 @@ class TinyCrawler:
         try:
             while True:
                 self._statistics.set("time", "Elapsed time",
-                                     Time.seconds_to_string(time() - start))
+                                     self._time.seconds_to_string(time() - start))
                 sleep(0.5)
                 if self._statistics.is_everything_dead():
                     cryouts += 1
