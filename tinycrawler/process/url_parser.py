@@ -17,6 +17,7 @@ class UrlParser(Parser):
         super().__init__(
             "{path}/graph".format(path=path), "urls parser", jobs)
         self._val = self._default_url_validator
+        self._follow_robots_txt = follow_robots_txt
         self._urls = urls
         self._robots = robots
         if use_beautiful_soup:
@@ -41,7 +42,7 @@ class UrlParser(Parser):
         url = response.url
         for partial_link in self._url_extractor(response):
             link = urljoin(url, partial_link)
-            if not self._urls.contains(link) and valid(link) and self._val(link, logger, statistics) and self._robots.can_fetch(link):
+            if not self._urls.contains(link) and valid(link) and self._val(link, logger, statistics) and (not self._follow_robots_txt or self._robots.can_fetch(link)):
                 self._urls.put(link)
 
     def set_validator(self, url_validator: Callable[[str, Log, Statistics], bool]):
