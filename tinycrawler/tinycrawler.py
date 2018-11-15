@@ -13,7 +13,7 @@ from .statistics import Statistics, Time
 class TinyCrawler:
     CRYOUTS = 4
 
-    def __init__(self, use_cli: bool=False, directory: str="downloaded_websites", bloom_filters_number: int=3, bloom_filters_capacity: int=1e9, use_beautiful_soup: bool=False):
+    def __init__(self, use_cli: bool=False, directory: str="downloaded_websites", bloom_filters_number: int=3, bloom_filters_capacity: int=1e9, use_beautiful_soup: bool=False, follow_robots_txt: bool=True):
 
         self._use_cli = use_cli
         self._directory = directory
@@ -40,7 +40,7 @@ class TinyCrawler:
             self._logger, self._statistics)
 
         self._start_file_parser()
-        self._start_url_parser(use_beautiful_soup)
+        self._start_url_parser(use_beautiful_soup, follow_robots_txt)
         self._start_downloader()
 
         if self._use_cli:
@@ -54,13 +54,14 @@ class TinyCrawler:
         self._file_parser.set_statistics(self._statistics)
         self._file_parser.set_logger(self._logger)
 
-    def _start_url_parser(self, use_beautiful_soup: bool):
+    def _start_url_parser(self, use_beautiful_soup: bool, follow_robots_txt: bool):
         self._url_parser = UrlParser(
             path=self._directory,
             jobs=self._graph,
             urls=self._urls,
             robots=self._robots,
-            use_beautiful_soup=use_beautiful_soup
+            use_beautiful_soup=use_beautiful_soup,
+            follow_robots_txt=follow_robots_txt
         )
         self._url_parser.set_statistics(self._statistics)
         self._url_parser.set_logger(self._logger)

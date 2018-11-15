@@ -13,7 +13,7 @@ from ..job import UrlJob, FileJob, RobotsJob
 
 class UrlParser(Parser):
 
-    def __init__(self, path: str, jobs: FileJob, urls: UrlJob, robots: RobotsJob, use_beautiful_soup: bool):
+    def __init__(self, path: str, jobs: FileJob, urls: UrlJob, robots: RobotsJob, use_beautiful_soup: bool, follow_robots_txt: bool):
         super().__init__(
             "{path}/graph".format(path=path), "urls parser", jobs)
         self._val = self._default_url_validator
