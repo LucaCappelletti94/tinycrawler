@@ -21,6 +21,7 @@ class UrlJob(Job):
     def put(self, value: str):
         """Add element to jobs using dictionary keys."""
         # if not self.contains(value):
+        self._logger.log("Adding {url}".format(url=value))
         self._bloom.put(value)
         super().put(value)
 
