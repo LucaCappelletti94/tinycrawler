@@ -17,8 +17,8 @@ from tinycrawler import TinyCrawler
 path = os.path.dirname(__file__) + "/../test_data/base_test.html"
 empty_proxy_path = os.path.dirname(__file__) + "/../test_data/empty_proxy.json"
 
-WEBSITE_SIZE = 500
-LINKS_PER_PAGE = 10
+WEBSITE_SIZE = 2000
+LINKS_PER_PAGE = 135
 download_directory = "local_test"
 
 root = "https://www.example.com"
