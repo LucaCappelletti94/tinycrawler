@@ -13,7 +13,7 @@ from .statistics import Statistics, Time
 class TinyCrawler:
     CRYOUTS = 4
 
-    def __init__(self, use_cli: bool=False, directory: str="downloaded_websites", bloom_filters_number: int=3, bloom_filters_capacity: int=1e9, use_beautiful_soup: bool=False, follow_robots_txt: bool=True):
+    def __init__(self, use_cli: bool=True, directory: str="downloaded_websites", bloom_filters_number: int=3, bloom_filters_capacity: int=1e9, use_beautiful_soup: bool=False, follow_robots_txt: bool=True):
 
         self._use_cli = use_cli
         self._directory = directory
