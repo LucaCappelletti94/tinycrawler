@@ -33,44 +33,86 @@ Usage example
 
 .. code:: python
 
-    from tinycrawler import TinyCrawler
-    from bs4 import BeautifulSoup
+    from tinycrawler import TinyCrawler, Log, Statistics
+    from bs4 import BeautifulSoup, SoupStrainer
+    import pandas as pd
+    from requests import Response
+    from urllib.parse import urlparse
+    import os
+    import json
 
 
-    def url_validator(url:str)->bool:
-        """Return if page at given url is to be downloaded."""
-        if "http://www.example.com/my/path" not in url:
-            return False
-
-        return True
-
-    def file_parser(response: 'Response', logger: 'Log')->str:
-        """Parse downloaded page into document to be saved.
-            response: 'Response', response object from requests.models.Response
-            logger: 'Log', a logger to log eventual errors or infos
-
-            Return None if the page should not be saved.
-        """
-        
-        soup = BeautifulSoup(response.text, 'lxml')
-
-        example = soup.find("div", {"class": "example"})
-        if example is None:
-            return None
-
-        return example.get_text()
+    def html_sanitization(html: str) -> str:
+        """Return sanitized html."""
+        return html.replace("WRONG CONTENT", "RIGHT CONTENT")
 
 
-    my_crawler = TinyCrawler(
-        use_cli=True, # True to use the command line interface, False otherwise
-        directory="my_path_for_website" # Path for where to save website
-    )
+    def get_product_name(response: Response) -> str:
+        """Return product name from given Response object."""
+        return response.url.split("/")[-1].split(".html")[0]
 
-    my_crawler.load_proxies("path/to/my/proxies.json")
-    my_crawler.set_url_validator(url_validator)
-    my_crawler.set_file_parser(file_parser)
 
-    my_crawler.run("http://www.example.com/my/path/index.html")
+    def get_product_category(soup: BeautifulSoup) -> str:
+        """Return product category from given BeautifulSoup object."""
+        return soup.find_all("span")[-2].get_text()
+
+
+    def parse_tables(html: str, path: str, strainer: SoupStrainer):
+        """Parse table at given strained html object saving them as csv at given path."""
+        for table in BeautifulSoup(
+                html, "lxml", parse_only=strainer).find_all("table"):
+            df = pd.read_html(html_sanitization(str(table)))[0].drop(0)
+            table_name = df.columns[0]
+            df.set_index(table_name, inplace=True)
+            df.to_csv("{path}/{table_name}.csv".format(
+                path=path, table_name=table_name))
+
+
+    def parse_metadata(html: str, path: str, strainer: SoupStrainer):
+        """Parse metadata from given strained html and saves them as json at given path."""
+        with open("{path}/metadata.json".format(path=path), "w") as f:
+            json.dump({
+                "category":
+                get_product_category(
+                    BeautifulSoup(html, "lxml", parse_only=strainer))
+            }, f)
+
+
+    def parse(response: Response):
+        path = "{root}/{product}".format(
+            root=urlparse(response.url).netloc, product=get_product_name(response))
+        if not os.path.exists(path):
+            os.makedirs(path)
+        parse_tables(
+            response.text, path,
+            SoupStrainer(
+                "table",
+                attrs={"class": "table table-hover table-condensed table-fixed"}))
+
+        parse_metadata(
+            response.text, path,
+            SoupStrainer("span"))
+
+
+    def url_validator(url: str, logger: Log, statistics: Statistics)->bool:
+        """Return a boolean representing if the crawler should parse given url."""
+        return url.startswith("https://www.example.com/it/alimenti"")
+
+
+    def file_parser(response: Response, logger: Log, statistics):
+        if response.url.endswith(".html"):
+            parse(response)
+
+
+    seed = "https://www.example.com/it/alimenti"
+    crawler = TinyCrawler(follow_robots_txt=False)
+    crawler.set_file_parser(file_parser)
+    crawler.set_url_validator(url_validator)
+
+    crawler.load_proxies("http://mytestserver.domain", "proxies.json")
+
+    crawler.run(seed)
+
 
 
 Proxies are expected to be in the following format:
