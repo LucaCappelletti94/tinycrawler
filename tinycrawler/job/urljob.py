@@ -18,12 +18,12 @@ class UrlJob(Job):
         self._statistics.add(
             self._name, "Total {name}".format(name=self._name))
 
-    def put(self, value: str):
+    def put(self, values: str):
         """Add element to jobs using dictionary keys."""
-        # if not self.contains(value):
-        self._logger.log("Adding {url}".format(url=value))
-        self._bloom.put(value)
-        super().put(value)
+        for value in values:
+            if not self.contains(value):
+                self._bloom.put(value)
+                super().put(value)
 
     def contains(self, value: str):
         return value in self._bloom

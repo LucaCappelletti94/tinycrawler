@@ -77,11 +77,11 @@ class TinyCrawler:
         self._downloader.set_logger(self._logger)
 
     def _add_seed(self, seed):
+        self._statistics.set("info", "Working on", get_domain(seed[0]))
         if isinstance(seed, str):
             self._statistics.set("info", "Working on", get_domain(seed))
-            self._urls.put(seed)
+            self._urls.put([seed])
         elif isinstance(seed, list):
-            self._statistics.set("info", "Working on", get_domain(seed[0]))
             [self._urls.put(s) for s in seed]
         else:
             raise ValueError("The given seed is not valid.")

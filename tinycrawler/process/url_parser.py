@@ -40,10 +40,12 @@ class UrlParser(Parser):
 
     def _parser(self, response: Response, logger: Log, statistics: Statistics):
         url = response.url
+        urls = []
         for partial_link in self._url_extractor(response):
             link = urljoin(url, partial_link)
-            if not self._urls.contains(link) and valid(link) and self._val(link, logger, statistics) and (not self._follow_robots_txt or self._robots.can_fetch(link)):
-                self._urls.put(link)
+            if valid(link) and self._val(link, logger, statistics) and (not self._follow_robots_txt or self._robots.can_fetch(link)):
+                urls.append(link)
+        self._urls.put(urls)
 
     def set_validator(self, url_validator: Callable[[str, Log, Statistics], bool]):
         """Set custom url validator.
