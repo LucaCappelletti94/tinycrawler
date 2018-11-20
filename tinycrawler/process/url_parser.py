@@ -38,14 +38,14 @@ class UrlParser(Parser):
         for partial_link in re.findall(self._regex, response.text):
             yield partial_link
 
+    def _valid_url(self, url: str, logger: Log, statistics: Statistics):
+        return valid(url) and self._val(url, logger, statistics) and (not self._follow_robots_txt or self._robots.can_fetch(url))
+
     def _parser(self, response: Response, logger: Log, statistics: Statistics):
-        url = response.url
-        urls = []
-        for partial_link in self._url_extractor(response):
-            link = urljoin(url, partial_link)
-            if valid(link) and self._val(link, logger, statistics) and (not self._follow_robots_txt or self._robots.can_fetch(link)):
-                urls.append(link)
-        self._urls.put(urls)
+        urls = [urljoin(response.url, partial_link) for partial_link in self._url_extractor(
+            response) if self._valid_url(urljoin(response.url, partial_link), logger, statistics)]
+        if urls:
+            self._urls.put(urls)
 
     def set_validator(self, url_validator: Callable[[str, Log, Statistics], bool]):
         """Set custom url validator.
