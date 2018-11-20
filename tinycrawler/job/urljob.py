@@ -18,7 +18,7 @@ class UrlJob(Job):
         self._statistics.add(
             self._name, "Total {name}".format(name=self._name))
 
-    def put(self, values: str):
+    def put(self, values: list):
         """Add element to jobs using dictionary keys."""
         self._lock.acquire()
         new_values = []
