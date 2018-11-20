@@ -20,10 +20,14 @@ class UrlJob(Job):
 
     def put(self, values: str):
         """Add element to jobs using dictionary keys."""
+        self._lock.acquire()
+        new_values = []
         for value in values:
             if not self.contains(value):
                 self._bloom.put(value)
-                super().put(value)
+                new_values.append(value)
+        self._lock.release()
+        super().put(new_values)
 
     def contains(self, value: str):
         return value in self._bloom

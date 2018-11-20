@@ -29,10 +29,10 @@ class Job(Queue):
         """Set the jobs handler to dynamically grow processes number"""
         self._callback = handler
 
-    def _update_put_statistics(self, value):
+    def _update_put_statistics(self, values):
         self._statistics.add(
             self._name, "Queue {name}".format(name=self._name))
-        self._growing_speed.update(1)
+        self._growing_speed.update(len(values))
         self._statistics.set(self._name, "Growing speed",
                              self._growing_speed.get_formatted_speed())
 
@@ -45,13 +45,16 @@ class Job(Queue):
         self._statistics.set("time", "Remaining {name} time".format(name=self._name),
                              self._time.get_remaining_time(self._growing_speed.get_speed(), self._shrinking_speed.get_speed(), self.len()))
 
-    def put(self, value):
+    def put(self, values):
         """Add element to jobs, increase counter and update handler."""
+        if not isinstance(values, list):
+            values = [values]
         self._lock.acquire()
-        self._counter += 1
-        super()._put(value)
+        self._counter += len(values)
+        for value in values:
+            super()._put(value)
         self._lock.release()
-        self._update_put_statistics(value)
+        self._update_put_statistics(values)
         if self._callback and not self._callback.enough(self.len()):
             self._callback.add_process()
 
