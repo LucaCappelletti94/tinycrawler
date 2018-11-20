@@ -13,10 +13,10 @@ class UrlJob(Job):
         self._bloom = Bloom(n=bloom_filters_number,
                             capacity=bloom_filters_capacity)
 
-    def _update_put_statistics(self, value):
-        super()._update_put_statistics(value)
+    def _update_put_statistics(self, values):
+        super()._update_put_statistics(values)
         self._statistics.add(
-            self._name, "Total {name}".format(name=self._name))
+            self._name, "Total {name}".format(name=self._name), value=len(values))
 
     def put(self, values: list):
         """Add element to jobs using dictionary keys."""

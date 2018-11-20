@@ -31,7 +31,7 @@ class Job(Queue):
 
     def _update_put_statistics(self, values):
         self._statistics.add(
-            self._name, "Queue {name}".format(name=self._name))
+            self._name, "Queue {name}".format(name=self._name), value=len(values))
         self._growing_speed.update(len(values))
         self._statistics.set(self._name, "Growing speed",
                              self._growing_speed.get_formatted_speed())

@@ -15,7 +15,7 @@ class FileJob(Job):
     def _update_put_statistics(self, values):
         super()._update_put_statistics(values)
         self._statistics.add(
-            self._name, "Total {name}".format(name=self._name))
+            self._name, "Total {name}".format(name=self._name), value=len(values))
         self._growing_data_speed.update(
             sum([len(str(value)) for value in values])
         )
