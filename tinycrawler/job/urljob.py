@@ -23,11 +23,8 @@ class UrlJob(Job):
         self._lock.acquire()
         new_values = []
         for value in values:
-            if not self.contains(value):
+            if value not in self._bloom:
                 self._bloom.put(value)
                 new_values.append(value)
         self._lock.release()
         super().put(new_values)
-
-    def contains(self, value: str):
-        return value in self._bloom
