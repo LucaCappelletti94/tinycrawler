@@ -17,7 +17,7 @@ class FileJob(Job):
         self._statistics.add(
             self._name, "Total {name}".format(name=self._name))
         self._growing_data_speed.update(
-            sum([len(value) for value in values])
+            sum([len(value.text) for value in values])
         )
         self._statistics.set(self._name, "Growing data speed",
                              self._growing_data_speed.get_formatted_speed())
