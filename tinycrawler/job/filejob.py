@@ -12,11 +12,13 @@ class FileJob(Job):
         self._growing_data_speed = Speed("B")
         self._shrinking_data_speed = Speed("B")
 
-    def _update_put_statistics(self, value):
-        super()._update_put_statistics(value)
+    def _update_put_statistics(self, values):
+        super()._update_put_statistics(values)
         self._statistics.add(
             self._name, "Total {name}".format(name=self._name))
-        self._growing_data_speed.update(len(value.text))
+        self._growing_data_speed.update(
+            sum([len(value) for value in values])
+        )
         self._statistics.set(self._name, "Growing data speed",
                              self._growing_data_speed.get_formatted_speed())
 
