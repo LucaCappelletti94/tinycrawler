@@ -17,10 +17,6 @@ class Downloader(ProcessHandler):
     def enough(self, c):
         return super().enough(c) or self._proxies.len() <= self.alives()
 
-    def set_retry_policy(self, retry_policy):
-        """Set retry policy."""
-        self._retry_policy = retry_policy
-
     def _has_content_type(self, headers):
         return 'content-type' in headers
 
