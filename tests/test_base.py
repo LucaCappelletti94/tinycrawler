@@ -43,6 +43,11 @@ def example_mock(url, request):
     rand = random.Random()
     rand.seed(seed)
 
+    if seed == 101:
+        return response(status_code=404)
+    if seed == 100:
+        return response(content="", headers={'content-type': 'application/pdf'})
+
     with open(model_path, "r") as f_in, open("{generation_path}/{seed}.html".format(generation_path=generation_path, seed=seed), "w") as f_out:
         body = f_in.read().format(PLACEHOLDER=generate_links(
             LINKS, rand, root, SIZE))
@@ -69,11 +74,11 @@ def test_base_tinycrawler():
     seed = "{root}/{website_size}".format(root=root, website_size=SIZE)
     with HTTMock(example_mock):
         TinyCrawler(file_parser=file_parser,
-                    url_validator=url_validator, proxy_timeout=0).run(seed)
+                    url_validator=url_validator, proxy_timeout=0, use_cli=False).run(seed)
 
     downloaded_files_number = len([f for _, _, files in os.walk(
         download_path) for f in files if f.endswith(".html")])
     differences = dircmp(download_path, generation_path).diff_files
     purge(test_root)
 
-    assert not differences and downloaded_files_number == SIZE+1
+    assert not differences and downloaded_files_number == SIZE - 1
