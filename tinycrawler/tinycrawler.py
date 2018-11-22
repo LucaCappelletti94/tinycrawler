@@ -53,14 +53,10 @@ class TinyCrawler:
             self._cli = Cli(self._statistics, self._logger)
 
     def _add_seed(self, seed):
-        self._statistics.set("info", "Working on", get_domain(seed[0]))
         if isinstance(seed, str):
-            self._statistics.set("info", "Working on", get_domain(seed))
-            self._urls.put([seed])
-        elif isinstance(seed, list):
-            [self._urls.put(s) for s in seed]
-        else:
-            raise ValueError("The given seed is not valid.")
+            seed = [seed]
+        self._urls.put(seed)
+        self._statistics.set("info", "Working on", get_domain(seed[0]))
 
     def _sleep_loop(self):
         start = time()
