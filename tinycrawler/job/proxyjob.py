@@ -3,7 +3,6 @@ import json
 import os
 from multiprocessing import Pool, cpu_count
 from queue import Empty
-import traceback
 from time import sleep, time
 
 from requests import get as require
@@ -69,14 +68,10 @@ class ProxyJob(Job):
 
     def use(self, url):
         """Download page at given url using a proxy."""
-        try:
-            proxy = self.__get()
-            result = self._require(url, proxy)
-            self.__put(proxy)
-            return result
-        except Exception as e:
-            print(traceback.print_exc())
-            raise e
+        proxy = self.__get()
+        result = self._require(url, proxy)
+        self.__put(proxy)
+        return result
 
     def _cache_is_valid(self):
         return os.path.getctime(self.CACHE_FILENAME) > time() - self.CACHE_LIFETIME
