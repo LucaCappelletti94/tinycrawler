@@ -74,7 +74,7 @@ def test_base_tinycrawler():
     seed = "{root}/{website_size}".format(root=root, website_size=SIZE)
     with HTTMock(example_mock):
         TinyCrawler(file_parser=file_parser,
-                    url_validator=url_validator, proxy_timeout=0, use_cli=False).run(seed)
+                    url_validator=url_validator, proxy_timeout=0).run(seed)
 
     downloaded_files_number = len([f for _, _, files in os.walk(
         download_path) for f in files if f.endswith(".html")])
