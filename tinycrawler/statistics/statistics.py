@@ -33,10 +33,6 @@ class Statistics:
         self.info[category][name] -= value
         self._lock.release()
 
-    def get(self, category: str, name: str):
-        """Remove value to category/name."""
-        return self.info[category][name]
-
     def get_info(self):
         return self.info
 
