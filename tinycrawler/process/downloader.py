@@ -47,9 +47,6 @@ class Downloader(ProcessHandler):
                 break
             self._statistics.add(
                 "error", "error code {status}".format(status=status))
-            if self._retry_policy(status):
-                attempts += 1
-                continue
             break
 
         if attempts == self.MAX_ATTEMPTS:
