@@ -37,6 +37,4 @@ class Statistics:
         return self.info
 
     def is_everything_dead(self):
-        if 'processes' not in self.info:
-            return False
         return not sum([v for v in self.info['processes'].values()])
