@@ -40,13 +40,11 @@ class Downloader(ProcessHandler):
 
             if self._response_is_binary(response.headers):
                 self._statistics.add("error", "binary files")
-                break
-
-            if status == self.SUCCESS_STATUS:
+            elif status == self.SUCCESS_STATUS:
                 self._files.put(response)
-                break
-            self._statistics.add(
-                "error", "error code {status}".format(status=status))
+            else:
+                self._statistics.add(
+                    "error", "error code {status}".format(status=status))
             break
 
         if attempts == self.MAX_ATTEMPTS:
