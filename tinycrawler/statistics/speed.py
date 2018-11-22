@@ -24,13 +24,17 @@ class Speed:
 
         if abs(speed) > 1:
             unit_pattern = "{unit}/{seconds}"
+            speed_format = round(speed, 2)
         else:
             unit_pattern = "{seconds}/{unit}"
-            speed = 1 / speed
+            if speed == 0:
+                speed_format = "infinite"
+            else:
+                speed_format = round(1/speed, 2)
 
         unit = unit_pattern.format(seconds="s", unit=self._unit)
 
-        return "%s%s %s" % (round(speed, 2), u, unit)
+        return "{speed}{u} {unit}".format(speed=speed_format, u=u, unit=unit)
 
     def get_speed(self):
         now = time()
