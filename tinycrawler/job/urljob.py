@@ -1,17 +1,19 @@
 """Handle UrlJob."""
 from .job import Job
-from ..bloom import Bloom
+from pybloom_live import BloomFilter
 from ..statistics import Statistics
 from ..log import Log
+import traceback
 
 
 class UrlJob(Job):
     """Handle UrlJob."""
 
-    def __init__(self, logger: Log, statistics: Statistics, bloom_filters_number: int, bloom_filters_capacity: int):
+    def __init__(self, logger: Log, statistics: Statistics, bloom_filters_capacity: int):
         super().__init__("Urls queue", "urls", logger, statistics)
-        self._bloom = Bloom(n=bloom_filters_number,
-                            capacity=bloom_filters_capacity)
+        self._bloom = BloomFilter(
+            capacity=bloom_filters_capacity
+        )
 
     def _update_put_statistics(self, values):
         super()._update_put_statistics(values)
@@ -24,7 +26,12 @@ class UrlJob(Job):
         new_values = []
         for value in values:
             if value not in self._bloom:
-                self._bloom.put(value)
+                self._bloom.add(value)
                 new_values.append(value)
         self._lock.release()
-        super().put(new_values)
+        try:
+            super().put(new_values)
+        except Exception as e:
+            self._logger.error(
+                "URLJOB PUT ERROR EXCEPTION GUARDA QUA: %s" % (traceback.format_exc()))
+            raise e
