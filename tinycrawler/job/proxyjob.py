@@ -164,10 +164,6 @@ class ProxyJob(Job):
 
         return proxy
 
-    def set_proxy_timeout(self, proxy_timeout):
-        """"Set the test server."""
-        self._proxy_timeout = proxy_timeout
-
     def set_test_url(self, test_server):
         """"Set the test server."""
         self._test_url = test_server
