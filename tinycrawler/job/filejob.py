@@ -7,8 +7,8 @@ from ..log import Log
 class FileJob(Job):
     """Handle FileJob."""
 
-    def __init__(self, name: str, logger: Log, statistics: Statistics):
-        super().__init__(name, "document", logger, statistics)
+    def __init__(self, statistics: Statistics):
+        super().__init__("Pages", "pages", statistics)
         self._growing_data_speed = Speed("B")
         self._shrinking_data_speed = Speed("B")
 

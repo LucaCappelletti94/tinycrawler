@@ -1,23 +1,18 @@
 from multiprocessing import cpu_count
 
 from .process_handler import ProcessHandler
+from ..job import UrlJob, ProxyJob, FileJob
+from ..statistics import Statistics
 
 
 class Downloader(ProcessHandler):
     MAX_ATTEMPTS = 50
     SUCCESS_STATUS = 200
 
-    def __init__(self, urls, proxies, files, graph):
-        super().__init__("downloader", urls)
-        self._proxies = proxies
-        self._files = files
-        self._graph = graph
+    def __init__(self, jobs: UrlJob, proxies: ProxyJob, files: FileJob, statistics: Statistics):
+        super().__init__("downloader", jobs, statistics)
+        self._proxies, self._files = proxies, files
         self.MAXIMUM_PROCESSES = cpu_count() * 4
-        self._retry_policy = self._default_retry_policy
-
-    def _default_retry_policy(self, status):
-        """Define what to do in case of error."""
-        return False
 
     def enough(self, c):
         return super().enough(c) or self._proxies.len() <= self.alives()
@@ -53,7 +48,6 @@ class Downloader(ProcessHandler):
 
             if status == self.SUCCESS_STATUS:
                 self._files.put(response)
-                self._graph.put(response)
                 break
             self._statistics.add(
                 "error", "error code {status}".format(status=status))
@@ -64,5 +58,3 @@ class Downloader(ProcessHandler):
 
         if attempts == self.MAX_ATTEMPTS:
             self._statistics.add("error", "Maximum attempts")
-            self._logger.log(
-                "Unable to download webpage at {url}".format(url=url))

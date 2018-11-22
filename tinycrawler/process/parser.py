@@ -1,57 +1,30 @@
-import hashlib
-import json
-import os
-
-from ..statistics import Speed
+from urllib.parse import urljoin
 from .process_handler import ProcessHandler
 from ..log import Log
+from bs4 import BeautifulSoup
 from ..statistics import Statistics
+from ..job import UrlJob, FileJob, RobotsJob
 from requests import Response
+import validators
+from typing import Callable
 
 
 class Parser(ProcessHandler):
+    def __init__(self, jobs: FileJob, urls: UrlJob, robots: RobotsJob, file_parser: Callable[[str, BeautifulSoup, Log], None], url_validator: Callable[[str, Log], bool], statistics: Statistics, logger: Log, follow_robots_txt: bool):
+        super().__init__("Parser", jobs, statistics)
+        self._urls, self._robots, self._follow_robots_txt, self._file_parser,  self._url_validator, self._logger = urls, robots, follow_robots_txt, file_parser, url_validator, logger
 
-    def __init__(self, path, name, jobs):
-        super().__init__(name, jobs)
-        self._path = path
-        self._file_number = 0
-        self._counter = 0
-        self._writing_data_speed = Speed("B")
-        if not os.path.exists(path):
-            os.makedirs(path)
+    def _url_parser(self, page_url: str, soup: BeautifulSoup):
+        urls = []
+        for a in soup.findAll("a", href=True):
+            url = urljoin(page_url, a.get("href"))
+            if validators.url(url) and self._url_validator(url, self._logger) and (not self._follow_robots_txt or self._robots.can_fetch(url)):
+                urls.append(url)
+        if urls:
+            self._urls.put(urls)
 
     def _target(self, response: Response):
         """Parse the downloaded files, cleans them and extracts urls"""
-        url = response.url
-
-        filename = hashlib.md5(url.encode('utf-8')).hexdigest()
-        content = self._parser(response, self._logger, self._statistics)
-        if content is not None:
-            self._writing_data_speed.update(len(content))
-            self._statistics.set(self._name, "Writing data speed",
-                                 self._writing_data_speed.get_formatted_speed())
-            self._write(filename, {
-                "url": url,
-                "content": content
-            })
-
-    def _parser(self, response: Response, logger: Log, statistics: Statistics):
-        raise NotImplementedError(
-            "Method _parser must be implemented by subclasses.")
-
-    def _write(self, filename, content):
-        """Parse the downloaded files, cleans them and extracts urls"""
-        if self._file_number % 10000 == 0:
-            self._counter += 1
-            directory = "{path}/{counter}".format(
-                path=self._path, counter=self._counter)
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-
-        self._file_number += 1
-
-        path = "{path}/{counter}/{filename}.json".format(
-            path=self._path, counter=self._counter, filename=filename)
-
-        with open(path, "w") as f:
-            json.dump(content, f)
+        soup = BeautifulSoup(response.text, "html5lib")
+        self._url_parser(response.url, soup)
+        self._file_parser(response.url, soup, self._logger)

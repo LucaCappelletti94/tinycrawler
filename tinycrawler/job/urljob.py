@@ -9,8 +9,8 @@ import traceback
 class UrlJob(Job):
     """Handle UrlJob."""
 
-    def __init__(self, logger: Log, statistics: Statistics, bloom_filters_capacity: int):
-        super().__init__("Urls queue", "urls", logger, statistics)
+    def __init__(self, statistics: Statistics, bloom_filters_capacity: int):
+        super().__init__("Urls queue", "urls", statistics)
         self._bloom = BloomFilter(
             capacity=bloom_filters_capacity
         )

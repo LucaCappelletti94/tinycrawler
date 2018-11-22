@@ -3,6 +3,7 @@ import json
 import os
 from multiprocessing import Pool, cpu_count
 from queue import Empty
+import traceback
 from time import sleep, time
 
 from requests import get as require
@@ -24,16 +25,17 @@ class ProxyJob(Job):
                        'Chrome/45.0.2454.101 Safari/537.36'),
     }
     CONNECTION_TIMEOUT = 5
-    PROXY_TIMEOUT = 2
+    _proxy_timeout = 2
     CACHE_LIFETIME = 2 * 24 * 60 * 60
     CACHE_FILENAME = "tmp_tested_proxy.json"
 
-    def __init__(self, logger: Log, statistics: Statistics):
+    def __init__(self, statistics: Statistics, proxy_timeout: int):
         """Handle Dic ProxyJob dispatching with timeouts."""
-        super().__init__("proxies", "proxy", logger, statistics)
+        super().__init__("proxies", "proxy", statistics)
         self.__put(self.LOCAL)
         self._test_url = None
         self._path = None
+        self._proxy_timeout = proxy_timeout
 
     def __get(self):
         """Private get method for ProxyJob that handle timestamp."""
@@ -46,7 +48,7 @@ class ProxyJob(Job):
                 sleep(0.1)
         self._statistics.remove("processes", "Downloader waiting proxies")
         self._statistics.add(self._name, "Sleeping proxies")
-        sleep(max(0, self.PROXY_TIMEOUT + proxy["timestamp"] - time()))
+        sleep(max(0, self._proxy_timeout + proxy["timestamp"] - time()))
         self._statistics.remove(self._name, "Sleeping proxies")
         return proxy["data"]
 
@@ -67,10 +69,14 @@ class ProxyJob(Job):
 
     def use(self, url):
         """Download page at given url using a proxy."""
-        proxy = self.__get()
-        result = self._require(url, proxy)
-        self.__put(proxy)
-        return result
+        try:
+            proxy = self.__get()
+            result = self._require(url, proxy)
+            self.__put(proxy)
+            return result
+        except Exception as e:
+            print(traceback.print_exc())
+            raise e
 
     def _cache_is_valid(self):
         return os.path.getctime(self.CACHE_FILENAME) > time() - self.CACHE_LIFETIME
@@ -96,13 +102,7 @@ class ProxyJob(Job):
             self._name, "Total proxies to test", n)
 
         for i, proxy_data in enumerate(proxies_data):
-            self._logger.log(
-                "Testing proxy {i}/{n} with data:{data}.".format(
-                    i=i, n=n, data=proxy_data))
             proxy = self._test_proxy(proxy_data)
-            self._logger.log(
-                "Test {i}/{n} had result {result}.".format(
-                    i=i, n=n, result=bool(proxy)))
             self._statistics.add(
                 self._name, "Tested proxies")
             if proxy:
@@ -119,8 +119,6 @@ class ProxyJob(Job):
 
     def load(self):
         """Load and test the proxies in provided path."""
-        self._logger.log(
-            "Starting to load proxies from {path}.".format(path=self._path))
         if not self._path:
             return None
 
@@ -173,7 +171,7 @@ class ProxyJob(Job):
 
     def set_proxy_timeout(self, proxy_timeout):
         """"Set the test server."""
-        self.PROXY_TIMEOUT = proxy_timeout
+        self._proxy_timeout = proxy_timeout
 
     def set_test_url(self, test_server):
         """"Set the test server."""

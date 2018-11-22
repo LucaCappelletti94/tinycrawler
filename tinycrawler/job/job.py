@@ -12,14 +12,13 @@ class Job(Queue):
 
     ATTEMPTS = 5
 
-    def __init__(self, name: str, unit: str, logger: Log, statistics: Statistics):
+    def __init__(self, name: str, unit: str, statistics: Statistics):
         """Handle Job dispatching."""
         super().__init__()
         self._callback = None
         self._counter = 0
         self._name = name
         self._time = Time()
-        self._logger = logger
         self._statistics = statistics
         self._growing_speed = Speed(unit)
         self._shrinking_speed = Speed(unit)

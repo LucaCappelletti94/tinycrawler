@@ -1,5 +1,4 @@
 from .downloader import Downloader
-from .file_parser import FileParser
-from .url_parser import UrlParser
+from .parser import Parser
 
-__all__ = ['Downloader', 'FileParser', 'UrlParser']
+__all__ = ['Downloader', 'Parser']

@@ -3,12 +3,9 @@ from multiprocessing import Lock
 
 
 class Log:
-    def __init__(self, directory):
+    def __init__(self):
         self._lock = Lock()
-        self._path = "%s/error.log" % (directory)
-        logging.basicConfig(filename=self._path,  level=logging.INFO)
-        with open(self._path, 'w') as f:
-            pass
+        logging.basicConfig(filename="crawler.log",  level=logging.INFO)
 
     def _log(self, logger, message):
         self._lock.acquire()
