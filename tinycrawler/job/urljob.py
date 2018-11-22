@@ -29,9 +29,4 @@ class UrlJob(Job):
                 self._bloom.add(value)
                 new_values.append(value)
         self._lock.release()
-        try:
-            super().put(new_values)
-        except Exception as e:
-            self._logger.error(
-                "URLJOB PUT ERROR EXCEPTION GUARDA QUA: %s" % (traceback.format_exc()))
-            raise e
+        super().put(new_values)
