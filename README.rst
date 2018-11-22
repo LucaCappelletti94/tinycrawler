@@ -37,7 +37,7 @@ Basic usage example
     from bs4 import BeautifulSoup
 
 
-    def url_validator(url: str, logger: Log, statistics: Statistics)->bool:
+    def url_validator(url: str, logger: Log)->bool:
         """Return a boolean representing if the crawler should parse given url."""
         return url.startswith("http://interestingurl.com")
 
@@ -61,7 +61,7 @@ Example loading proxies
     from bs4 import BeautifulSoup
 
 
-    def url_validator(url: str, logger: Log, statistics: Statistics)->bool:
+    def url_validator(url: str, logger: Log)->bool:
         """Return a boolean representing if the crawler should parse given url."""
         return url.startswith("http://interestingurl.com")
 
