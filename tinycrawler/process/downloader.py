@@ -15,7 +15,7 @@ class Downloader(ProcessHandler):
         self.MAXIMUM_PROCESSES = cpu_count() * 4
 
     def enough(self, c):
-        return super().enough(c) or self._proxies.len() <= self.alives()
+        return super().enough(c) or self._proxies.len() <= self.alive_processes_number()
 
     def _has_content_type(self, headers):
         return 'content-type' in headers

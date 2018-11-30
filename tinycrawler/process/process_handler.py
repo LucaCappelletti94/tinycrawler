@@ -29,12 +29,16 @@ class ProcessHandler:
         self._processes.append(p)
 
     def enough(self, c):
-        n = self.alives()
-        return n * 50 > c or n > self.MAXIMUM_PROCESSES
+        n = self.alive_processes_number()
+        return n * 50 > c or n >= self.MAXIMUM_PROCESSES
 
     def _get_name(self):
         """Return new process identifier name."""
-        return "{name} n.{alive}".format(name=self._name, alive=self.alives())
+        return "{name} n.{alive}".format(name=self._name, alive=self.alive_processes_number())
+
+    def _remove_worker(self):
+        self._statistics.remove(
+            "processes", "{name} working".format(name=self._name))
 
     def _job_loop(self, name):
         """Handle queue iterations."""
@@ -48,13 +52,10 @@ class ProcessHandler:
 
             try:
                 self._target(job)
+                self._remove_worker()
             except KeyboardInterrupt:
-                self._statistics.remove(
-                    "processes", "{name} working".format(name=self._name))
+                self._remove_worker()
                 break
-            finally:
-                self._statistics.remove(
-                    "processes", "{name} working".format(name=self._name))
 
     def _job_starter(self, name):
         """Generic process wrapper."""
@@ -68,7 +69,11 @@ class ProcessHandler:
             self._statistics.remove(
                 "processes", "{name} alive".format(name=self._name))
 
-    def alives(self):
+    def _target(self, job):
+        raise NotImplementedError(
+            "Subclasses of ProcessHandler must implement method _target.")
+
+    def alive_processes_number(self):
         return sum([int(p.is_alive()) for p in self._processes])
 
     def join(self):
