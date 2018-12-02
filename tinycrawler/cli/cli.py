@@ -43,7 +43,6 @@ class Cli:
             self._print_frame()
 
     def _cli_loop(self):
-        cryouts = 0
         while True:
             time.sleep(0.2)
             if self._close_signal.is_set():
