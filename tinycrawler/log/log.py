@@ -3,9 +3,9 @@ from multiprocessing import Lock
 
 
 class Log:
-    def __init__(self):
+    def __init__(self, log_filename: str):
         self._lock = Lock()
-        logging.basicConfig(filename="crawler.log",  level=logging.INFO)
+        logging.basicConfig(filename=log_filename,  level=logging.INFO)
 
     def _log(self, logger, message):
         self._lock.acquire()

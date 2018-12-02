@@ -1,21 +1,21 @@
 import curses
 import time
 import traceback
-from multiprocessing import Process
+from multiprocessing import Process, Event
 
 from ..__version__ import __version__
 
 
 class Cli:
-    CRYOUTS = 2
     WINDOW_SIZE = 100
     PADDING = 8
 
-    def __init__(self, statistics, logger):
+    def __init__(self, statistics, logger, close_signal: Event):
         self._statistics = statistics
         self._logger = logger
         self._i = 0
         self._max_len = 0
+        self._close_signal = close_signal
         self._outputs = {}
 
     def _init_curses(self):
@@ -46,11 +46,7 @@ class Cli:
         cryouts = 0
         while True:
             time.sleep(0.2)
-            if self._statistics.is_everything_dead():
-                cryouts += 1
-            else:
-                cryouts = 0
-            if cryouts == self.CRYOUTS:
+            if self._close_signal.is_set():
                 break
             try:
                 self._clear()

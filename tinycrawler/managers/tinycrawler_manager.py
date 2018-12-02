@@ -1,8 +1,11 @@
 from multiprocessing.managers import BaseManager
 import multiprocessing
-from ..statistics import Statistics as OldStatistics
-from ..log import Log as OldLog
-from ..job import UrlJob as OldUrlJob, FileJob as OldFileJob, ProxyJob as OldProxyJob, RobotsJob as OldRobotsJob
+from ..log import Log
+from ..urls import Urls
+from ..statistics import Statistics
+from ..robots import Robots
+from typing import Callable
+from ..proxy import Local
 
 backup_autoproxy = multiprocessing.managers.AutoProxy
 
@@ -17,18 +20,29 @@ multiprocessing.managers.AutoProxy = redefined_autoproxy
 
 
 class TinyCrawlerManager(BaseManager):
+    def Statistics(self)->Statistics:
+        raise NotImplementedError(
+            "Method Statistics should be caleld by registration.")
 
-    Log = OldLog.__init__
-    Statistics = OldStatistics.__init__
-    UrlJob = OldUrlJob.__init__
-    FileJob = OldFileJob.__init__
-    ProxyJob = OldProxyJob.__init__
-    RobotsJob = OldRobotsJob.__init__
+    def Log(self, log_filename: str)->Log:
+        raise NotImplementedError(
+            "Method Log should be caleld by registration.")
+
+    def Urls(self, statistics: Statistics, bloom_filters_capacity: int)->Urls:
+        raise NotImplementedError(
+            "Method Urls should be caleld by registration.")
+
+    def Robots(self, robots_timeout: float)->Robots:
+        raise NotImplementedError(
+            "Method Robots should be caleld by registration.")
+
+    def Local(self, domains_timeout: float, custom_domains_timeout: Callable[[str], float], follow_robots_txt: bool, robots: Robots)->Local:
+        raise NotImplementedError(
+            "Method Local should be caleld by registration.")
 
 
-TinyCrawlerManager.register('Statistics', OldStatistics)
-TinyCrawlerManager.register('Log', OldLog)
-TinyCrawlerManager.register('UrlJob', OldUrlJob)
-TinyCrawlerManager.register('FileJob', OldFileJob)
-TinyCrawlerManager.register('ProxyJob', OldProxyJob)
-TinyCrawlerManager.register('RobotsJob', OldRobotsJob)
+TinyCrawlerManager.register('Urls', Urls)
+TinyCrawlerManager.register('Statistics', Statistics)
+TinyCrawlerManager.register('Log', Log)
+TinyCrawlerManager.register('Robots', Robots)
+TinyCrawlerManager.register('Local', Local)

@@ -5,10 +5,8 @@ import random
 import shutil
 from bs4 import BeautifulSoup
 from filecmp import dircmp
-import pytest
 from httmock import HTTMock, all_requests, response
 
-import tinycrawler
 from tinycrawler import TinyCrawler, Log
 
 model_path = os.path.dirname(__file__) + "/../test_data/base_test.html"
@@ -74,7 +72,7 @@ def test_base_tinycrawler():
     seed = "{root}/{website_size}".format(root=root, website_size=SIZE)
     with HTTMock(example_mock):
         TinyCrawler(file_parser=file_parser,
-                    url_validator=url_validator, proxy_timeout=0).run(seed)
+                    url_validator=url_validator, use_cli=True).run(seed)
 
     downloaded_files_number = len([f for _, _, files in os.walk(
         download_path) for f in files if f.endswith(".html")])

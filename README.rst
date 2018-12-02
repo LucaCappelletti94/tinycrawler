@@ -21,6 +21,13 @@ Installing TinyCrawler
 
     pip install tinycrawler
 
+TODOs for next version
+------------------------
+
+- Test proxies while normally downloading. - DONE
+- Parallelize different domains downloads. - DONE, yet to be added to test
+- Add way to save progress automatically every given timeout. 
+- Add way to automatically save tested proxies.
 
 Preview (Test case)
 ---------------------
