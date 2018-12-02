@@ -13,6 +13,7 @@ from tinycrawler import TinyCrawler, Log
 
 model_path = os.path.dirname(__file__) + "/../test_data/base_test.html"
 robots_path = os.path.dirname(__file__) + "/../test_data/robots.txt"
+proxy_path = os.path.dirname(__file__) + "/../test_data/proxies.json"
 
 SIZE = 20
 LINKS = 50
@@ -94,14 +95,14 @@ tinycrawler.robots.Robots._retrieve_robots_txt = wrapped_robots
 
 
 def test_base_tinycrawler():
-    global root, SIZE, WEBSITES, download_path, generation_path, test_root
+    global root, SIZE, WEBSITES, download_path, generation_path, test_root, proxy_path
     os.makedirs(download_path, exist_ok=True)
     os.makedirs(generation_path, exist_ok=True)
     seed = "{root}/{website_size}".format(
         root=root.format(n=1), website_size=SIZE)
     with HTTMock(example_mock):
         TinyCrawler(file_parser=file_parser,
-                    url_validator=url_validator, use_cli=True, proxy_timeout=0, domains_timeout=0).run(seed)
+                    url_validator=url_validator, use_cli=True, proxy_timeout=0, domains_timeout=0, proxy_path=proxy_path).run(seed)
 
     downloaded_files_number = len([f for _, _, files in os.walk(
         download_path) for f in files if f.endswith(".html")])
