@@ -18,15 +18,15 @@ class Urls:
     def get(self, domains: Set[str])->Tuple[str, bool]:
         for domain in set(self._domains.keys()) - set(domains):
             try:
-                return self._domains[domain].get_nowait(), True
+                return (self._domains[domain].get_nowait(), True)
             except Empty:
                 pass
         for queue in self._domains.values():
             try:
-                return queue.get_nowait(), False
+                return (queue.get_nowait(), False)
             except Empty:
                 pass
-        return None, False
+        return (None, False)
 
     def put(self, urls: List[str]):
         n = 0

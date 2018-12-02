@@ -6,18 +6,28 @@ import shutil
 from bs4 import BeautifulSoup
 from filecmp import dircmp
 from httmock import HTTMock, all_requests, response
+from httpretty import HTTPretty, httprettified
 
+import tinycrawler
 from tinycrawler import TinyCrawler, Log
 
 model_path = os.path.dirname(__file__) + "/../test_data/base_test.html"
+robots_path = os.path.dirname(__file__) + "/../test_data/robots.txt"
 
-SIZE = 200
-LINKS = 135
+SIZE = 20
+LINKS = 50
+WEBSITES = 10
 test_root = "test_root"
 download_path, generation_path = "{test_root}/download".format(
     test_root=test_root), "{test_root}/generation".format(test_root=test_root)
 
-root = "https://www.example.com"
+with open(robots_path, "r") as f:
+    robots_body = f.read()
+
+with open(model_path, "r") as f:
+    model_body = f.read()
+
+root = "https://www.example{n}.com"
 
 
 def purge(pattern):
@@ -26,29 +36,31 @@ def purge(pattern):
             shutil.rmtree(f)
 
 
-def generate_links(link_number: int, rand: random.Random, root: str, size: int):
+def generate_links(link_number: int, rand: random.Random, root: str, size: int, websites: int):
     anchor = '<a href="{root}/{page_number}">Link to page alias number {page_number}</a>'
     return "".join([
-        anchor.format(root=root, page_number=rand.randint(0, size))
+        anchor.format(root=root.format(n=rand.randint(1, websites)),
+                      page_number=rand.randint(1, size))
         for i in range(link_number)])
 
 
 @all_requests
 def example_mock(url, request):
-    global model_path, SIZE, LINKS, generation_path, root
+    global model_body, SIZE, LINKS, WEBSITES, generation_path, root
 
-    seed = int(url.path.split('/')[-1])
+    seed = int(url.path.strip('/'))
     rand = random.Random()
     rand.seed(seed)
 
-    if seed == 101:
+    if seed == 1:
         return response(status_code=404)
-    if seed == 100:
+    if seed == 2:
         return response(content="", headers={'content-type': 'application/pdf'})
 
-    with open(model_path, "r") as f_in, open("{generation_path}/{seed}.html".format(generation_path=generation_path, seed=seed), "w") as f_out:
-        body = f_in.read().format(PLACEHOLDER=generate_links(
-            LINKS, rand, root, SIZE))
+    path = "".join(url).replace("/", "_")
+    with open("{generation_path}/{path}.html".format(generation_path=generation_path, path=path), "w") as f_out:
+        body = model_body.format(PLACEHOLDER=generate_links(
+            LINKS, rand, root, SIZE, WEBSITES))
         f_out.write(str(BeautifulSoup(body, "html5lib")))
 
     return response(content=body, headers={'content-type': 'text/html'}, request=request)
@@ -56,7 +68,8 @@ def example_mock(url, request):
 
 def file_parser(url: str, soup: BeautifulSoup, log: Log):
     global download_path
-    with open("{download_path}/{seed}.html".format(download_path=download_path, seed=url.split('/')[-1]), "w") as f_out:
+    path = url.replace("/", "_")
+    with open("{download_path}/{path}.html".format(download_path=download_path, path=path), "w") as f_out:
         f_out.write(str(soup))
 
 
@@ -64,19 +77,37 @@ def url_validator(url: str, log: Log):
     return True
 
 
-def test_base_tinycrawler():
-    global root, SIZE, download_path, generation_path, test_root
+backup_robots = tinycrawler.robots.Robots._retrieve_robots_txt
 
+
+@httprettified
+def wrapped_robots(self, domain: str):
+    global robots_body, WEBSITES
+    for i in range(1, WEBSITES+1):
+        HTTPretty.register_uri(HTTPretty.GET, "https://www.example{i}.com/robots.txt".format(i=i),
+                               body=robots_body,
+                               content_type="text/plain")
+    backup_robots(self, domain)
+
+
+tinycrawler.robots.Robots._retrieve_robots_txt = wrapped_robots
+
+
+def test_base_tinycrawler():
+    global root, SIZE, WEBSITES, download_path, generation_path, test_root
     os.makedirs(download_path, exist_ok=True)
     os.makedirs(generation_path, exist_ok=True)
-    seed = "{root}/{website_size}".format(root=root, website_size=SIZE)
+    seed = "{root}/{website_size}".format(
+        root=root.format(n=1), website_size=SIZE)
     with HTTMock(example_mock):
         TinyCrawler(file_parser=file_parser,
-                    url_validator=url_validator, use_cli=True).run(seed)
+                    url_validator=url_validator, use_cli=True, proxy_timeout=0, domains_timeout=0).run(seed)
 
     downloaded_files_number = len([f for _, _, files in os.walk(
         download_path) for f in files if f.endswith(".html")])
     differences = dircmp(download_path, generation_path).diff_files
     purge(test_root)
 
-    assert not differences and downloaded_files_number == SIZE - 1
+    print(downloaded_files_number)
+
+    assert not differences and downloaded_files_number == (SIZE-2)*WEBSITES

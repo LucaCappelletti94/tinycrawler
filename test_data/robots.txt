@@ -1,0 +1,9 @@
+User-Agent: *
+Disallow: /dashboard/
+Disallow: /php/
+Disallow: /c/
+Disallow: /error/
+Disallow: /Locale/
+
+User-agent: Twitterbot
+Disallow:

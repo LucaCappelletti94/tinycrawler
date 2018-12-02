@@ -30,7 +30,7 @@ class ETA(dict):
         return self._timeout
 
     def add(self, value=None):
-        self[value] = time() + self._get_timeout(value)
+        self[value] = time() + self._get_timeout(self.__keytransform__(value))
 
     def is_ripe(self, value=None):
         if value in self:
@@ -46,5 +46,5 @@ class ETA(dict):
     def unripe(self):
         t = time()
         return [
-            key for key, value in self if t < value
+            key for key, value in self.items() if t < value
         ]

@@ -4,7 +4,7 @@ from ..statistics import Statistics
 from user_agent import generate_user_agent
 from typing import Callable, Dict
 import requests
-from time import sleep
+from time import sleep, time
 from queue import Empty
 from ..proxy import Local, Proxy
 from requests import Response
@@ -56,6 +56,7 @@ class Downloader(ProcessHandler):
         elif response.status_code == 200:
             self._responses.put(response)
             self._pages_number.value += 1
+            self._statistics.add("Pages", "Total Pages")
             self._process_callback_event.set()
         else:
             self._statistics.add(
@@ -79,10 +80,6 @@ class Downloader(ProcessHandler):
         proxy.wait_for(url)
         return proxy
 
-    def _put_proxy(self, proxy: Proxy, result: bool, url: str):
-        proxy.used(result, url)
-        self._proxies.put(proxy)
-
     def _enough(self, active_processes):
         return active_processes*20 > self._urls_number.value
 
@@ -91,6 +88,8 @@ class Downloader(ProcessHandler):
         if url is None:
             raise Empty
         self._urls_number.value -= 1
+        self._statistics.set("Urls", "Remaining Urls",
+                                     self._urls_number.value)
         if local:
             return self._local, url
         return self._get_proxy(url), url
@@ -99,8 +98,9 @@ class Downloader(ProcessHandler):
         """Tries to download an url with a proxy n times"""
         for attempts in range(self._download_attempts):
             response = self._download(proxy, url)
+            proxy.used(bool(response), url)
             if not proxy.is_local():
-                self._put_proxy(proxy, bool(response), url)
+                self._proxies.put(proxy)
             if response is None:
                 sleep(self._cooldown_time_beetween_download_attempts)
                 proxy = self._get_proxy(url)

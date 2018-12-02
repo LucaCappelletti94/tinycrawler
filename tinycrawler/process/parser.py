@@ -27,6 +27,7 @@ class Parser(ProcessHandler):
             n = self._urls.put(urls)
             if n > 0:
                 self._urls_number.value += n
+                self._statistics.add("Urls", "Total Urls", n)
                 self._process_callback_event.set()
 
     def _enough(self, active_processes):
@@ -41,4 +42,6 @@ class Parser(ProcessHandler):
     def _get_job(self):
         response = self._responses.get_nowait()
         self._pages_number.value -= 1
+        self._statistics.set("Pages", "Remaining Pages",
+                             self._pages_number.value)
         return (response,)

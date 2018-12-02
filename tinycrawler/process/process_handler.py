@@ -18,11 +18,13 @@ class ProcessHandler:
         self.MAXIMUM_PROCESSES = cpu_count()
 
     def job_event_check(self):
+        n = self.alive_processes_number()
         if self._process_spawn_event.is_set():
             self._process_spawn_event.clear()
-            n = self.alive_processes_number()
             if n < self.MAXIMUM_PROCESSES and not self._enough(n):
                 self.add_process()
+        self._statistics.set(
+            "Processes", "Total {name}".format(name=self._name), n)
 
     def add_process(self):
         """Start a new process to the target and objective given in init."""
