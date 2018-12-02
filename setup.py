@@ -80,7 +80,7 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    tests_require = ['pytest', 'httmock'],
+    tests_require=['pytest', 'httmock', 'httpretty'],
     install_requires=['validators', 'requests', 'user_agent',
                       'pybloom_live', 'lxml', 'bs4', 'html5lib']
 )
