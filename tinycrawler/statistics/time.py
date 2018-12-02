@@ -5,16 +5,6 @@ class Time:
     def __init__(self):
         pass
 
-    def get_remaining_time(self, growing_speed, shrinking_speed, total):
-        speed_delta = shrinking_speed - growing_speed
-
-        if total <= 10:
-            return "now"
-        if speed_delta <= 0:
-            return "infinite"
-
-        return self.seconds_to_string(total / speed_delta)
-
     def _format_value(self, response, value, pattern):
         if value > 0:
             if response != "":
