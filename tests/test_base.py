@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from filecmp import dircmp
 from httmock import HTTMock, all_requests, response
 from httpretty import HTTPretty, httprettified
+import requests
 
 import tinycrawler
 from tinycrawler import TinyCrawler, Log
@@ -57,6 +58,8 @@ def example_mock(url, request):
         return response(status_code=404)
     if seed == 2:
         return response(content="", headers={'content-type': 'application/pdf'})
+    if seed == 3:
+        raise requests.ConnectionError
 
     path = "".join(url).replace("/", "_")
     with open("{generation_path}/{path}.html".format(generation_path=generation_path, path=path), "w") as f_out:
@@ -102,11 +105,11 @@ def test_base_tinycrawler():
         root=root.format(n=1), website_size=SIZE)
     with HTTMock(example_mock):
         TinyCrawler(file_parser=file_parser,
-                    url_validator=url_validator, use_cli=True, proxy_timeout=0, domains_timeout=0, proxy_path=proxy_path).run(seed)
+                    url_validator=url_validator, use_cli=True, proxy_timeout=0, domains_timeout=0, proxy_path=proxy_path, cooldown_time_beetween_download_attempts=0).run(seed)
 
     downloaded_files_number = len([f for _, _, files in os.walk(
         download_path) for f in files if f.endswith(".html")])
     differences = dircmp(download_path, generation_path).diff_files
     purge(test_root)
 
-    assert not differences and downloaded_files_number == (SIZE-2)*WEBSITES
+    assert not differences and downloaded_files_number == (SIZE-3)*WEBSITES
