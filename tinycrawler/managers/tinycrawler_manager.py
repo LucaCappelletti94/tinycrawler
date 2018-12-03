@@ -21,24 +21,19 @@ multiprocessing.managers.AutoProxy = redefined_autoproxy
 
 class TinyCrawlerManager(BaseManager):
     def Statistics(self)->Statistics:
-        raise NotImplementedError(
-            "Method Statistics should be caleld by registration.")
+        pass
 
     def Log(self, log_filename: str)->Log:
-        raise NotImplementedError(
-            "Method Log should be caleld by registration.")
+        pass
 
     def Urls(self, statistics: Statistics, bloom_filters_capacity: int)->Urls:
-        raise NotImplementedError(
-            "Method Urls should be caleld by registration.")
+        pass
 
     def Robots(self, robots_timeout: float)->Robots:
-        raise NotImplementedError(
-            "Method Robots should be caleld by registration.")
+        pass
 
     def Local(self, domains_timeout: float, custom_domains_timeout: Callable[[str], float], follow_robots_txt: bool, robots: Robots)->Local:
-        raise NotImplementedError(
-            "Method Local should be caleld by registration.")
+        pass
 
 
 TinyCrawlerManager.register('Urls', Urls)
