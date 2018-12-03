@@ -22,7 +22,7 @@ after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 script:
 - pytest --cov=./tinycrawler --cov-report xml:coverage.xml
-- coverage report
+- coverage report --concurrency=multiprocessing
 - coverage combine
 - sonar-scanner
 
