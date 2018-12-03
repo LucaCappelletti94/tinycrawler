@@ -3,7 +3,6 @@ from time import time
 from ..ETA import ETA
 from ..domains_ETA import DomainsETA
 from ..robots import Robots
-import traceback
 
 
 class Proxy:

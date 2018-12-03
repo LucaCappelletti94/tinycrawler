@@ -1,6 +1,5 @@
 import curses
 import time
-import traceback
 from multiprocessing import Process, Event
 
 from ..__version__ import __version__
@@ -47,27 +46,17 @@ class Cli:
             time.sleep(0.2)
             if self._close_signal.is_set():
                 break
-            try:
-                self._clear()
-            except curses.error:
-                self._logger.error("cli: %s" % traceback.format_exc())
+            self._clear()
 
             self._print_info()
 
-            try:
-                self._print_all()
-            except curses.error:
-                self._logger.error("cli: %s" % traceback.format_exc())
+            self._print_all()
 
     def _cli(self):
         self._init_curses()
         try:
             self._cli_loop()
             self._close_curses()
-        except Exception:
-            self._close_curses()
-            self._logger.error("cli: %s" % traceback.format_exc())
-            print("Cli has crashed, checkout log for more info.")
         except KeyboardInterrupt:
             self._close_curses()
             self._logger.error("Shutting down crawler.")

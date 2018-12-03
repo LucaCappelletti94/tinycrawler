@@ -4,7 +4,6 @@ from ..log import Log
 from ..utils import get_domain
 from urllib.robotparser import RobotFileParser
 from ..ETA import ETA
-import traceback
 
 
 class Robots:

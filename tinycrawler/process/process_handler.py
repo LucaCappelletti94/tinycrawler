@@ -1,6 +1,5 @@
 """Create a ProcessHandler for a specific target and name."""
 import math
-import traceback
 from multiprocessing import Process, cpu_count, Event
 from queue import Empty
 from ..statistics import Statistics
