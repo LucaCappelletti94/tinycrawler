@@ -1,5 +1,7 @@
 dist: trusty
 sudo: false
+git:
+  depth: false
 env:
   global:
     - CC_TEST_REPORTER_ID=53eef44d00d3465aeaf806ea310cfc5497e7473d13ae05fbc753890c39712c60
