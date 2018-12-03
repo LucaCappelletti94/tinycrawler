@@ -24,7 +24,7 @@ after_script:
 script:
 - coverage erase
 - pytest --cov=tinycrawler --cov-report xml:coverage.xml 
-- coverage combine
+- coverage combine --append
 - coverage report
 - sonar-scanner
 
