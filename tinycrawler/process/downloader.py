@@ -107,5 +107,5 @@ class Downloader(ProcessHandler):
                 continue
             self._handle_successful_download(response)
             break
-        if attempts == self._download_attempts:
+        if attempts + 1 == self._download_attempts:
             self._statistics.add("error", "Maximum attempts")
