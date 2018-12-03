@@ -16,7 +16,7 @@ robots_path = os.path.dirname(__file__) + "/../test_data/robots.txt"
 proxy_path = os.path.dirname(__file__) + "/../test_data/proxies.json"
 
 SIZE = 20
-LINKS = 50
+LINKS = 100
 WEBSITES = 10
 test_root = "test_root"
 download_path, generation_path = "{test_root}/download".format(
@@ -108,7 +108,5 @@ def test_base_tinycrawler():
         download_path) for f in files if f.endswith(".html")])
     differences = dircmp(download_path, generation_path).diff_files
     purge(test_root)
-
-    print(downloaded_files_number)
 
     assert not differences and downloaded_files_number == (SIZE-2)*WEBSITES
