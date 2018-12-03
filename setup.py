@@ -30,7 +30,7 @@ def find_version(*file_paths):
 
 __version__ = find_version("tinycrawler", "__version__.py")
 
-test_deps = ['pytest', 'httmock', 'httpretty']
+test_deps = ['pytest', 'pytest-cov', 'coveralls', 'httmock', 'httpretty']
 
 extras = {
     'test': test_deps,
