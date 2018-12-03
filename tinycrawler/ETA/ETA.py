@@ -20,9 +20,6 @@ class ETA(dict):
     def __setitem__(self, key, value):
         super().__setitem__(self.__keytransform__(key), value)
 
-    def __delitem__(self, key):
-        del self[self.__keytransform__(key)]
-
     def __keytransform__(self, key):
         return key
 
