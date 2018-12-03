@@ -21,7 +21,8 @@ before_script:
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 script:
-- pytest --cov=./tinycrawler --cov-report xml:coverage.xml 
+- coverage erase
+- pytest --cov=tinycrawler --cov-report xml:coverage.xml 
 - coverage combine
 - coverage report
 - sonar-scanner
