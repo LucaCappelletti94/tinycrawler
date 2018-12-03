@@ -23,6 +23,7 @@ after_script:
 script:
 - pytest --cov=./tinycrawler --cov-report xml:coverage.xml
 - coverage report
+- coverage combine
 - sonar-scanner
 
 after_success:
