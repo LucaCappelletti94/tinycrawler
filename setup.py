@@ -30,6 +30,12 @@ def find_version(*file_paths):
 
 __version__ = find_version("tinycrawler", "__version__.py")
 
+test_deps = ['pytest', 'httmock', 'httpretty']
+
+extras = {
+    'test': test_deps,
+}
+
 setup(
     name='tinycrawler',
 
@@ -80,9 +86,10 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    tests_require=['pytest', 'httmock', 'httpretty'],
+    tests_require=test_deps,
     install_requires=['validators', 'requests', 'user_agent',
-                      'pybloom_live', 'lxml', 'bs4', 'html5lib']
+                      'pybloom_live', 'lxml', 'bs4', 'html5lib'],
+    extras_require=extras,
 )
 
 
