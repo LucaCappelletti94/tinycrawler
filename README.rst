@@ -26,8 +26,8 @@ TODOs for next version
 
 - Test proxies while normally downloading. - DONE
 - Parallelize different domains downloads. - DONE
+- Add dropping for high failure proxy and add parameters for such rate - DONE, yet to be tested
 - Add test for proxies
-- Add dropping for high failure proxy and add parameters for such rate
 - Add way to save progress automatically every given timeout. 
 - Add way to automatically save tested proxies.
 
