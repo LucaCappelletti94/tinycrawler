@@ -15,12 +15,13 @@ from requests.exceptions import (ConnectionError, SSLError, Timeout,
 
 
 class Downloader(ProcessHandler):
-    def __init__(self, process_spawn_event: Event, process_callback_event: Event, pages_number: Value, urls_number: Value, urls: Urls, local: Local, proxies: Queue, responses: Queue, statistics: Statistics, connection_timeout: float, custom_connection_timeout: Callable[[str], float], download_attempts: int, cooldown_time_beetween_download_attempts: float):
+    def __init__(self, process_spawn_event: Event, process_callback_event: Event, pages_number: Value, urls_number: Value, urls: Urls, local: Local, proxies: Queue, responses: Queue, statistics: Statistics, connection_timeout: float, custom_connection_timeout: Callable[[str], float], maximal_failure_proxy_rate: float, download_attempts: int, cooldown_time_beetween_download_attempts: float):
         super().__init__("downloader", statistics, process_spawn_event)
         self._urls = urls
         self._local = local
         self._pages_number = pages_number
         self._urls_number = urls_number
+        self._maximal_failure_proxy_rate = maximal_failure_proxy_rate
         self._process_callback_event = process_callback_event
         self._proxies, self._responses = proxies, responses
         self._timeout = connection_timeout
@@ -99,7 +100,7 @@ class Downloader(ProcessHandler):
         for attempts in range(self._download_attempts):
             response = self._download(proxy, url)
             proxy.used(bool(response), url)
-            if not proxy.is_local():
+            if not proxy.is_local() and proxy.failure_rate() < self._maximal_failure_proxy_rate:
                 self._proxies.put(proxy)
             if response is None:
                 sleep(self._cooldown_time_beetween_download_attempts)

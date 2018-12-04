@@ -20,7 +20,7 @@ class TinyCrawler:
             self, file_parser: Callable[[str, BeautifulSoup, Log], None], url_validator: Callable[[str, Log], bool],
             use_cli: bool=True, bloom_filters_capacity: int=1e9, responses_queue_max_size: int= 10000, download_attempts: int=10, follow_robots_txt: bool=True,
             proxy_timeout: float=10, domains_timeout: float=10, robots_timeout: float=60*60*24, connection_timeout: float=5, cooldown_time_beetween_download_attempts: float=1,
-            custom_domains_timeout: Callable[[str], float] = None, custom_connection_timeout: Callable[[str], float] = None,
+            custom_domains_timeout: Callable[[str], float] = None, custom_connection_timeout: Callable[[str], float] = None, maximal_failure_proxy_rate=0.9,
             parser_library: str="html5lib",
             log_filename: str="crawler.log",
             proxy_path: str = None,
@@ -80,6 +80,7 @@ class TinyCrawler:
             statistics=self._statistics,
             connection_timeout=connection_timeout,
             custom_connection_timeout=custom_connection_timeout,
+            maximal_failure_proxy_rate=maximal_failure_proxy_rate,
             download_attempts=download_attempts,
             cooldown_time_beetween_download_attempts=cooldown_time_beetween_download_attempts
         )

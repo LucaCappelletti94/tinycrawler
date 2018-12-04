@@ -26,8 +26,8 @@ class Proxy:
     def data(self):
         return self._data
 
-    def success_rate(self)->float:
-        return self._usages / self._successes
+    def failure_rate(self)->float:
+        return 1 - self._usages / self._successes
 
     def used(self, success: bool, url: str):
         self._usages += 1
