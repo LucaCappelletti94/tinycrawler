@@ -9,7 +9,6 @@ def test_exceptions():
     p = ProcessHandler(None, None, None)
     t = TinyCrawlerManager()
     t.start()
-    t.shutdown()
     methods = [
         p._enough,
         p._target,
