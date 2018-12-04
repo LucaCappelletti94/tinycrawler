@@ -2,7 +2,7 @@ from typing import Callable
 from time import time, sleep
 
 
-class eta(dict):
+class Eta(dict):
 
     def __init__(self, timeout: float, custom_timeout: Callable[[object], float]=None):
         """

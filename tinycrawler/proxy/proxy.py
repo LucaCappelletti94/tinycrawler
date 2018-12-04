@@ -1,7 +1,7 @@
 from typing import Dict, Callable
 from time import time
-from ..eta import eta
-from ..domains_eta import Domainseta
+from ..eta import Eta
+from ..domains_eta import DomainsEta
 from ..robots import Robots
 
 
@@ -9,8 +9,8 @@ class Proxy:
 
     def __init__(self, data: Dict, proxy_timeout: float, domains_timeout: float, custom_domains_timeout: Callable[[str], float], follow_robots_txt: bool, robots: Robots):
         self._data = self._data_to_working_proxy(data)
-        self._eta = eta(proxy_timeout)
-        self._domains_eta = Domainseta(
+        self._eta = Eta(proxy_timeout)
+        self._domains_eta = DomainsEta(
             domains_timeout, custom_domains_timeout, follow_robots_txt, robots)
         self._usages = self._successes = 0
 

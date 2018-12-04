@@ -1,3 +1,3 @@
-from .eta import eta
+from .eta import Eta
 
-__all__ = ['eta']
+__all__ = ['Eta']

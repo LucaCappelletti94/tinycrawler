@@ -27,15 +27,14 @@ class Cli:
         curses.endwin()
 
     def _print_info(self):
-        info = self._statistics.get_info()
         self._print_frame()
         self._print("TINYCRAWLER {version}@".format(version=__version__))
         self._print_frame()
-        sorted_sections = sorted(info.keys(), key=str.lower)
+        sorted_sections = sorted(self._statistics.keys(), key=str.lower)
         for section in sorted_sections:
             self._print(section.upper() + "@")
             self._print_frame()
-            sub_dict = info[section]
+            sub_dict = self._statistics.get(section)
             sorted_keys = sorted(sub_dict.keys(), key=str.lower)
             for label in sorted_keys:
                 self._print_label(label.capitalize(), sub_dict[label])

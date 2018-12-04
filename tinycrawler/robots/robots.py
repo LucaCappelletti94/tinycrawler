@@ -3,14 +3,14 @@ from ..statistics import Statistics
 from ..log import Log
 from ..utils import get_domain
 from urllib.robotparser import RobotFileParser
-from ..eta import eta
+from ..eta import Eta
 
 
 class Robots:
     """Handle RobotsJob."""
 
     def __init__(self, robots_timeout: float):
-        self._eta = eta(robots_timeout)
+        self._eta = Eta(robots_timeout)
         self._robotfiles = {}
 
     def can_fetch(self, url: str)->bool:

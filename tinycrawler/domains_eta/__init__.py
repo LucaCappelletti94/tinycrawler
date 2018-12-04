@@ -1,3 +1,3 @@
-from .domains_eta import Domainseta
+from .domains_eta import DomainsEta
 
-__all__ = ['Domainseta']
+__all__ = ['DomainsEta']
