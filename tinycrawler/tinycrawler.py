@@ -29,6 +29,7 @@ class TinyCrawler:
         self._use_cli = use_cli
 
         self._tinycrawler_manager = TinyCrawlerManager()
+        self._tinycrawler_manager.register_all()
         self._tinycrawler_manager.start()
         self._time = Time()
         self._close = Event()
@@ -112,6 +113,7 @@ class TinyCrawler:
             self._cli.run()
         self._add_seed(seed)
         self._end_reached()
+        self._tinycrawler_manager.shutdown()
         self._parser.join()
         self._downloader.join()
         if self._use_cli:
