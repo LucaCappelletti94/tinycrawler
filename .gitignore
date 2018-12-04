@@ -9,3 +9,8 @@ tinycrawler.egg-*
 \.ipynb_checkpoints/
 
 tmp_tested_proxy\.json
+crawler.log
+.coverage
+coverage.xml
+test.sh
+.vscode
