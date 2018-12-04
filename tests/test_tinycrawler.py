@@ -97,7 +97,7 @@ def wrapped_robots(self, domain: str):
 tinycrawler.robots.Robots._retrieve_robots_txt = wrapped_robots
 
 
-def test_base_tinycrawler():
+def crawling(args):
     global root, SIZE, WEBSITES, download_path, generation_path, test_root, proxy_path
     os.makedirs(download_path, exist_ok=True)
     os.makedirs(generation_path, exist_ok=True)
@@ -105,11 +105,22 @@ def test_base_tinycrawler():
         root=root.format(n=1), website_size=SIZE)
     with HTTMock(example_mock):
         TinyCrawler(file_parser=file_parser,
-                    url_validator=url_validator, use_cli=True, proxy_timeout=0.001, domains_timeout=0.001, proxy_path=proxy_path, cooldown_time_beetween_download_attempts=0).run(seed)
+                    url_validator=url_validator, use_cli=True, proxy_timeout=0.001, domains_timeout=0.001, proxy_path=proxy_path, cooldown_time_beetween_download_attempts=0, **args).run(seed)
 
     downloaded_files_number = len([f for _, _, files in os.walk(
         download_path) for f in files if f.endswith(".html")])
     differences = dircmp(download_path, generation_path).diff_files
     purge(test_root)
 
-    assert not differences and downloaded_files_number == (SIZE-3)*WEBSITES
+    return not differences and downloaded_files_number == (SIZE-3)*WEBSITES
+
+
+def timeout(input: str)->float:
+    return 0.001
+
+
+def test_crawler():
+    assert crawling({}) and crawling({
+        "custom_domains_timeout": timeout,
+        "custom_connection_timeout": timeout
+    })
