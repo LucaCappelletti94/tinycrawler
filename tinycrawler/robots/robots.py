@@ -25,12 +25,11 @@ class Robots:
         self._validity_check(domain)
         delay = self._robotfiles[domain].crawl_delay("*")
         requests_rate = self._robotfiles[domain].request_rate("*")
+        requests_rate_delay = 0
         if delay is None:
             delay = 0
         if requests_rate is not None:
             requests_rate_delay = requests_rate.seconds / requests_rate.requests
-        else:
-            requests_rate_delay = 0
         return max(delay, requests_rate_delay)
 
     def _validity_check(self, domain):

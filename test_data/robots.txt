@@ -5,5 +5,4 @@ Disallow: /c/
 Disallow: /error/
 Disallow: /Locale/
 
-User-agent: Twitterbot
-Disallow:
+Request-rate: 1000/1
