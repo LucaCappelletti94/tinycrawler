@@ -122,5 +122,6 @@ def timeout(input: str)->float:
 def test_crawler():
     assert crawling({}) and crawling({
         "custom_domains_timeout": timeout,
-        "custom_connection_timeout": timeout
+        "custom_connection_timeout": timeout,
+        "follow_robots_txt": False
     })
