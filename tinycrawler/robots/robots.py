@@ -23,9 +23,13 @@ class Robots(dict):
     def timeout(self, domain: str)->float:
         self._validity_check(domain)
         delay = self[domain].crawl_delay("*")
-        if delay:
-            return delay
-        return 0
+        requests_rate = self[domain].request_rate("*")
+        requests_rate_delay = 0
+        if delay is None:
+            delay = 0
+        if requests_rate is not None:
+            requests_rate_delay = requests_rate.seconds / requests_rate.requests
+        return max(delay, requests_rate_delay)
 
     def _validity_check(self, domain):
         if domain not in self or self._eta.is_ripe(domain):
