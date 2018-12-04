@@ -16,9 +16,9 @@ model_path = os.path.dirname(__file__) + "/../test_data/base_test.html"
 robots_path = os.path.dirname(__file__) + "/../test_data/robots.txt"
 proxy_path = os.path.dirname(__file__) + "/../test_data/proxies.json"
 
-SIZE = 20
+SIZE = 5
 LINKS = 100
-WEBSITES = 10
+WEBSITES = 5
 test_root = "test_root"
 download_path, generation_path = "{test_root}/download".format(
     test_root=test_root), "{test_root}/generation".format(test_root=test_root)
