@@ -112,7 +112,6 @@ class TinyCrawler:
             self._cli.run()
         self._add_seed(seed)
         self._end_reached()
-        self._tinycrawler_manager.shutdown()
         self._parser.join()
         self._downloader.join()
         if self._use_cli:
