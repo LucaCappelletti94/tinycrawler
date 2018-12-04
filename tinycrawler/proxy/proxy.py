@@ -1,15 +1,16 @@
 from typing import Dict, Callable
 from time import time
-from ..ETA import ETA
-from ..domains_ETA import DomainsETA
+from ..eta import eta
+from ..domains_eta import Domainseta
 from ..robots import Robots
 
 
 class Proxy:
+
     def __init__(self, data: Dict, proxy_timeout: float, domains_timeout: float, custom_domains_timeout: Callable[[str], float], follow_robots_txt: bool, robots: Robots):
         self._data = self._data_to_working_proxy(data)
-        self._ETA = ETA(proxy_timeout)
-        self._domains_ETA = DomainsETA(
+        self._eta = eta(proxy_timeout)
+        self._domains_eta = Domainseta(
             domains_timeout, custom_domains_timeout, follow_robots_txt, robots)
         self._usages = self._successes = 0
 
@@ -32,15 +33,15 @@ class Proxy:
     def used(self, success: bool, url: str):
         self._usages += 1
         self._successes += success
-        self._domains_ETA.add(url)
-        self._ETA.add()
+        self._domains_eta.add(url)
+        self._eta.add()
 
     def unripe(self):
-        return self._domains_ETA.unripe()
+        return self._domains_eta.unripe()
 
     def wait_for(self, value):
-        self._domains_ETA.wait_for(value)
-        self._ETA.wait_for()
+        self._domains_eta.wait_for(value)
+        self._eta.wait_for()
 
     def is_local(self):
         return False

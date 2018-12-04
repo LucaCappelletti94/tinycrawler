@@ -3,14 +3,14 @@ from ..statistics import Statistics
 from ..log import Log
 from ..utils import get_domain
 from urllib.robotparser import RobotFileParser
-from ..ETA import ETA
+from ..eta import eta
 
 
 class Robots:
     """Handle RobotsJob."""
 
     def __init__(self, robots_timeout: float):
-        self._ETA = ETA(robots_timeout)
+        self._eta = eta(robots_timeout)
         self._robotfiles = {}
 
     def can_fetch(self, url: str)->bool:
@@ -34,7 +34,7 @@ class Robots:
         return max(delay, requests_rate_delay)
 
     def _validity_check(self, domain):
-        if domain not in self._robotfiles or self._ETA.is_ripe(domain):
+        if domain not in self._robotfiles or self._eta.is_ripe(domain):
             self._retrieve_robots_txt(domain)
 
     def _retrieve_robots_txt(self, domain: str):
@@ -43,5 +43,5 @@ class Robots:
         """
         r = RobotFileParser("{domain}/robots.txt".format(domain=domain))
         r.read()
-        self._ETA.add(domain)
+        self._eta.add(domain)
         self._robotfiles[domain] = r

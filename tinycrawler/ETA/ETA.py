@@ -2,7 +2,8 @@ from typing import Callable
 from time import time, sleep
 
 
-class ETA(dict):
+class eta(dict):
+
     def __init__(self, timeout: float, custom_timeout: Callable[[object], float]=None):
         """
             timeout: float, default value to wait for.

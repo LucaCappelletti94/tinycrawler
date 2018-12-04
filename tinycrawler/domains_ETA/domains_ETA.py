@@ -1,10 +1,11 @@
-from ..ETA import ETA
+from ..eta import eta
 from typing import Callable
 from ..utils import get_domain
 from ..robots import Robots
 
 
-class DomainsETA(ETA):
+class Domainseta(eta):
+
     def __init__(self, timeout: float, custom_timeout: Callable[[str], float], follow_robots_txt: bool, robots: Robots):
         super().__init__(timeout, custom_timeout)
         self._follow_robots_txt, self._robots = follow_robots_txt, robots
