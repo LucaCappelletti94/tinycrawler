@@ -6,12 +6,11 @@ from urllib.robotparser import RobotFileParser
 from ..eta import Eta
 
 
-class Robots:
+class Robots(dict):
     """Handle RobotsJob."""
 
     def __init__(self, robots_timeout: float):
         self._eta = Eta(robots_timeout)
-        self._robotfiles = {}
 
     def can_fetch(self, url: str)->bool:
         """Return a bool representing if given url can be parsed.
@@ -19,12 +18,12 @@ class Robots:
         """
         domain = get_domain(url)
         self._validity_check(domain)
-        return self._robotfiles[domain].can_fetch("*", url)
+        return self[domain].can_fetch("*", url)
 
     def timeout(self, domain: str)->float:
         self._validity_check(domain)
-        delay = self._robotfiles[domain].crawl_delay("*")
-        requests_rate = self._robotfiles[domain].request_rate("*")
+        delay = self[domain].crawl_delay("*")
+        requests_rate = self[domain].request_rate("*")
         requests_rate_delay = 0
         if delay is None:
             delay = 0
@@ -33,7 +32,7 @@ class Robots:
         return max(delay, requests_rate_delay)
 
     def _validity_check(self, domain):
-        if domain not in self._robotfiles or self._eta.is_ripe(domain):
+        if domain not in self or self._eta.is_ripe(domain):
             self._retrieve_robots_txt(domain)
 
     def _retrieve_robots_txt(self, domain: str):
@@ -43,4 +42,4 @@ class Robots:
         r = RobotFileParser("{domain}/robots.txt".format(domain=domain))
         r.read()
         self._eta.add(domain)
-        self._robotfiles[domain] = r
+        self[domain] = r
