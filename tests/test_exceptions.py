@@ -33,4 +33,6 @@ def test_exceptions():
             print(signature(m).parameters)
             raise e
 
+    t.shutdown()
+
     assert not passed
