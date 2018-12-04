@@ -40,9 +40,9 @@ class TinyCrawlerManager(BaseManager):
         raise NotImplementedError(
             "Method Local should be called by registration.")
 
-    def register_all(self):
-        self.register('Urls', Urls)
-        self.register('Statistics', Statistics)
-        self.register('Log', Log)
-        self.register('Robots', Robots)
-        self.register('Local', Local)
+
+TinyCrawlerManager.register('Urls', Urls)
+TinyCrawlerManager.register('Statistics', Statistics)
+TinyCrawlerManager.register('Log', Log)
+TinyCrawlerManager.register('Robots', Robots)
+TinyCrawlerManager.register('Local', Local)
