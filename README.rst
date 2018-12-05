@@ -27,6 +27,15 @@ TODOs for next version
 - Test proxies while normally downloading. - DONE
 - Parallelize different domains downloads. - DONE
 - Add dropping for high failure proxy and add parameters for such rate - DONE, yet to be tested
+- Make failure rate domain specific with also a global mean.
+- Enable failure rate also for local.
+- Check robots txt also before downloading urls
+- Reduce robots timeout defaults to 2 hours
+- Change to exponential the wait timeout for the download attempts
+- To define a binary file, check if in the first 1000 characters you find a number greater than 3/5 of zeros
+- Add useragent
+- Stop downloads when all proxies are dead.
+- Try to use `active_children` as a way to test for active processes
 - Add test for proxies
 - Add way to save progress automatically every given timeout. 
 - Add way to automatically save tested proxies.
