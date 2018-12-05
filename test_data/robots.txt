@@ -4,4 +4,4 @@ Disallow: /php/
 Disallow: /error/
 Disallow: /Locale/
 Request-rate: 1000/1
-Crawl-delay: 0.001
+Crawl-delay: 0.01
