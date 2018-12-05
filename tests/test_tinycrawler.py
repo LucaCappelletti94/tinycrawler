@@ -105,7 +105,7 @@ def crawling(**args):
         root=root.format(n=1), website_size=SIZE)
     with HTTMock(example_mock):
         TinyCrawler(file_parser=file_parser,
-                    url_validator=url_validator, use_cli=True, proxy_timeout=timeout(), domains_timeout=timeout(), proxy_path=proxy_path, cooldown_time_beetween_download_attempts=0, **args).run(seed)
+                    url_validator=url_validator, use_cli=False, proxy_timeout=timeout(), domains_timeout=timeout(), proxy_path=proxy_path, cooldown_time_beetween_download_attempts=0, **args).run(seed)
 
     downloaded_files_number = len([f for _, _, files in os.walk(
         download_path) for f in files if f.endswith(".html")])

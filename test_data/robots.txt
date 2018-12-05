@@ -1,8 +1,7 @@
 User-Agent: *
 Disallow: /dashboard/
 Disallow: /php/
-Disallow: /c/
 Disallow: /error/
 Disallow: /Locale/
-
 Request-rate: 1000/1
+Crawl-delay: 0.001
