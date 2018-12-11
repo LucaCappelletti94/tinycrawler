@@ -13,15 +13,15 @@ from queue import Empty, Queue
 
 
 class Parser(ProcessHandler):
-    def __init__(self, process_spawn_event: Event, process_callback_event: Event, pages_number: Value, urls_number: Value, responses: Queue, urls: Urls, robots: Robots, file_parser: Callable[[str, BeautifulSoup, Log], None], url_validator: Callable[[str, Log], bool], statistics: Statistics, logger: Log, follow_robots_txt: bool, parser_library: str):
+    def __init__(self, process_spawn_event: Event, process_callback_event: Event, pages_number: Value, urls_number: Value, responses: Queue, urls: Urls, robots: Robots, file_parser: Callable[[str, BeautifulSoup, Log], None], url_validator: Callable[[str, Log], bool], statistics: Statistics, logger: Log, parser_library: str):
         super().__init__("Parser", statistics, process_spawn_event)
-        self._urls, self._responses, self._process_callback_event, self._pages_number, self._urls_number, self._robots, self._follow_robots_txt, self._file_parser,  self._url_validator, self._logger, self._parser_library = urls, responses, process_callback_event, pages_number, urls_number, robots, follow_robots_txt, file_parser, url_validator, logger, parser_library
+        self._urls, self._responses, self._process_callback_event, self._pages_number, self._urls_number, self._robots, self._file_parser,  self._url_validator, self._logger, self._parser_library = urls, responses, process_callback_event, pages_number, urls_number, robots, file_parser, url_validator, logger, parser_library
 
     def _url_parser(self, page_url: str, soup: BeautifulSoup):
         urls = set()
         for a in soup.findAll("a", href=True):
             url = urljoin(page_url, a.get("href"))
-            if validators.url(url) and self._url_validator(url, self._logger) and (not self._follow_robots_txt or self._robots.can_fetch(url)):
+            if validators.url(url) and self._url_validator(url, self._logger) and self._robots.can_fetch(url):
                 urls.add(url)
         if urls:
             n = self._urls.put(urls)

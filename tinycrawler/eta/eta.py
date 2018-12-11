@@ -36,8 +36,12 @@ class Eta(dict):
         else:
             return True
 
+    def get_wait_time(self, value=None)->float:
+        """Return wait time for given value."""
+        return self[value] - time()
+
     def wait_for(self, value=None):
-        delta = self[value] - time()
+        delta = get_wait_time()
         if delta > 0:
             sleep(delta)
 

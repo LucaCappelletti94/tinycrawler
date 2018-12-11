@@ -9,18 +9,23 @@ from ..eta import Eta
 class Robots(dict):
     """Handle RobotsJob."""
 
-    def __init__(self, robots_timeout: float):
+    def __init__(self, robots_timeout: float, follow_robots_txt: bool):
         self._eta = Eta(robots_timeout)
+        self._follow_robots_txt = follow_robots_txt
 
     def can_fetch(self, url: str)->bool:
         """Return a bool representing if given url can be parsed.
             url:str, the url to check for.
         """
+        if not self._follow_robots_txt:
+            return True
         domain = get_domain(url)
         self._validity_check(domain)
         return self[domain].can_fetch("*", url)
 
     def timeout(self, domain: str)->float:
+        if not self._follow_robots_txt:
+            return 0
         self._validity_check(domain)
         delay = self[domain].crawl_delay("*")
         requests_rate = self[domain].request_rate("*")

@@ -38,7 +38,7 @@ class TinyCrawler:
         self._statistics = self._tinycrawler_manager.Statistics()
         self._robots = self._tinycrawler_manager.Robots(robots_timeout)
         self._local = self._tinycrawler_manager.Local(
-            domains_timeout, custom_domains_timeout, follow_robots_txt, self._robots)
+            domains_timeout, custom_domains_timeout, self._robots)
 
         new_page_event = Event()
         new_url_event = Event()
@@ -48,9 +48,6 @@ class TinyCrawler:
         self._urls = self._tinycrawler_manager.Urls(
             self._statistics, bloom_filters_capacity)
         self._responses = Queue(responses_queue_max_size)
-        self._proxies = Queue()
-        self._load_proxies(proxy_path, proxy_list, proxy_timeout, domains_timeout,
-                           custom_domains_timeout, follow_robots_txt, self._robots)
 
         self._parser = Parser(
             process_spawn_event=new_page_event,
@@ -64,7 +61,6 @@ class TinyCrawler:
             url_validator=url_validator,
             statistics=self._statistics,
             logger=self._logger,
-            follow_robots_txt=follow_robots_txt,
             parser_library=parser_library
         )
 
@@ -75,7 +71,6 @@ class TinyCrawler:
             urls_number=self._urls_number,
             urls=self._urls,
             local=self._local,
-            proxies=self._proxies,
             responses=self._responses,
             statistics=self._statistics,
             connection_timeout=connection_timeout,
@@ -119,13 +114,3 @@ class TinyCrawler:
         self._downloader.join()
         if self._use_cli:
             self._cli.join()
-
-    def _load_proxies(self, proxy_path: str, proxy_list: List[Dict], proxy_timeout: float, domains_timeout: float, custom_domains_timeout: Callable[[str], float], follow_robots_txt: bool, robots: Robots):
-        if proxy_list is None:
-            proxy_list = []
-        if proxy_path is not None:
-            with open(proxy_path, "r") as f:
-                proxy_list += json.load(f)
-        [
-            self._proxies.put(Proxy(data, proxy_timeout, domains_timeout, custom_domains_timeout, follow_robots_txt, robots)) for data in proxy_list
-        ]

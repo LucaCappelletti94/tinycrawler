@@ -36,7 +36,7 @@ class TinyCrawlerManager(BaseManager):
         raise NotImplementedError(
             "Method Robots should be called by registration.")
 
-    def Local(self, domains_timeout: float, custom_domains_timeout: Callable[[str], float], follow_robots_txt: bool, robots: Robots)->Local:
+    def Local(self, domains_timeout: float, custom_domains_timeout: Callable[[str], float], robots: Robots)->Local:
         raise NotImplementedError(
             "Method Local should be called by registration.")
 

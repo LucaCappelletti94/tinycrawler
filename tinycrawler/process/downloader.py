@@ -6,27 +6,34 @@ from typing import Callable, Dict
 import requests
 from time import sleep, time
 from queue import Empty
-from ..proxy import Local, Proxy
+from ..proxy import Local, Proxy, ProxyQueue
 from requests import Response
-from queue import Queue
+from multiprocessing.queues import Queue
 from ..urls import Urls
+from ..managers import TinyCrawlerManager
 from requests.exceptions import (ConnectionError, SSLError, Timeout,
                                  TooManyRedirects)
 
 
 class Downloader(ProcessHandler):
-    def __init__(self, process_spawn_event: Event, process_callback_event: Event, pages_number: Value, urls_number: Value, urls: Urls, local: Local, proxies: Queue, responses: Queue, statistics: Statistics, connection_timeout: float, custom_connection_timeout: Callable[[str], float], maximal_failure_proxy_rate: float, download_attempts: int, cooldown_time_beetween_download_attempts: float):
+    def __init__(
+            self, process_spawn_event: Event, process_callback_event: Event, pages_number: Value, urls_number: Value,
+            urls: Urls, manager: TinyCrawlerManager, responses: Queue, statistics: Statistics, connection_timeout: float,
+            custom_connection_timeout: Callable[[str], float], maximal_failure_proxy_rate: float, download_attempts: int,
+            cooldown_time_beetween_download_attempts: float):
+
         super().__init__("downloader", statistics, process_spawn_event)
         self._urls = urls
-        self._local = local
         self._pages_number = pages_number
         self._urls_number = urls_number
         self._maximal_failure_proxy_rate = maximal_failure_proxy_rate
         self._process_callback_event = process_callback_event
-        self._proxies, self._responses = proxies, responses
+        self._responses = responses
         self._timeout = connection_timeout
         self._download_attempts = download_attempts
         self._cooldown_time_beetween_download_attempts = cooldown_time_beetween_download_attempts
+        self._proxies = ProxyQueue()
+
         if custom_connection_timeout is not None:
             self._connection_timeout = custom_connection_timeout
         else:
