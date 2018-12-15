@@ -15,3 +15,8 @@ class Usable(object):
     @abc.abstractmethod
     def use(self):
         """Define what to do when object is used."""
+
+    def __repr__(self):
+        return {
+            "usages": self._usages
+        }

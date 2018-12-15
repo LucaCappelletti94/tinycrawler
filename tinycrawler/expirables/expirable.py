@@ -1,5 +1,7 @@
 import abc
+from collections import ChainMap
 from ..collections import Usable
+import json
 from ..exceptions import ExpiredError, IllegalArgumentError
 
 
@@ -16,16 +18,16 @@ class Expirable(Usable):
             "maximum_consecutive_errors",
             -1
         )
-        self._maximum_error_threshold = kwargs.get(
+        self._maximum_error_rate = kwargs.get(
             "maximum_error_threshold",
             1
         )
 
-        if self._maximum_error_threshold <= 0:
+        if self._maximum_error_rate <= 0:
             raise IllegalArgumentError(
                 "Given `maximum_error_threshold` is equal or less than 0. Provide a value greater than zero.")
 
-        if self._maximum_error_threshold > 1:
+        if self._maximum_error_rate > 1:
             raise IllegalArgumentError(
                 "Given `maximum_error_threshold` is greater than 1. Provide a value lesser than one.")
 
@@ -33,12 +35,14 @@ class Expirable(Usable):
 
     @property
     def _error_rate(self)->float:
-        return self._errors / self._usages
+        if self._usages:
+            return self._errors / self._usages
+        return 0
 
     @property
     def expired(self) -> bool:
         """Return boolean representing if given object has expired."""
-        return self._error_rate > self._maximum_error_threshold and self._consecutive_errors > self._maximum_consecutive_errors
+        return self._error_rate >= self._maximum_error_rate and (self._consecutive_errors >= self._maximum_consecutive_errors or self._maximum_consecutive_errors == -1)
 
     def used(self, **kwargs):
         """Add results of last usage to class error counter.
@@ -46,8 +50,29 @@ class Expirable(Usable):
         """
         super(Expirable, self).used()
         self._errors += not kwargs["success"]
+        if kwargs["success"]:
+            self._consecutive_errors = 0
+        else:
+            self._consecutive_errors += 1
 
     def use(self):
         """Raise `ExpiredError` if object has expired."""
         if self.expired:
             raise ExpiredError()
+
+    def __repr__(self):
+        return {
+            **ChainMap(*[
+                base.__repr__(self)
+                for base in Expirable.__bases__]),
+            **{
+                "errors": self._consecutive_errors,
+                "error_rate": self._error_rate,
+                "maximum_error_rate": self._maximum_error_rate,
+                "maximum_consecutive_errors": self._maximum_consecutive_errors,
+                "expired": self.expired
+            }
+        }
+
+    def __str__(self):
+        return json.dumps(self.__repr__(), indent=4)
