@@ -1,7 +1,6 @@
 from tinycrawler.expirables.expirable import Expirable
 from tinycrawler.exceptions import ExpiredError
 from .utils import arguments_test
-import json
 import numpy as np
 
 
@@ -56,5 +55,4 @@ def test_expiration_representation():
         expirable.used(success=0)
 
     with open("test_data/expected_expirable_representation.json", "r") as f:
-        print(expirable)
-        assert str(expirable) == json.load(f)
+        assert str(expirable) == f.read()
