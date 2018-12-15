@@ -8,11 +8,13 @@ class Sequential(Usable):
         self._in_use = False
 
     def used(self, **kwargs):
+        super(Sequential, self).used()
         if not self._in_use:
             raise NotInUseError()
         self._in_use = False
 
     def use(self, **kwargs):
+        super(Sequential, self).use()
         if self._in_use:
             raise InUseError()
         self._in_use = True

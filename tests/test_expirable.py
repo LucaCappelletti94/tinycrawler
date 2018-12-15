@@ -6,13 +6,13 @@ import numpy as np
 
 def test_expirable_arguments():
     invalid_arguments = {
-        "maximum_error_threshold": np.concatenate((
+        "maximum_error_rate": np.concatenate((
             np.linspace(-10, 0),
             np.linspace(1.1, 10)
         ))
     }
     valid_arguments = {
-        "maximum_error_threshold": np.linspace(0.1, 1)
+        "maximum_error_rate": np.linspace(0.1, 1)
     }
 
     arguments_test(Expirable, valid_arguments, invalid_arguments)
@@ -23,7 +23,7 @@ def test_expirable_arguments():
 def test_expiration():
     expirable = Expirable(
         maximum_consecutive_errors=3,
-        maximum_error_threshold=0.5
+        maximum_error_rate=0.5
     )
 
     for i in range(2):
@@ -47,7 +47,7 @@ def test_expiration():
 def test_expiration_representation():
     expirable = Expirable(
         maximum_consecutive_errors=3,
-        maximum_error_threshold=0.5
+        maximum_error_rate=0.5
     )
 
     for i in range(2):

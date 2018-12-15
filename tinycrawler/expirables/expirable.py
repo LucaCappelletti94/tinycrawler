@@ -9,7 +9,7 @@ class Expirable(Usable):
     def __init__(self, **kwargs):
         """Creates an expirable object, an object which when either is used, or causes a number of errors, is no longer available.
             maximum_consecutive_errors:int, maximum number of consecutive errors before object expires.
-            maximum_error_threshold:float, maximum threshold of error/attempts before the object expires.
+            maximum_error_rate:float, maximum threshold of error/attempts before the object expires.
         """
         super(Expirable, self).__init__(**kwargs)
         self._maximum_consecutive_errors = kwargs.get(
@@ -17,17 +17,17 @@ class Expirable(Usable):
             -1
         )
         self._maximum_error_rate = kwargs.get(
-            "maximum_error_threshold",
+            "maximum_error_rate",
             1
         )
 
         if self._maximum_error_rate <= 0:
             raise IllegalArgumentError(
-                "Given `maximum_error_threshold` is equal or less than 0. Provide a value greater than zero.")
+                "Given `maximum_error_rate` is equal or less than 0. Provide a value greater than zero.")
 
         if self._maximum_error_rate > 1:
             raise IllegalArgumentError(
-                "Given `maximum_error_threshold` is greater than 1. Provide a value lesser than one.")
+                "Given `maximum_error_rate` is greater than 1. Provide a value lesser than one.")
 
         self._errors = self._usages = self._consecutive_errors = 0
 
