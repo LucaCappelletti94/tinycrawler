@@ -1,6 +1,7 @@
 {
     "usages": 2,
     "errors": 2,
+    "consecutive_errors": 2,
     "error_rate": 1.0,
     "maximum_error_rate": 0.5,
     "maximum_consecutive_errors": 3,

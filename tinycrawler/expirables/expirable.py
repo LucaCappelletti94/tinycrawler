@@ -1,4 +1,3 @@
-import abc
 from collections import ChainMap
 from ..collections import Usable
 import json
@@ -6,7 +5,6 @@ from ..exceptions import ExpiredError, IllegalArgumentError
 
 
 class Expirable(Usable):
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):
         """Creates an expirable object, an object which when either is used, or causes a number of errors, is no longer available.
@@ -31,7 +29,7 @@ class Expirable(Usable):
             raise IllegalArgumentError(
                 "Given `maximum_error_threshold` is greater than 1. Provide a value lesser than one.")
 
-        self._errors = self._consecutive_errors = 0
+        self._errors = self._usages = self._consecutive_errors = 0
 
     @property
     def _error_rate(self)->float:
@@ -50,6 +48,7 @@ class Expirable(Usable):
         """
         super(Expirable, self).used()
         self._errors += not kwargs["success"]
+        self._usages += 1
         if kwargs["success"]:
             self._consecutive_errors = 0
         else:
@@ -62,16 +61,13 @@ class Expirable(Usable):
 
     def __repr__(self):
         return {
-            **ChainMap(*[
-                base.__repr__(self)
-                for base in Expirable.__bases__]),
-            **{
-                "errors": self._consecutive_errors,
-                "error_rate": self._error_rate,
-                "maximum_error_rate": self._maximum_error_rate,
-                "maximum_consecutive_errors": self._maximum_consecutive_errors,
-                "expired": self.expired
-            }
+            "usages": self._usages,
+            "errors": self._errors,
+            "consecutive_errors": self._consecutive_errors,
+            "error_rate": self._error_rate,
+            "maximum_error_rate": self._maximum_error_rate,
+            "maximum_consecutive_errors": self._maximum_consecutive_errors,
+            "expired": self.expired
         }
 
     def __str__(self):
