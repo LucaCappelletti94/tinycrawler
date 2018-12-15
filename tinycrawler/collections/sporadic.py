@@ -5,6 +5,11 @@ from time import time
 
 class Sporadic(Usable):
     def __init__(self, **kwargs):
+        """Create sporadically available object.
+            use_timeout:float, unavailability timeout after use.
+            used_timeout:float, unavailability timeout after used.
+        """
+
         super(Sporadic, self).__init__(**kwargs)
         self._use_timeout = kwargs.get(
             "use_timeout",
