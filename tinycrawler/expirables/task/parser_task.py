@@ -1,8 +1,7 @@
 from .task import Task
-from ..web import Url
+from ..web import Url, Response
 from ...exceptions import IllegalArgumentError
 from typing import Set
-from requests import Response
 from ...validators import path as is_valid_path
 
 
@@ -19,9 +18,17 @@ class ParserTask(Task):
         self._urls = set()
         self._page = self._path = None
 
+    def use(self, **kwargs):
+        super(ParserTask, self).use(**kwargs)
+        self._response.use(**kwargs)
+
+    def used(self):
+        super(ParserTask, self).used()
+        self._response.used(success=False)
+
     @property
     def response(self)->Response:
-        return self._response
+        return self._response.response
 
     @property
     def page(self)->str:

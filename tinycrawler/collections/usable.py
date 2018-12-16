@@ -13,7 +13,7 @@ class Usable(object):
         """Define what to do after object has been used."""
 
     @abc.abstractmethod
-    def use(self):
+    def use(self, **kwargs):
         """Define what to do when object is used."""
 
     def ___repr___(self):

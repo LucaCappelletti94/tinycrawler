@@ -97,7 +97,5 @@ def test_expiration_representation():
         expirable.use()
         expirable.used(success=0)
 
-    print(expirable)
-
     with open("test_data/expected_expirable_representation.json", "r") as f:
         assert str(expirable) == f.read()

@@ -1,7 +1,7 @@
 {
     "SporadicSequentialExpirable_available": true,
     "consecutive_errors": 0,
-    "domain": "https://www.youtube.com",
+    "domain": "www.youtube.com",
     "error_rate": 0,
     "expired": false,
     "maximum_consecutive_errors": -1,

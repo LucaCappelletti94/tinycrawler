@@ -1,4 +1,4 @@
-from tinycrawler.expirables import ParserTask
+from tinycrawler.expirables import ParserTask, Response
 from tinycrawler import IllegalArgumentError, Url
 from .utils import double_arguments_test
 
@@ -10,12 +10,15 @@ def test_parser_task_arguments():
     except IllegalArgumentError:
         pass
 
-    parser_task = ParserTask("", 0)
+    parser_task = ParserTask(Response(""), 0)
 
     parser_task.response
     parser_task.add_url(
         Url("https://requests-mock.readthedocs.io/en/latest/response.html"))
     parser_task.urls
+
+    parser_task.use()
+    parser_task.used()
 
     try:
         parser_task.page

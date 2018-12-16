@@ -19,14 +19,14 @@ class SporadicSequentialExpirable(Sporadic, Sequential, Expirable):
             raise IllegalArgumentError(
                 "Given constraint cause object to never become expired, even when Sequential constraint is active.")
 
-    def is_available(self):
+    def is_available(self, **kwargs):
         sporadic_available = Sporadic.is_available(self)
         expirable_available = Expirable.is_available(self)
         sequential_available = Sequential.is_available(self)
         return sporadic_available and expirable_available and (sporadic_available or sequential_available)
 
     def use(self, **kwargs):
-        if not self.is_available():
+        if not self.is_available(**kwargs):
             raise UnavailableError()
         try:
             super(SporadicSequentialExpirable, self).use(**kwargs)
@@ -40,5 +40,5 @@ class SporadicSequentialExpirable(Sporadic, Sequential, Expirable):
         return {**dict(ChainMap(*[
             base.___repr___(self) for base in SporadicSequentialExpirable.__bases__
         ])), **{
-            "SporadicSequentialExpirable_available": self.is_available()
+            "SporadicSequentialExpirable_available": SporadicSequentialExpirable.is_available(self)
         }}
