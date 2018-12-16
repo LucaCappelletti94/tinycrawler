@@ -5,14 +5,41 @@ import numpy as np
 
 
 def test_sporadic_arguments():
-    invalid_arguments = {
-        "used_timeout": np.linspace(-10, 0, endpoint=False),
-        "use_timeout": np.linspace(-10, 0, endpoint=False)
-    }
-    valid_arguments = {
-        "used_timeout": np.linspace(0, 10),
+    valid_use = {
         "use_timeout": np.linspace(0, 10)
     }
+    invalid_use = {
+        "use_timeout": np.linspace(-10, 0, endpoint=False)
+    }
+    valid_used = {
+        "used_timeout": np.linspace(0, 10)
+    }
+    invalid_used = {
+        "used_timeout": np.linspace(-10, 0, endpoint=False)
+    }
+
+    invalid_arguments = [
+        {
+            **valid_use,
+            **invalid_used
+        },
+        {
+            **valid_use,
+            **invalid_used
+        },
+        {
+            **invalid_use,
+            **invalid_used
+        }
+    ]
+    valid_arguments = [
+        valid_use,
+        valid_used,
+        {
+            **valid_use,
+            **valid_used
+        }
+    ]
 
     double_arguments_test(Sporadic, valid_arguments, invalid_arguments)
 
