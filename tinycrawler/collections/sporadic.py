@@ -34,17 +34,11 @@ class Sporadic(Usable):
     def is_available(self)->bool:
         return time() >= self._available_time
 
-    def _constraints_are_active(self)->bool:
-        """Return a boolean representing if constraints are active."""
-        return self._use_timeout != 0 or self._used_timeout != 0
-
     def _set_available_time(self, timeout: float=0):
         self._available_time = time() + timeout
 
     def use(self, **kwargs):
         super(Sporadic, self).use(**kwargs)
-        if not Sporadic.is_available(self):
-            raise UnavailableError()
         self._set_available_time(self._use_timeout)
 
     def used(self, **kwargs):

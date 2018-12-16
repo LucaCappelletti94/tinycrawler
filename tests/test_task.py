@@ -10,16 +10,16 @@ def test_task_eq():
 
 
 def test_task():
-    t = Task(0)
-    t.use()
-    t.used()
-    assert t.status == Task.UNASSIGNED
-    t.status = Task.SUCCESS
+    task = Task(0)
+    task.use()
+    task.used()
+    assert task.status == Task.UNASSIGNED
+    task.status = Task.SUCCESS
     try:
-        t.status = ["I'm not even an int."]
+        task.status = ["I'm not even an int."]
         assert False
     except IllegalArgumentError:
         pass
 
     with open("test_data/expected_task_representation.json", "r") as f:
-        assert str(t) == f.read()
+        assert str(task) == f.read()

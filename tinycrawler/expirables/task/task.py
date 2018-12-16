@@ -1,8 +1,8 @@
-from ..sporadic_sequential_expirable import SporadicSequentialExpirable
+from ..sporadic_expirable import SporadicExpirable
 from ...exceptions import IllegalArgumentError
 
 
-class Task(SporadicSequentialExpirable):
+class Task(SporadicExpirable):
     UNASSIGNED = 0
     ASSIGNED = 1
     FAILURE = 2
@@ -26,6 +26,9 @@ class Task(SporadicSequentialExpirable):
     def used(self):
         super(Task, self).used(success=False)
         self._status = Task.UNASSIGNED
+
+    def is_available(self, **kwargs):
+        return super(Task, self).is_available(**kwargs)
 
     @property
     def status(self):

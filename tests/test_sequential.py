@@ -1,5 +1,5 @@
 from tinycrawler.collections import Sequential
-from tinycrawler import NotInUseError, InUseError
+from tinycrawler import NotInUseError, UnavailableError
 
 
 def test_sequential():
@@ -13,7 +13,7 @@ def test_sequential():
     try:
         sequential.use()
         assert False
-    except InUseError:
+    except UnavailableError:
         pass
 
     sequential.used()

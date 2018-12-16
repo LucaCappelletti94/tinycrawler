@@ -1,7 +1,7 @@
 from collections import ChainMap
 from ..collections import Usable
 import json
-from ..exceptions import ExpiredError, IllegalArgumentError
+from ..exceptions import IllegalArgumentError
 
 
 class Expirable(Usable):
@@ -46,10 +46,6 @@ class Expirable(Usable):
             return self._errors / self._total_usages
         return 0
 
-    def _constraints_are_active(self)->bool:
-        """Return a boolean representing if constraints are active."""
-        return (self._maximum_error_rate < 1) and (self._maximum_consecutive_errors != -1)
-
     def is_available(self) -> bool:
         """Return boolean representing if given object has expired."""
         return self._error_rate <= self._maximum_error_rate or (self._consecutive_errors < self._maximum_consecutive_errors and self._maximum_consecutive_errors != -1)
@@ -69,8 +65,6 @@ class Expirable(Usable):
     def use(self, **kwargs):
         """Raise `ExpiredError` if object has expired."""
         super(Expirable, self).use(**kwargs)
-        if not Expirable.is_available(self):
-            raise ExpiredError()
 
     def ___repr___(self):
         return {

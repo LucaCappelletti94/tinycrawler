@@ -22,6 +22,10 @@ class Proxy(SporadicSequentialExpirable):
     def data(self)->ProxyData:
         return self._data
 
+    @property
+    def local(self)->bool:
+        return self._data is None
+
     def use(self, url: Url, **kwargs):
         super(Proxy, self).use(url=url, **kwargs)
         if url.domain not in self._domains:
@@ -30,8 +34,6 @@ class Proxy(SporadicSequentialExpirable):
 
     def used(self, url: Url, **kwargs):
         super(Proxy, self).used(**kwargs)
-        if url.domain not in self._domains:
-            self._domains[url.domain] = url.domain
         self._domains[url.domain].used(**kwargs)
 
     def __eq__(self, other)->bool:

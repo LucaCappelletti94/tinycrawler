@@ -1,65 +1,63 @@
-# from .task import Task
-# from ..web import Url
-# from ...exceptions import IllegalArgumentError
-# from typing import Set
-# from requests import Response
-# from ...validators import path as is_valid_path
+from .task import Task
+from ..web import Url, Proxy, Response
+from ...exceptions import IllegalArgumentError
+from typing import Set
+from ...validators import path as is_valid_path
 
 
-# class DownloaderTask(Task):
-#     def __init__(self, proxy: Proxy, task_id: int, **kwargs):
-#         """Create an unique task.
-#             task_id:int, unique identifier of current task.
-#             response:Response, response to be parsed.
-#         """
-#         super(DownloaderTask, self).__init__(task_id, **kwargs)
-#         if response is None:
-#             raise IllegalArgumentError("Given response argument is None.")
-#         self._response = response
-#         self._urls = set()
-#         self._page = self._path = None
+class DownloaderTask(Task):
+    def __init__(self, proxy: Proxy, url: Url, task_id: int, **kwargs):
+        """Create an unique task.
+            task_id:int, unique identifier of current task.
+            proxy:Proxy, proxy to be used.
+            url:Url, url to download from.
+        """
+        super(DownloaderTask, self).__init__(task_id, **kwargs)
+        self._proxy = proxy
+        self._url = url
+        self._binary = False
+        self._response = None
 
-#     @property
-#     def response(self)->Response:
-#         return self._response
+    def use(self, **kwargs):
+        super(DownloaderTask, self).use(**kwargs)
+        self._proxy.use(url=self._url, **kwargs)
+        self._url.use(**kwargs)
 
-#     @property
-#     def page(self)->str:
-#         if self._page is None:
-#             raise ValueError("Page was not elaborated yet.")
-#         return self._page
+    def used(self, success: bool):
+        super(DownloaderTask, self).used()
+        self._proxy.used(success=success, url=self._url)
 
-#     @property
-#     def path(self)->str:
-#         if self._path is None:
-#             raise ValueError("Path was not elaborated yet.")
-#         return self._path
+    @property
+    def proxy(self)->Proxy:
+        return self._proxy.data
 
-#     @property
-#     def urls(self)->Set[Url]:
-#         return self._urls
+    @property
+    def url(self)->str:
+        return self._url.url
 
-#     @page.setter
-#     def page(self, page: str):
-#         if self._page is not None:
-#             raise ValueError("Page has already been elaborated.")
-#         self._page = page
+    @property
+    def binary(self)->bool:
+        return self._binary
 
-#     @path.setter
-#     def path(self, path: str):
-#         if self._path is not None:
-#             raise ValueError("Path has already been elaborated.")
-#         if not is_valid_path(path):
-#             raise IllegalArgumentError("Given path is not safe.")
-#         self._path = path
+    @property
+    def response(self)->str:
+        if self._response is None:
+            raise ValueError("Response was not elaborated yet.")
+        return self._response
 
-#     def add_url(self, url: Url):
-#         """Add given url to set."""
-#         self._urls.add(url)
+    @response.setter
+    def response(self, response: str):
+        if self._response is not None:
+            raise ValueError("Response has already been elaborated.")
+        self._response = Response(response)
 
-#     def ___repr___(self):
-#         return {
-#             **super(DownloaderTask, self).___repr___(),
-#             **{
-#                 "task_type": "downloader task"
-#             }}
+    @binary.setter
+    def binary(self, binary: bool):
+        self._binary = binary
+
+    def ___repr___(self):
+        return {
+            **super(DownloaderTask, self).___repr___(),
+            **{
+                "task_type": "downloader task"
+            }}

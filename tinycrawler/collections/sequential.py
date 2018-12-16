@@ -1,5 +1,5 @@
 from .usable import Usable
-from ..exceptions import InUseError, NotInUseError
+from ..exceptions import NotInUseError
 import json
 
 
@@ -18,8 +18,6 @@ class Sequential(Usable):
 
     def use(self, **kwargs):
         super(Sequential, self).use(**kwargs)
-        if not Sequential.is_available(self):
-            raise InUseError()
         self._parallel_usages += 1
 
     def used(self, **kwargs):
@@ -27,10 +25,6 @@ class Sequential(Usable):
         if self._parallel_usages == 0:
             raise NotInUseError()
         self._parallel_usages -= 1
-
-    def _constraints_are_active(self)->bool:
-        """Return a boolean representing if constraints are active."""
-        return self._maximum_usages != -1
 
     def ___repr___(self):
         return {

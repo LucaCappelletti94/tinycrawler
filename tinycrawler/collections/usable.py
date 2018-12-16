@@ -1,5 +1,6 @@
 import abc
 import json
+from ..exceptions import UnavailableError
 
 
 class Usable(object):
@@ -13,8 +14,14 @@ class Usable(object):
         """Define what to do after object has been used."""
 
     @abc.abstractmethod
+    def is_available(self, **kwargs)->bool:
+        """Define if object is available."""
+
+    @abc.abstractmethod
     def use(self, **kwargs):
         """Define what to do when object is used."""
+        if not self.is_available(**kwargs):
+            raise UnavailableError()
 
     def ___repr___(self):
         return {}

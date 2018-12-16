@@ -5,11 +5,6 @@ from .utils import double_arguments_test
 
 
 def test_sporadic_sequential_expirable_arguments():
-    invalid_arguments = [
-        {
-            "maximum_usages": np.arange(20)
-        }
-    ]
     valid_arguments = [
         {},
         {
@@ -22,29 +17,23 @@ def test_sporadic_sequential_expirable_arguments():
     ]
 
     double_arguments_test(SporadicSequentialExpirable,
-                          valid_arguments, invalid_arguments)
+                          valid_arguments, [])
 
     assert True
 
 
 def test_sporadic_sequential_expirable():
     s = SporadicSequentialExpirable(
-        maximum_usages=1,
+        maximum_usages=3,
         maximum_consecutive_errors=2,
         maximum_error_rate=0.7
     )
 
     # This will increase parallel usages by one
     s.use()
-    # Now the error count will raise to 1
-    # This will decrease parallel usages to zero
     s.use()
-    # This will increase parallel usages by one
     s.use()
     # Now the error count will raise to 1
-    # This will decrease parallel usages to zero
-    s.use()
-    # Object is now expired
     try:
         s.use()
         assert False
