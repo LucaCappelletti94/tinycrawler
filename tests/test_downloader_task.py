@@ -16,6 +16,7 @@ def test_downloader_task_arguments():
     downloader_task = DownloaderTask(proxy, url, 0)
 
     downloader_task.url
+    downloader_task.proxy
 
     downloader_task.use()
     downloader_task.used(True)
