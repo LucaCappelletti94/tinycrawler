@@ -1,4 +1,5 @@
 import abc
+import json
 
 
 class Usable(object):
@@ -14,3 +15,11 @@ class Usable(object):
     @abc.abstractmethod
     def use(self):
         """Define what to do when object is used."""
+
+    def ___repr___(self):
+        return {}
+
+    def __repr__(self):
+        return json.dumps(self.___repr___(), indent=4, sort_keys=True)
+
+    __str__ = __repr__

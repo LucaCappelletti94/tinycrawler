@@ -3,7 +3,7 @@ from tinycrawler.exceptions import NotInUseError, InUseError
 
 
 def test_sequential():
-    sequential = Sequential()
+    sequential = Sequential(maximum_usages=1)
     try:
         sequential.used()
         assert False

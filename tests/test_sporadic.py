@@ -1,6 +1,6 @@
 from tinycrawler.collections import Sporadic
 from tinycrawler.exceptions import UnavailableError
-from .utils import arguments_test
+from .utils import double_arguments_test
 import numpy as np
 
 
@@ -14,7 +14,7 @@ def test_sporadic_arguments():
         "use_timeout": np.linspace(0, 10)
     }
 
-    arguments_test(Sporadic, valid_arguments, invalid_arguments)
+    double_arguments_test(Sporadic, valid_arguments, invalid_arguments)
 
     assert True
 

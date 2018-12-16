@@ -1,6 +1,7 @@
 from .usable import Usable
 from ..exceptions import IllegalArgumentError, UnavailableError
 from time import time
+import json
 
 
 class Sporadic(Usable):
@@ -31,19 +32,29 @@ class Sporadic(Usable):
 
         self._set_available_time()
 
-    @property
-    def available(self)->bool:
+    def is_available(self)->bool:
         return time() >= self._available_time
+
+    def _constraints_are_active(self)->bool:
+        """Return a boolean representing if constraints are active."""
+        return self._use_timeout != 0 or self._used_timeout != 0
 
     def _set_available_time(self, timeout: float=0):
         self._available_time = time() + timeout
 
     def use(self, **kwargs):
-        super(Sporadic, self).use()
-        if not self.available:
+        super(Sporadic, self).use(**kwargs)
+        if not Sporadic.is_available(self):
             raise UnavailableError()
         self._set_available_time(self._use_timeout)
 
     def used(self, **kwargs):
-        super(Sporadic, self).used()
+        super(Sporadic, self).used(**kwargs)
         self._set_available_time(self._used_timeout)
+
+    def ___repr___(self):
+        return {
+            "use_timeout": self._use_timeout,
+            "used_timeout": self._used_timeout,
+            "sporadic_is_available": Sporadic.is_available(self)
+        }
