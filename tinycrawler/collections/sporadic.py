@@ -12,6 +12,7 @@ class Sporadic(Usable):
         """
 
         super(Sporadic, self).__init__(**kwargs)
+        self._set_available_time()
         self._use_timeout = kwargs.get(
             "use_timeout",
             0
@@ -29,8 +30,6 @@ class Sporadic(Usable):
         if self._used_timeout < 0:
             raise IllegalArgumentError(
                 "Given `used_timeout` is less than 0. Provide a value greater than or equal to zero.")
-
-        self._set_available_time()
 
     def is_available(self)->bool:
         return time() >= self._available_time
@@ -54,7 +53,9 @@ class Sporadic(Usable):
 
     def ___repr___(self):
         return {
-            "use_timeout": self._use_timeout,
-            "used_timeout": self._used_timeout,
-            "sporadic_is_available": Sporadic.is_available(self)
-        }
+            **super(Sporadic, self).___repr___(),
+            **{
+                "use_timeout": self._use_timeout,
+                "used_timeout": self._used_timeout,
+                "sporadic_is_available": Sporadic.is_available(self)
+            }}

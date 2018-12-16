@@ -74,11 +74,13 @@ class Expirable(Usable):
 
     def ___repr___(self):
         return {
-            "total_usages": self._total_usages,
-            "total_errors": self._errors,
-            "consecutive_errors": self._consecutive_errors,
-            "error_rate": self._error_rate,
-            "maximum_error_rate": self._maximum_error_rate,
-            "maximum_consecutive_errors": self._maximum_consecutive_errors,
-            "expired": not Expirable.is_available(self)
-        }
+            **super(Expirable, self).___repr___(),
+            **{
+                "total_usages": self._total_usages,
+                "total_errors": self._errors,
+                "consecutive_errors": self._consecutive_errors,
+                "error_rate": self._error_rate,
+                "maximum_error_rate": self._maximum_error_rate,
+                "maximum_consecutive_errors": self._maximum_consecutive_errors,
+                "expired": not Expirable.is_available(self)
+            }}
