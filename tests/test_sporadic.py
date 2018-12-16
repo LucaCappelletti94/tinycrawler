@@ -1,5 +1,5 @@
 from tinycrawler.collections import Sporadic
-from tinycrawler.exceptions import UnavailableError
+from tinycrawler import UnavailableError
 from .utils import double_arguments_test
 import numpy as np
 

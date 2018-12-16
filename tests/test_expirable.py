@@ -1,5 +1,5 @@
 from tinycrawler.expirables.expirable import Expirable
-from tinycrawler.exceptions import ExpiredError
+from tinycrawler import ExpiredError
 from .utils import double_arguments_test
 import numpy as np
 

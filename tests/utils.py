@@ -1,4 +1,4 @@
-from tinycrawler.exceptions import IllegalArgumentError
+from tinycrawler import IllegalArgumentError
 import json
 from typing import List, Callable, Dict
 from pprint import pprint

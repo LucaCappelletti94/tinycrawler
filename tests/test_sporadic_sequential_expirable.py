@@ -1,5 +1,5 @@
 from tinycrawler.expirables.sporadic_sequential_expirable import SporadicSequentialExpirable
-from tinycrawler.exceptions import UnavailableError
+from tinycrawler import UnavailableError
 import numpy as np
 from .utils import double_arguments_test
 

@@ -1,5 +1,5 @@
 from tinycrawler.expirables.task.task import Task
-from tinycrawler.exceptions import IllegalArgumentError
+from tinycrawler import IllegalArgumentError
 
 
 def test_task_eq():
