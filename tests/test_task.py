@@ -21,7 +21,5 @@ def test_task():
     except IllegalArgumentError:
         pass
 
-    print(t)
-
     with open("test_data/expected_task_representation.json", "r") as f:
         assert str(t) == f.read()

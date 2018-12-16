@@ -20,3 +20,6 @@ def test_domain():
         "https://coveralls.io/github/LucaCappelletti94/tinycrawler")
     assert domain_1 == domain_2
     assert domain_1 != domain_3
+
+    with open("test_data/expected_domain_representation.json", "r") as f:
+        assert str(domain_1) == f.read()

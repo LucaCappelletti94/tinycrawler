@@ -28,3 +28,10 @@ class Domain(SporadicSequentialExpirable):
 
     def __eq__(self, other):
         return other is not None and isinstance(other, Domain) and self.__hash__() == other.__hash__()
+
+    def ___repr___(self):
+        return {
+            **super(Domain, self).___repr___(),
+            **{
+                "domain": self.domain
+            }}

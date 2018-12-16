@@ -12,6 +12,9 @@ class Task(SporadicSequentialExpirable):
     TASK_NAMES = ["UNASSIGNED", "ASSIGNED", "FAILURE", "SUCCESS"]
 
     def __init__(self, task_id: int, **kwargs):
+        """Create an unique task.
+            task_id:int, unique identifier of current task.
+        """
         super(Task, self).__init__(**kwargs)
         self._status = Task.UNASSIGNED
         self._task_id = task_id
