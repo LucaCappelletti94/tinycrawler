@@ -1,5 +1,5 @@
 {
-    "crawl_delay": 2,
+    "crawl_delay": 0,
     "domain": {
         "SporadicSequentialExpirable_available": true,
         "consecutive_errors": 0,
@@ -17,14 +17,14 @@
         "use_timeout": 0,
         "used_timeout": 0
     },
-    "follow_robots": true,
+    "follow_robots": false,
     "request_rate": [
         1,
-        5
+        0
     ],
-    "request_rate_delay": 5.0,
-    "sporadic_is_available": false,
-    "timeout": 5.0,
+    "request_rate_delay": 0.0,
+    "sporadic_is_available": true,
+    "timeout": 1,
     "use_timeout": 10,
     "used_timeout": 0,
     "useragent": "tinycrawler"
