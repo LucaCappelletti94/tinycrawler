@@ -1,11 +1,11 @@
-from .expirable import Expirable
-from ..collections import Sporadic, Sequential
+from .sporadic_expirable import SporadicExpirable
+from ..collections import Sequential
 from ..exceptions import IllegalArgumentError, UnavailableError
 from collections import ChainMap
 import json
 
 
-class SporadicSequentialExpirable(Sporadic, Sequential, Expirable):
+class SporadicSequentialExpirable(SporadicExpirable, Sequential):
     def __init__(self, **kwargs):
         """Create sporadically available, sequentially usable and expirable object.
             use_timeout:float, unavailability timeout after use.

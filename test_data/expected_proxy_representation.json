@@ -1,7 +1,9 @@
 {
+    "SporadicExpirable_available": true,
     "SporadicSequentialExpirable_available": false,
     "consecutive_errors": 1,
     "domain": {
+        "SporadicExpirable_available": true,
         "SporadicSequentialExpirable_available": true,
         "consecutive_errors": 0,
         "domain": "78.38.241.9",
@@ -20,6 +22,7 @@
     },
     "domains": {
         "www.youtube.com": {
+            "SporadicExpirable_available": true,
             "SporadicSequentialExpirable_available": true,
             "consecutive_errors": 1,
             "domain": "www.youtube.com",

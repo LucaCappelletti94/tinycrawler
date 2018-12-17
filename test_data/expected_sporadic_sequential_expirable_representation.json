@@ -1,4 +1,5 @@
 {
+    "SporadicExpirable_available": false,
     "SporadicSequentialExpirable_available": false,
     "consecutive_errors": 2,
     "error_rate": 1.0,

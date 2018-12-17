@@ -1,7 +1,9 @@
 {
+    "SporadicExpirable_available": true,
     "SporadicSequentialExpirable_available": true,
     "consecutive_errors": 0,
     "domain": {
+        "SporadicExpirable_available": true,
         "SporadicSequentialExpirable_available": true,
         "consecutive_errors": 0,
         "domain": "www.youtube.com",

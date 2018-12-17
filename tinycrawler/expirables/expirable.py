@@ -46,6 +46,10 @@ class Expirable(Usable):
             return self._errors / self._total_usages
         return 0
 
+    @property
+    def expired(self)->bool:
+        return not Expirable.is_available(self)
+
     def is_available(self) -> bool:
         """Return boolean representing if given object has expired."""
         return self._error_rate <= self._maximum_error_rate or (self._consecutive_errors < self._maximum_consecutive_errors and self._maximum_consecutive_errors != -1)

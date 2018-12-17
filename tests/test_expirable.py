@@ -76,9 +76,13 @@ def test_expiration():
     expirable.use()
     expirable.used(success=1)
 
+    assert not expirable.expired
+
     for i in range(3):
         expirable.use()
         expirable.used(success=0)
+
+    assert expirable.expired
 
     try:
         expirable.use()
