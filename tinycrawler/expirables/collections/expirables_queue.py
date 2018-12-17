@@ -21,7 +21,8 @@ class ExpirablesQueue(TypeList):
 
     def add(self, expirable: Expirable):
         if expirable.expired:
-            raise IllegalArgumentError("Given expirable is already expired!")
+            raise IllegalArgumentError(
+                "Given expirable {expirable} is already expired!".format(expirable=expirable))
         if expirable.is_available():
             super(ExpirablesQueue, self).prepend(expirable)
         else:
