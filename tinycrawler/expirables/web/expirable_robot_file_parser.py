@@ -1,7 +1,6 @@
 from ...collections import Sporadic
 from collections import namedtuple
 from .domain import Domain
-from multiprocessing import Lock
 from urllib.robotparser import RobotFileParser
 
 RequestRate = namedtuple("RequestRate", "requests seconds")
@@ -14,7 +13,6 @@ class ExpirableRobotFileParser(Sporadic):
         self._useragent = useragent
         self._follow_robots = follow_robots
         self._default_timeout = default_timeout
-        self._update_lock = Lock()
         self._robots = RobotFileParser(self.robots_txt_address)
 
     @property
@@ -50,11 +48,8 @@ class ExpirableRobotFileParser(Sporadic):
 
     def _update(self):
         if self._follow_robots and super(ExpirableRobotFileParser, self).is_available():
-            self._update_lock.acquire()
-            if super(ExpirableRobotFileParser, self).is_available():
-                self._robots.read()
-                super(ExpirableRobotFileParser, self).use()
-            self._update_lock.release()
+            self._robots.read()
+            super(ExpirableRobotFileParser, self).use()
 
     def ___repr___(self):
         rate = self._request_rate_
