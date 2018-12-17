@@ -43,7 +43,5 @@ def test_downloader_task_arguments():
     downloader_task.response
     downloader_task.binary
 
-    print(downloader_task)
-
     with open("test_data/expected_downloader_task_representation.json", "r") as f:
         assert str(downloader_task) == f.read()

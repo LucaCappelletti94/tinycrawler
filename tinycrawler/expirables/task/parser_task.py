@@ -43,7 +43,7 @@ class ParserTask(Task):
         return self._path
 
     @property
-    def urls(self)->Set[Url]:
+    def urls(self)->Set[str]:
         return self._urls
 
     @page.setter
@@ -60,7 +60,7 @@ class ParserTask(Task):
             raise IllegalArgumentError("Given path is not safe.")
         self._path = path
 
-    def add_url(self, url: Url):
+    def add_url(self, url: str):
         """Add given url to set."""
         self._urls.add(url)
 
