@@ -31,8 +31,8 @@ class ExpirableKeysDict(TypeDict):
     def used(self, k, **kwargs):
         self._keys[k].used(**kwargs)
 
-    def is_available(self, k):
-        return (k in self and self._keys[k].is_available()) or (k not in self and k.is_available())
+    def is_available(self, k, **kwargs):
+        return (k in self and self._keys[k].is_available(**kwargs)) or (k not in self and k.is_available(**kwargs))
 
     def _ensure_availability(self, key):
         if not self.is_available(key):
