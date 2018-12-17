@@ -8,20 +8,19 @@ def test_domains_dict():
     try:
         d.get("test")
         assert False
-    except IllegalArgumentError:
-        pass
-
-    try:
-        "test" in d
-        assert False
-    except IllegalArgumentError:
+    except NotImplementedError:
         pass
 
     domain = Domain("https://travis-ci.org/LucaCappelletti94/tinycrawler")
 
+    try:
+        d.setdefault(domain, 0)
+        assert False
+    except NotImplementedError:
+        pass
+
     d[domain] = "test"
-    d.setdefault(domain, 0)
+
     assert d[domain] == "test"
-    assert d.get(domain) == "test"
 
     del d[domain]
