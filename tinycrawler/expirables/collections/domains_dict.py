@@ -4,5 +4,5 @@ from ..web import Domain
 
 
 class DomainsDict(ExpirableKeysDict):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super(DomainsDict, self).__init__(Domain)

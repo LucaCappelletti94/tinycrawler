@@ -14,8 +14,12 @@ class ExpirablesQueue(TypeList):
             raise IllegalArgumentError("Given type {type} is not a subclass of Expirable".format(
                 type=expirable_type.__name__))
 
+    @property
+    def empty(self)->bool:
+        return not self or not self[0].is_available()
+
     def pop(self):
-        if not self or not self[0].is_available():
+        if self.empty:
             raise Empty
         return super(ExpirablesQueue, self).pop(0)
 

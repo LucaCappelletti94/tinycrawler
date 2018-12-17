@@ -6,22 +6,22 @@ from typing import Type
 
 
 class ExpirableKeysDict(TypeDict):
-    def __init__(self, expirable_type: Type, *args, **kwargs):
-        super(ExpirableKeysDict, self).__init__(
-            expirable_type, *args, **kwargs)
+    def __init__(self, expirable_type: Type):
+        super(ExpirableKeysDict, self).__init__(expirable_type)
 
         if not issubclass(expirable_type, Expirable):
             raise IllegalArgumentError("Given type {type} is not a subclass of Expirable".format(
                 type=expirable_type.__name__))
 
-        self._keys = OrderedDict()
+        self._keys = TypeDict(expirable_type, expirable_type)
 
     def __getitem__(self, k):
         self._keys[k].use()
         return super(ExpirableKeysDict, self).__getitem__(self._ensure_availability(k))
 
     def __setitem__(self, k, v):
-        self._keys[k] = k
+        if k not in self._keys:
+            self._keys[k] = k
         return super(ExpirableKeysDict, self).__setitem__(self._ensure_availability(k), v)
 
     def __delitem__(self, k):
