@@ -1,7 +1,10 @@
 from ...collections import Sporadic
+from collections import namedtuple
 from .domain import Domain
 from multiprocessing import Lock
-from urllib.robotparser import RobotFileParser, RequestRate
+from urllib.robotparser import RobotFileParser
+
+RequestRate = namedtuple("RequestRate", "requests seconds")
 
 
 class ExpirableRobotFileParser(Sporadic):
