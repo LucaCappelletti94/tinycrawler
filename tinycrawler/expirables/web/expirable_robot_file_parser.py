@@ -64,7 +64,7 @@ class ExpirableRobotFileParser(Sporadic):
                 "useragent": self._useragent,
                 "crawl_delay": self._crawl_delay_,
                 "follow_robots": self._follow_robots,
-                "request_rate": self._request_rate_,
+                "request_rate": tuple(self._request_rate_),
                 "request_rate_delay": self._request_rate_delay_,
                 "timeout": self.timeout
             }}
