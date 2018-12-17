@@ -28,6 +28,9 @@ class ExpirableKeysDict(TypeDict):
         del self._keys[k]
         return super(ExpirableKeysDict, self).__delitem__(k)
 
+    def used(self, k, **kwargs):
+        self._keys[k].used(**kwargs)
+
     def is_available(self, k):
         return (k in self and self._keys[k].is_available()) or (k not in self and k.is_available())
 
