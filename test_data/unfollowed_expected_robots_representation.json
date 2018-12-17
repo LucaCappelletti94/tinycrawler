@@ -18,10 +18,10 @@
         "used_timeout": 0
     },
     "follow_robots": false,
-    "request_rate": [
-        1,
-        0
-    ],
+    "request_rate": {
+        "requests": 1,
+        "seconds": 0
+    },
     "request_rate_delay": 0.0,
     "sporadic_is_available": true,
     "timeout": 1,

@@ -57,6 +57,7 @@ class ExpirableRobotFileParser(Sporadic):
             self._update_lock.release()
 
     def ___repr___(self):
+        rate = self._request_rate_
         return {
             **super(ExpirableRobotFileParser, self).___repr___(),
             **{
@@ -64,7 +65,10 @@ class ExpirableRobotFileParser(Sporadic):
                 "useragent": self._useragent,
                 "crawl_delay": self._crawl_delay_,
                 "follow_robots": self._follow_robots,
-                "request_rate": tuple(self._request_rate_),
+                "request_rate": {
+                    "seconds": rate.seconds,
+                    "requests": rate.requests
+                },
                 "request_rate_delay": self._request_rate_delay_,
                 "timeout": self.timeout
             }}
