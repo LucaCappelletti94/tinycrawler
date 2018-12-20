@@ -148,7 +148,7 @@
                 "total_errors": 0,
                 "total_usages": 0,
                 "url": "http://www.totally.fake.example.com/2",
-                "use_timeout": 5,
+                "use_timeout": 5.0,
                 "used_timeout": 0
             }
         ]

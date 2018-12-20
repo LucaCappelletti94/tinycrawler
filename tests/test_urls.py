@@ -58,7 +58,7 @@ def test_urls():
     # Extraction of last inserted as it is ready
     url1 = Url("http://www.totally.fake.example.com/1", use_timeout=5)
     url1.use()
-    url2 = Url("http://www.totally.fake.example.com/2", use_timeout=5)
+    url2 = Url("http://www.totally.fake.example.com/2", use_timeout=2)
     url2.use()
     url3 = Url("http://www.totally.fake.example.com/3", use_timeout=5)
     urls.add(set([url1, url2, url3]))
