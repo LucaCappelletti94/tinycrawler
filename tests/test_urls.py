@@ -1,14 +1,15 @@
 from tinycrawler.data import Urls
 from tinycrawler import Url
 from queue import Empty
-from httpretty import HTTPretty, httprettified
+import httpretty
+from httpretty import httprettified
 
 
 @httprettified
 def test_urls():
     with open("test_data/robots.txt", "r") as f:
-        HTTPretty.register_uri(
-            HTTPretty.GET,
+        httpretty.register_uri(
+            httpretty.GET,
             "http://www.totally.fake.example.com/robots.txt",
             body=f.read(),
             content_type="text/plain"
@@ -58,22 +59,20 @@ def test_urls():
     # Extraction of last inserted as it is ready
     url1 = Url("http://www.totally.fake.example.com/1", use_timeout=2)
     url1.use()
-    url4 = Url("http://www.totally.fake.example.com/1", use_timeout=2)
     url2 = Url("http://www.totally.fake.example.com/sensitive", use_timeout=5)
     url3 = Url("http://www.totally.fake.example.com/3", use_timeout=5)
-    urls.add([url1, url2, url3, url4])
+    urls.add([url1, url3, url2])
 
-    with open("test_data/robots.txt", "r") as f:
-        HTTPretty.register_uri(
-            HTTPretty.GET,
-            "http://www.totally.fake.example.com/robots_sensitive.txt",
-            body=f.read(),
-            content_type="text/plain"
+    httpretty.reset()
+
+    with open("test_data/robots_sensitive.txt", "r") as f:
+        httpretty.register_uri(
+            httpretty.GET,
+            "http://www.totally.fake.example.com/robots.txt",
+            body=f.read()
         )
 
     assert urls.pop() == url3
 
-    str(urls)
-
-    # with open("test_data/expected_urls_representation.json", "r") as f:
-    #     assert str(urls) == f.read()
+    with open("test_data/expected_urls_representation.json", "r") as f:
+        assert str(urls) == f.read()

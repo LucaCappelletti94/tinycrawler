@@ -2,6 +2,7 @@ from ...collections import Sporadic
 from collections import namedtuple
 from .domain import Domain
 from urllib.robotparser import RobotFileParser
+import requests
 
 RequestRate = namedtuple("RequestRate", "requests seconds")
 
@@ -13,7 +14,6 @@ class ExpirableRobotFileParser(Sporadic):
         self._useragent = useragent
         self._follow_robots = follow_robots
         self._default_timeout = default_timeout
-        self._robots = RobotFileParser(self.robots_txt_address)
 
     @property
     def robots_txt_address(self):
@@ -52,6 +52,7 @@ class ExpirableRobotFileParser(Sporadic):
 
     def _update(self):
         if self._follow_robots and super(ExpirableRobotFileParser, self).is_available():
+            self._robots = RobotFileParser(self.robots_txt_address)
             self._robots.read()
             super(ExpirableRobotFileParser, self).use()
 
