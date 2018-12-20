@@ -58,12 +58,22 @@ def test_urls():
     # Extraction of last inserted as it is ready
     url1 = Url("http://www.totally.fake.example.com/1", use_timeout=5)
     url1.use()
-    url2 = Url("http://www.totally.fake.example.com/2", use_timeout=2)
+    url2 = Url("http://www.totally.fake.example.com/sensitive", use_timeout=2)
     url2.use()
     url3 = Url("http://www.totally.fake.example.com/3", use_timeout=5)
-    urls.add(set([url1, url2, url3]))
+    urls.add([url1, url2, url3])
+
+    with open("test_data/robots.txt", "r") as f:
+        HTTPretty.register_uri(
+            HTTPretty.GET,
+            "http://www.totally.fake.example.com/robots_sensitive.txt",
+            body=f.read(),
+            content_type="text/plain"
+        )
 
     assert urls.pop() == url3
+
+    print(urls)
 
     with open("test_data/expected_urls_representation.json", "r") as f:
         assert str(urls) == f.read()

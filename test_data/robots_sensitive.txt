@@ -1,0 +1,8 @@
+User-Agent: *
+Disallow: /dashboard
+Disallow: /php
+Disallow: /error
+Disallow: /Locale
+Disallow: /sensitive
+Request-rate: 1/5
+Crawl-delay: 2
