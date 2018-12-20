@@ -28,9 +28,9 @@
                     "seconds": 5
                 },
                 "request_rate_delay": 5.0,
-                "sporadic_is_available": false,
+                "sporadic_is_available": true,
                 "timeout": 5.0,
-                "use_timeout": 10,
+                "use_timeout": 0,
                 "used_timeout": 0,
                 "useragent": "*"
             }
@@ -38,7 +38,7 @@
         "follow_robot_txt": true,
         "follow_robot_txt_black_list": [],
         "follow_robot_txt_white_list": [],
-        "robots_timeout": 10,
+        "robots_timeout": 0,
         "useragent": "*"
     },
     "urls": {

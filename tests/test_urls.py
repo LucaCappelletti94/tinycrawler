@@ -19,7 +19,7 @@ def test_urls():
         follow_robot_txt=True,
         useragent="*",
         default_url_timeout=1,
-        robots_timeout=10
+        robots_timeout=0
     )
 
     urls.add(
@@ -72,8 +72,6 @@ def test_urls():
         )
 
     assert urls.pop() == url3
-
-    print(urls)
 
     with open("test_data/expected_urls_representation.json", "r") as f:
         assert str(urls) == f.read()
