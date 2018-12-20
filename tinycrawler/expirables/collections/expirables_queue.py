@@ -3,6 +3,7 @@ from ...exceptions import IllegalArgumentError
 from ..expirable import Expirable
 from typing import Type
 from queue import Empty
+import json
 
 
 class ExpirablesQueue(TypeList):
@@ -31,3 +32,13 @@ class ExpirablesQueue(TypeList):
             super(ExpirablesQueue, self).prepend(expirable)
         else:
             super(ExpirablesQueue, self).append(expirable)
+
+    def ___repr___(self):
+        return [
+            value.___repr___() for value in self
+        ]
+
+    def __repr__(self):
+        return json.dumps(self.___repr___(), indent=4, sort_keys=True)
+
+    __str__ = __repr__

@@ -5,12 +5,12 @@ from tinycrawler import Domain, IllegalArgumentError, UnavailableError
 def test_expirable_keys_dict():
 
     try:
-        ExpirableKeysDict(str)
+        ExpirableKeysDict(str, str)
         assert False
     except IllegalArgumentError:
         pass
 
-    d = ExpirableKeysDict(Domain)
+    d = ExpirableKeysDict(Domain, object)
 
     try:
         d.get("test")

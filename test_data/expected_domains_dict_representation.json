@@ -1,0 +1,20 @@
+{
+    "www.totally.fake.example.com": {
+        "SporadicExpirable_available": true,
+        "SporadicSequentialExpirable_available": true,
+        "consecutive_errors": 0,
+        "domain": "www.totally.fake.example.com",
+        "error_rate": 0,
+        "expired": false,
+        "maximum_consecutive_errors": -1,
+        "maximum_error_rate": 1,
+        "maximum_usages": -1,
+        "parallel_usages": 0,
+        "sequential_is_available": true,
+        "sporadic_is_available": true,
+        "total_errors": 0,
+        "total_usages": 0,
+        "use_timeout": 0,
+        "used_timeout": 0
+    }
+}

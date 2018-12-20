@@ -27,15 +27,15 @@ def test_expirable_robots_file_parser():
         "http://www.totally.fake.example.com/homepage"
     ]
     invalid = [
-        "http://www.totally.fake.example.com/error"
+        "http://www.totally.fake.example.com/error",
         "http://www.totally.fake.example.com/Locale"
     ]
 
     for url in valid:
-        assert robots.can_fetch(url)
+        assert robots.can_download(url)
 
     for url in invalid:
-        assert not robots.can_fetch(url)
+        assert not robots.can_download(url)
 
     assert robots.timeout == 5
     assert robots._crawl_delay_ == 2
@@ -64,7 +64,7 @@ def test_unfollowed_expirable_robots_file_parser():
     ]
 
     for url in valid:
-        assert robots.can_fetch(url)
+        assert robots.can_download(url)
 
     assert robots.timeout == 1
     assert robots._crawl_delay_ == 0

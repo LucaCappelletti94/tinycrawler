@@ -34,10 +34,14 @@ class ExpirableRobotFileParser(Sporadic):
 
     @property
     def timeout(self):
+        """Return a float representing what has to be waited for current domain."""
         self._update()
         return max(self._crawl_delay_, self._request_rate_delay_, self._default_timeout)
 
-    def can_fetch(self, url: str)->bool:
+    def can_download(self, url: str)->bool:
+        """Return a boolean representing if url can be downloaded.
+            url:Url, url to check for.
+        """
         if not self._follow_robots:
             return True
         self._update()

@@ -7,7 +7,8 @@ from queue import Empty
 
 class CircularExpirablesQueuesDomainDict(DomainsDict):
     def __init__(self):
-        super(CircularExpirablesQueuesDomainDict, self).__init__()
+        super(CircularExpirablesQueuesDomainDict,
+              self).__init__(ExpirablesQueue)
         self._counter = 0
         self._keys_list = []
 

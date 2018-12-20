@@ -6,8 +6,8 @@ from typing import Type
 
 
 class ExpirableKeysDict(TypeDict):
-    def __init__(self, expirable_type: Type):
-        super(ExpirableKeysDict, self).__init__(expirable_type)
+    def __init__(self, expirable_type: Type, other: Type):
+        super(ExpirableKeysDict, self).__init__(expirable_type, other)
 
         if not issubclass(expirable_type, Expirable):
             raise IllegalArgumentError("Given type {type} is not a subclass of Expirable".format(
