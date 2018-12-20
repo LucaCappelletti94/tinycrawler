@@ -19,5 +19,7 @@ def test_url():
 
     assert url_1 != url_2
 
+    assert url_1.timeout == 0
+
     with open("test_data/expected_url_representation.json", "r") as f:
         assert str(url_1) == f.read()

@@ -52,3 +52,7 @@ def test_expirables_queue():
     unavailable_domain.used(success=True)
 
     assert q.pop() == unavailable_domain
+    q.add(domain)
+
+    with open("test_data/expected_espirables_queue_representation.json", "r") as f:
+        assert str(q) == f.read()
