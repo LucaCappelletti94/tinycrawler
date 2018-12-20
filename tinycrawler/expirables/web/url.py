@@ -1,4 +1,5 @@
 from ..sporadic_sequential_expirable import SporadicSequentialExpirable
+from ...collections import Sporadic
 from .domain import Domain
 
 
@@ -32,7 +33,8 @@ class Url(SporadicSequentialExpirable):
     def timeout(self, timeout: float):
         if self._use_timeout != timeout:
             self._use_timeout = timeout
-            self._set_available_time(self._use_timeout)
+            if not Sporadic.is_available(self):
+                self._set_available_time(self._use_timeout)
 
     def __hash__(self):
         return hash(self._url)

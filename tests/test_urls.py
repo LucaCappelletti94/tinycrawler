@@ -25,8 +25,10 @@ def test_urls():
     urls.add(
         set([Url("http://www.totally.fake.example.com/error", use_timeout=5)]))
 
+    # Failure 'cos of robots can download
     try:
         urls.pop()
+        assert False
     except Empty:
         pass
 
@@ -34,28 +36,34 @@ def test_urls():
     urls.add(set([url]))
     assert urls.pop() == url
 
-    timeout_url = Url(
-        "http://www.totally.fake.example.com/homepage", use_timeout=1)
-    urls.add(set([timeout_url]))
-    try:
-        urls.pop()
-    except Empty:
-        pass
-
+    # Failure 'cos of bloom filter
+    url = Url("http://www.totally.fake.example.com/homepage", use_timeout=5)
     urls.add(set([url]))
-
-    # The following should fail for the bloom filter
     try:
         urls.pop()
+        assert False
     except Empty:
         pass
 
-    url2 = Url("http://www.totally.fake.example.com/testing", use_timeout=5)
-    urls.add(set([
-        Url("http://www.totally.fake.example.com/test1", use_timeout=1),
-        url2
-    ]))
+    # Failure 'cos of timeout reset
+    url = Url("http://www.totally.fake.example.com/new", use_timeout=5)
+    url.use()
+    urls.add(set([url]))
+    try:
+        urls.pop()
+        assert False
+    except Empty:
+        pass
 
-    assert urls.pop() == url2
+    # Extraction of last inserted as it is ready
+    url1 = Url("http://www.totally.fake.example.com/1", use_timeout=5)
+    url1.use()
+    url2 = Url("http://www.totally.fake.example.com/2", use_timeout=5)
+    url2.use()
+    url3 = Url("http://www.totally.fake.example.com/3", use_timeout=5)
+    urls.add(set([url1, url2, url3]))
 
-    print(urls)
+    assert urls.pop() == url3
+
+    with open("test_data/expected_urls_representation.json", "r") as f:
+        assert str(urls) == f.read()
