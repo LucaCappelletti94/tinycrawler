@@ -27,7 +27,6 @@ class Urls:
     def pop(self)->Url:
         """Returns downloadable url."""
         url = self._urls.pop()
-        print(url.url)
         while not self._robots.can_download(url):
             url = self._urls.pop()
         return url
