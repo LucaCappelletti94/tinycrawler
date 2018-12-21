@@ -1,9 +1,10 @@
 import abc
 import json
 from ..exceptions import UnavailableError
+from ..utils import Printable
 
 
-class Usable(object):
+class Usable(Printable):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):
@@ -25,8 +26,3 @@ class Usable(object):
 
     def ___repr___(self):
         return {}
-
-    def __repr__(self):
-        return json.dumps(self.___repr___(), indent=4, sort_keys=True)
-
-    __str__ = __repr__

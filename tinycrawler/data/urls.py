@@ -3,10 +3,10 @@ from .robots import Robots
 from pybloom_live import BloomFilter
 from multiprocessing import Lock
 from typing import Set
-import json
+from ..utils import Printable
 
 
-class Urls:
+class Urls(Printable):
     def __init__(self,  **kwargs):
         """Creates a structure to hold urls.
             capacity:int, the bloom filter capacity.
@@ -50,8 +50,3 @@ class Urls:
             "robots": self._robots.___repr___(),
             "urls": self._urls.___repr___()
         }
-
-    def __repr__(self):
-        return json.dumps(self.___repr___(), indent=4, sort_keys=True)
-
-    __str__ = __repr__

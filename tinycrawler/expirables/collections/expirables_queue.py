@@ -3,32 +3,35 @@ from ...exceptions import IllegalArgumentError
 from ..expirable import Expirable
 from typing import Type
 from queue import Empty
-import json
+from ...utils import Printable
 
 
-class ExpirablesQueue(TypeList):
+class ExpirablesQueue(TypeList, Printable):
     def __init__(self, expirable_type: Type, *args, **kwargs):
         super(ExpirablesQueue, self).__init__(
             expirable_type, *args, **kwargs)
 
         if not issubclass(expirable_type, Expirable):
-            raise IllegalArgumentError("Given type {type} is not a subclass of Expirable".format(
-                type=expirable_type.__name__))
+            raise IllegalArgumentError(
+                "Given type {type} is not a subclass of Expirable".format(
+                    type=expirable_type.__name__
+                ))
 
-    @property
-    def empty(self)->bool:
-        return not self or not self[0].is_available()
+    def empty(self, **kwargs)->bool:
+        return not self or not self[0].is_available(**kwargs)
 
-    def pop(self):
-        if self.empty:
+    def pop(self, **kwargs):
+        if self.empty(**kwargs):
             raise Empty
         return super(ExpirablesQueue, self).pop(0)
 
-    def add(self, expirable: Expirable):
+    def add(self, expirable: Expirable, **kwargs):
         if expirable.expired:
             raise IllegalArgumentError(
-                "Given expirable {expirable} is already expired!".format(expirable=expirable))
-        if expirable.is_available():
+                "Given expirable {expirable} is already expired!".format(
+                    expirable=expirable
+                ))
+        if expirable.is_available(**kwargs):
             super(ExpirablesQueue, self).prepend(expirable)
         else:
             super(ExpirablesQueue, self).append(expirable)
@@ -37,8 +40,3 @@ class ExpirablesQueue(TypeList):
         return [
             value.___repr___() for value in self
         ]
-
-    def __repr__(self):
-        return json.dumps(self.___repr___(), indent=4, sort_keys=True)
-
-    __str__ = __repr__

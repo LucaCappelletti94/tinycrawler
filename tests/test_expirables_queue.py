@@ -1,4 +1,4 @@
-from tinycrawler.expirables.collections.expirables_queue import ExpirablesQueue
+from tinycrawler.expirables import ExpirablesQueue
 from tinycrawler import Domain, IllegalArgumentError
 from queue import Empty
 

@@ -1,8 +1,5 @@
 from .task import Task
 from ..web import Url, Proxy, Response
-from ...exceptions import IllegalArgumentError
-from typing import Set
-from ...validators import path as is_valid_path
 
 
 class DownloaderTask(Task):
@@ -20,12 +17,12 @@ class DownloaderTask(Task):
 
     def use(self, **kwargs):
         super(DownloaderTask, self).use(**kwargs)
-        self._proxy.use(url=self._url, **kwargs)
+        self._proxy.use(domain=self._url.domain, **kwargs)
         self._url.use(**kwargs)
 
     def used(self, success: bool):
         super(DownloaderTask, self).used()
-        self._proxy.used(success=success, url=self._url)
+        self._proxy.used(success=success, domain=self._url.domain)
 
     @property
     def proxy(self)->Proxy:

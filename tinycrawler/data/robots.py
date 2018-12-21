@@ -1,8 +1,8 @@
 from ..expirables import ExpirableRobotFileParser, Domain, Url, DomainsDict
-import json
+from ..utils import Printable
 
 
-class Robots:
+class Robots(Printable):
     def __init__(self, **kwargs):
         """Creates a structure to hold parsed robots txts.
             follow_robot_txt:bool, whetever to follow robots txt in the first place.
@@ -67,8 +67,3 @@ class Robots:
             "follow_robot_txt_black_list": self._follow_robot_txt_black_list,
             "follow_robot_txt_white_list": self._follow_robot_txt_white_list
         }
-
-    def __repr__(self):
-        return json.dumps(self.___repr___(), indent=4, sort_keys=True)
-
-    __str__ = __repr__

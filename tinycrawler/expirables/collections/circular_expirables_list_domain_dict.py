@@ -30,7 +30,7 @@ class CircularExpirablesQueuesDomainDict(DomainsDict):
         if not start:
             start = cursor
         key = self._keys_list[cursor]
-        if key.expired or self[key].empty:
+        if key.expired or self[key].empty():
             self._update_counter()
             return self._get_cursor(start)
         return cursor

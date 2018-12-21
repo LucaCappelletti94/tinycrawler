@@ -6,29 +6,28 @@ import json
 
 def test_proxy():
     with open("test_data/raw_proxy_data.json", "r") as f:
-        proxy_data = ProxyData(json.load(f))
+        proxy_data_A = ProxyData(data=json.load(f))
+    with open("test_data/raw_proxy_data_B.json", "r") as f:
+        proxy_data_B = ProxyData(data=json.load(f))
 
-    domain = Domain("78.38.241.9")
-    domainb = Domain("78.200.241.9")
-
-    proxy = Proxy(domain, proxy_data, maximum_usages=1)
-    proxyb = Proxy(domainb, proxy_data)
+    proxy = Proxy(proxy_data_A, maximum_usages=1)
+    proxyb = Proxy(proxy_data_B)
 
     url = Url("https://www.youtube.com/watch?v=sUmoMSU9_GQ")
-    proxy.use(url)
+    proxy.use(url.domain)
     try:
-        proxy.use(url)
+        proxy.use(url.domain)
         assert False
     except UnavailableError:
         pass
 
-    proxy.used(url, success=False)
-    proxy.use(url)
+    proxy.used(url.domain, success=False)
+    proxy.use(url.domain)
 
     proxy.local
 
     assert proxy != proxyb
-    assert proxy.data == proxy_data
+    assert proxy.data == proxy_data_A.data
 
     with open("test_data/expected_proxy_representation.json", "r") as f:
         assert str(proxy) == f.read()

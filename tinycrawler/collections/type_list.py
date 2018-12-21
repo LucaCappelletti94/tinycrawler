@@ -3,8 +3,8 @@ from typing import Type
 
 
 class TypeList(list):
-    def __init__(self, type: Type, *args, **kwargs):
-        self._type = type
+    def __init__(self, list_type: Type, *args, **kwargs):
+        self._type = list_type
 
     def __setitem__(self, index, value):
         raise NotImplementedError("Set item is not available in TypeList.")
@@ -18,5 +18,7 @@ class TypeList(list):
     def _ensure_type(self, key):
         if not isinstance(key, self._type):
             raise IllegalArgumentError(
-                "Given key is not a {type} object.".format(type=self._type.__name__))
+                "Given key is not a {type} object.".format(
+                    type=self._type.__name__
+                ))
         return key

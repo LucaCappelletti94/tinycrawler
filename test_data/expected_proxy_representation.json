@@ -31,7 +31,7 @@
             "maximum_consecutive_errors": -1,
             "maximum_error_rate": 1,
             "maximum_usages": -1,
-            "parallel_usages": 1,
+            "parallel_usages": 5,
             "sequential_is_available": true,
             "sporadic_is_available": true,
             "total_errors": 1,

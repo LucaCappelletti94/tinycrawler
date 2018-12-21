@@ -1,7 +1,7 @@
+"""Create sporadically available object."""
 from .usable import Usable
-from ..exceptions import IllegalArgumentError, UnavailableError
+from ..exceptions import IllegalArgumentError
 from time import time
-import json
 
 
 class Sporadic(Usable):
@@ -25,16 +25,17 @@ class Sporadic(Usable):
 
         if self._use_timeout < 0:
             raise IllegalArgumentError(
-                "Given `use_timeout` is less than 0. Provide a value greater than or equal to zero.")
+                "Given `use_timeout` is less than 0. Provide a value >= zero.")
 
         if self._used_timeout < 0:
             raise IllegalArgumentError(
-                "Given `used_timeout` is less than 0. Provide a value greater than or equal to zero.")
+                "Given `used_timeout` is less than 0. Provide a value >= to zero.")
 
-    def is_available(self)->bool:
+    def is_available(self, **kwargs)->bool:
+        """Determine if sporadic object is now available."""
         return time() >= self._available_time
 
-    def _set_available_time(self, timeout: float=0):
+    def _set_available_time(self, timeout: float = 0):
         self._available_time = time() + timeout
 
     def use(self, **kwargs):
