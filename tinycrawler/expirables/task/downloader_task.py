@@ -3,6 +3,7 @@ from ..web import Url, Proxy, Response
 
 
 class DownloaderTask(Task):
+
     def __init__(self, proxy: Proxy, url: Url, task_id: int, **kwargs):
         """Create an unique task.
             task_id:int, unique identifier of current task.
