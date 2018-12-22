@@ -9,7 +9,10 @@ from ...utils import Printable
 class ExpirablesQueue(TypeList, Printable):
     def __init__(self, expirable_type: Type, *args, **kwargs):
         super(ExpirablesQueue, self).__init__(
-            expirable_type, *args, **kwargs)
+            expirable_type,
+            *args,
+            **kwargs
+        )
 
         if not issubclass(expirable_type, Expirable):
             raise IllegalArgumentError(

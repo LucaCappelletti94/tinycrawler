@@ -1,4 +1,4 @@
-from .expirables_keys_dict import ExpirableKeysDict
+from ..collections import ExpirableKeysDict
 from ..web import Domain
 from typing import Type
 from ...utils import Printable

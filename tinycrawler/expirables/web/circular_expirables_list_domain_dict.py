@@ -1,5 +1,5 @@
 from .domains_dict import DomainsDict
-from .expirables_queue import ExpirablesQueue
+from ..collections import ExpirablesQueue
 from ..web import Url
 from queue import Empty
 

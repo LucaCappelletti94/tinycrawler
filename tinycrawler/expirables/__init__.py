@@ -1,8 +1,7 @@
-from .web import Domain, Url, Response, Proxy, ExpirableRobotFileParser
-from .task import ParserTask, DownloaderTask
-from .collections import DomainsDict, CircularExpirablesQueuesDomainDict
-from .collections import ExpirablesQueue
+from .web import Domain, Url, Response, Proxy, ExpirableRobotFileParser, DomainsDict, CircularExpirablesQueuesDomainDict
+from .task import ParserTask, DownloaderTask, TasksQueue
 from .client_data import ClientData
+from .collections import ExpirablesQueue
 
 __all__ = [
     "Domain",
@@ -15,5 +14,6 @@ __all__ = [
     "DomainsDict",
     "CircularExpirablesQueuesDomainDict",
     "ExpirablesQueue",
-    "ClientData"
+    "ClientData",
+    "TasksQueue"
 ]

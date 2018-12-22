@@ -1,7 +1,6 @@
 from ..sporadic_sequential_expirable import SporadicSequentialExpirable
-from typing import Dict
-from ..collections import DomainsDict
-from ..web import Domain, Url
+from .domains_dict import DomainsDict
+from .domain import Domain
 from ...utils import ProxyData
 
 
