@@ -1,9 +1,15 @@
 from tinycrawler.expirables import TasksQueue, DownloaderTask, Domain
+from tinycrawler import IllegalArgumentError
 from queue import Empty
 
 
 def test_tasks_queue():
     tq = TasksQueue(DownloaderTask)
+    try:
+        TasksQueue(str)
+        assert False
+    except IllegalArgumentError:
+        pass
     task = DownloaderTask(12, None, None)
     ip = Domain("12.121.121.33")
     ip2 = Domain("12.121.121.38")
