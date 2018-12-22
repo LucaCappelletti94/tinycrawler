@@ -1,7 +1,7 @@
 """Class to represent a client's important characteristics."""
 from .sporadic_expirable import SporadicExpirable
 from .web import Domain
-from platform import platform
+import platform
 from ..utils import ip
 
 
@@ -15,7 +15,7 @@ class ClientData(SporadicExpirable):
         super(ClientData, self).__init__(**kwargs)
         self._client_id = client_id
         self._ip = Domain(ip())
-        self._platform = platform()
+        self._platform = platform.platform()
 
     @property
     def client_id(self)->int:
@@ -31,3 +31,13 @@ class ClientData(SporadicExpirable):
     def ip(self)->Domain:
         """Return client public ip."""
         return self._ip
+
+    def ___repr___(self):
+        """Return a dictionary representation of object."""
+        return {
+            **super(ClientData, self).___repr___(),
+            **{
+                "ip": self.ip.___repr___(),
+                "platform": self.platform,
+                "client_id": self.client_id
+            }}
