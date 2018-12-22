@@ -1,6 +1,4 @@
-from collections import ChainMap
 from ..collections import Usable
-import json
 from ..exceptions import IllegalArgumentError
 
 
