@@ -4,18 +4,12 @@ from collections import ChainMap
 
 
 class SporadicExpirable(Sporadic, Expirable):
-    def is_available(self, **kwargs):
+    def is_available(self, **kwargs)->bool:
         return all([
-            base.is_available(self) for base in SporadicExpirable.__bases__
+            base.is_available(self, **kwargs) for base in SporadicExpirable.__bases__
         ])
 
-    def use(self, **kwargs):
-        super(SporadicExpirable, self).use(**kwargs)
-
-    def used(self, **kwargs):
-        super(SporadicExpirable, self).used(**kwargs)
-
-    def ___repr___(self):
+    def ___repr___(self)->dict:
         return {**dict(ChainMap(*[
             base.___repr___(self) for base in SporadicExpirable.__bases__
         ])), **{

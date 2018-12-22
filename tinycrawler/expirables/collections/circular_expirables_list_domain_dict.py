@@ -1,7 +1,6 @@
 from .domains_dict import DomainsDict
 from .expirables_queue import ExpirablesQueue
-from ..web import Domain, Url
-from typing import Type
+from ..web import Url
 from queue import Empty
 
 
@@ -20,7 +19,7 @@ class CircularExpirablesQueuesDomainDict(DomainsDict):
     def _update_counter(self):
         self._counter += 1
 
-    def _get_cursor(self, start: int=None)->int:
+    def _get_cursor(self, start: int = None)->int:
         n = len(self._keys_list)
         if n == 0:
             raise Empty

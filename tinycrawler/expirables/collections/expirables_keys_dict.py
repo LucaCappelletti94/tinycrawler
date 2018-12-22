@@ -1,5 +1,4 @@
 from ...collections import TypeDict
-from collections import OrderedDict
 from ...exceptions import IllegalArgumentError, UnavailableError
 from ..expirable import Expirable
 from typing import Type
@@ -16,7 +15,6 @@ class ExpirableKeysDict(TypeDict):
         self._keys = TypeDict(expirable_type, expirable_type)
 
     def __getitem__(self, k):
-        self._keys[k].use()
         return super(ExpirableKeysDict, self).__getitem__(self._ensure_availability(k))
 
     def __setitem__(self, k, v):
@@ -30,6 +28,9 @@ class ExpirableKeysDict(TypeDict):
 
     def used(self, k, **kwargs):
         self._keys[k].used(**kwargs)
+
+    def use(self, k, **kwargs):
+        self._keys[k].use(**kwargs)
 
     def is_available(self, k, **kwargs):
         return (k in self and self._keys[k].is_available(**kwargs)) or (k not in self and k.is_available(**kwargs))

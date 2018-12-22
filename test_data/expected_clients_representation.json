@@ -1,0 +1,39 @@
+{
+    "clients": {
+        "232.232.232.111": [
+            {
+                "SporadicExpirable_available": true,
+                "client_id": 1,
+                "consecutive_errors": 0,
+                "error_rate": 0,
+                "expired": false,
+                "ip": {
+                    "SporadicExpirable_available": true,
+                    "SporadicSequentialExpirable_available": true,
+                    "consecutive_errors": 0,
+                    "domain": "232.232.232.111",
+                    "error_rate": 0,
+                    "expired": false,
+                    "maximum_consecutive_errors": -1,
+                    "maximum_error_rate": 1,
+                    "maximum_usages": -1,
+                    "parallel_usages": 0,
+                    "sequential_is_available": true,
+                    "sporadic_is_available": true,
+                    "total_errors": 0,
+                    "total_usages": 0,
+                    "use_timeout": 0,
+                    "used_timeout": 0
+                },
+                "maximum_consecutive_errors": -1,
+                "maximum_error_rate": 1,
+                "platform": "Mocked platform",
+                "sporadic_is_available": true,
+                "total_errors": 0,
+                "total_usages": 0,
+                "use_timeout": 0,
+                "used_timeout": 0
+            }
+        ]
+    }
+}

@@ -13,7 +13,7 @@ def mock_ip_success(*args):
     return response(content=default)
 
 
-def mock_platform(*args):
+def mock_platform(*args)->str:
     """Method to mock calls to platform."""
     return "Mocked platform"
 
@@ -22,6 +22,8 @@ platform.platform = mock_platform
 
 
 def test_client_data():
+    path = "test_data/expected_client_data_representation.json"
     with HTTMock(mock_ip_success):
-        with open("test_data/expected_client_data_representation.json", "r") as f:
+        assert ClientData(3) == ClientData(3)
+        with open(path, "r") as f:
             assert str(ClientData(0)) == f.read()

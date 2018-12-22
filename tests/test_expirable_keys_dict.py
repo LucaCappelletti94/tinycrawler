@@ -24,8 +24,11 @@ def test_expirable_keys_dict():
     except IllegalArgumentError:
         pass
 
-    domain = Domain("https://travis-ci.org/LucaCappelletti94/tinycrawler",
-                    maximum_consecutive_errors=1, maximum_error_rate=0.5)
+    domain = Domain(
+        "https://travis-ci.org/LucaCappelletti94/tinycrawler",
+        maximum_consecutive_errors=1,
+        maximum_error_rate=0.5
+    )
 
     try:
         d.setdefault(domain, 0)
@@ -34,6 +37,7 @@ def test_expirable_keys_dict():
         pass
 
     d[domain] = "test"
+    d.use(domain)
 
     assert d[domain] == "test"
 

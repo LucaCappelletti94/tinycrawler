@@ -5,17 +5,11 @@ from collections import ChainMap
 
 class SporadicSequentialExpirable(SporadicExpirable, Sequential):
 
-    def is_available(self, **kwargs):
+    def is_available(self, **kwargs)->bool:
         return all([
-            base.is_available(self)
+            base.is_available(self, **kwargs)
             for base in SporadicSequentialExpirable.__bases__
         ])
-
-    def use(self, **kwargs):
-        super(SporadicSequentialExpirable, self).use(**kwargs)
-
-    def used(self, **kwargs):
-        super(SporadicSequentialExpirable, self).used(**kwargs)
 
     def ___repr___(self):
         return {**dict(ChainMap(*[
