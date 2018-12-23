@@ -1,4 +1,4 @@
-from ..expirables import DomainsDict, ClientData, ExpirablesQueue
+from ..expirables import DomainsDict, ClientData, ExpirablesQueue, Domain
 from ..utils import Printable
 from ..exceptions import IllegalArgumentError
 from multiprocessing import Lock
@@ -25,6 +25,10 @@ class Clients(Printable):
 
     def __contains__(self, client_data: ClientData)->bool:
         return client_data.ip in self._clients and client_data in self._clients[client_data.ip]
+
+    def is_new_ip(self, ip: Domain)->bool:
+        """Determine if given ip is new."""
+        return ip not in self._clients
 
     def ___repr___(self):
         """Return a dictionary representation of object."""

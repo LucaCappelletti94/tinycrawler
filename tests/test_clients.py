@@ -28,12 +28,15 @@ def test_clients():
         clients = Clients()
         client = ClientData(clients.get_new_client_id())
         client2 = ClientData(clients.get_new_client_id())
+        assert clients.is_new_ip(client.ip)
         clients.register(client)
         try:
             clients.register(client)
             assert False
         except IllegalArgumentError:
             pass
+
+        assert not clients.is_new_ip(client.ip)
 
         assert client in clients
         assert client2 not in clients

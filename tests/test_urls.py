@@ -16,7 +16,7 @@ def test_urls():
         )
 
     urls = Urls(
-        capacity=10000,
+        bloom_filter_capacity=10000,
         follow_robot_txt=True,
         useragent="*",
         default_url_timeout=1,

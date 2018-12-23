@@ -17,4 +17,4 @@ class ClientCrawlerManager(CrawlerManager):
     def connect(self):
         """Handle connection to the server manager."""
         super(ClientCrawlerManager, self).connect()
-        self._client = ClientData(self.get_client_id())
+        self._client = ClientData(self.get_new_client_id())

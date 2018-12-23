@@ -9,7 +9,7 @@ from ..utils import Printable
 class Urls(Printable):
     def __init__(self,  **kwargs):
         """Creates a structure to hold urls.
-            capacity:int, the bloom filter capacity.
+            bloom_filter_capacity:int, the bloom filter capacity.
             follow_robot_txt:bool, whetever to follow robots txt in the first place.
             useragent:str, useragent to test robots with.
             default_url_timeout:float, url default timeout if no other one is given by robots.
@@ -19,7 +19,7 @@ class Urls(Printable):
         """
         self._robots = Robots(**kwargs)
         self._bloom = BloomFilter(
-            capacity=kwargs["capacity"]
+            capacity=kwargs["bloom_filter_capacity"]
         )
         self._urls = CircularExpirablesQueuesDomainDict()
         self._add_lock = Lock()
