@@ -67,7 +67,13 @@ class CrawlerManager(BaseManager):
     def get_clients(self)->Clients:
         """Return shared `Clients` object."""
         raise NotImplementedError(
-            "Method `get_client_id` has to be registered by subclass and not directly called."
+            "Method `get_clients` has to be registered by subclass and not directly called."
+        )
+
+    def get_logger(self)->Clients:
+        """Return shared `Logger` object."""
+        raise NotImplementedError(
+            "Method `get_logger` has to be registered by subclass and not directly called."
         )
 
     def register_client(self, client: ClientData):

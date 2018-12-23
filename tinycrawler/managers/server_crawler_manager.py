@@ -2,7 +2,7 @@
 from .crawler_manager import CrawlerManager
 from ..data import Robots, Urls, Proxies, Clients
 from ..expirables import ExpirablesQueue, TasksQueue, DownloaderTask, ParserTask, Response, ClientData, Proxy
-from ..utils import ProxyData
+from ..utils import ProxyData, Logger
 
 
 class ServerCrawlerManager(CrawlerManager):
@@ -23,6 +23,7 @@ class ServerCrawlerManager(CrawlerManager):
         self._responses = ExpirablesQueue(Response, **kwargs)
         self._downloader_tasks = TasksQueue(DownloaderTask)
         self._parser_tasks = TasksQueue(ParserTask)
+        self._logger = Logger()
         self._completed_downloader_tasks = ExpirablesQueue(
             DownloaderTask,
             **kwargs
@@ -67,6 +68,10 @@ class ServerCrawlerManager(CrawlerManager):
         self.register(
             "get_clients",
             callable=lambda: self._clients
+        )
+        self.register(
+            "get_logger",
+            callable=lambda: self._logger
         )
         self.register(
             "register_client",
