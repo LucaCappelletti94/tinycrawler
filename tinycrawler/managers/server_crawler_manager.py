@@ -65,8 +65,8 @@ class ServerCrawlerManager(CrawlerManager):
             callable=lambda: self._completed_parser_tasks
         )
         self.register(
-            "get_new_client_id",
-            callable=lambda: self._clients.get_new_client_id
+            "get_clients",
+            callable=lambda: self._clients
         )
         self.register(
             "register_client",
@@ -74,6 +74,7 @@ class ServerCrawlerManager(CrawlerManager):
         )
 
     def handle_client_registration(self, client: ClientData):
+        """Handle client registration, eventually creating adhoc proxy."""
         if self._clients.is_new_ip(client.ip):
             self._proxies.add(Proxy(ProxyData(ip=client.ip.domain)))
         if client not in self._clients:

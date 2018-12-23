@@ -1,7 +1,7 @@
 """Abstract object for managing the crawler data."""
 from multiprocessing import Queue
 from multiprocessing.managers import BaseManager
-from ..data import Robots, Urls, Proxies
+from ..data import Robots, Urls, Proxies, Clients
 from ..expirables import ExpirablesQueue, TasksQueue, ClientData
 from typing import List
 
@@ -12,10 +12,7 @@ class CrawlerManager(BaseManager):
     def __init__(self, host: str, port: int, authkey: str):
         """Abstract object for managing the crawler data."""
         super(CrawlerManager, self).__init__(
-            address="{host}:{port}".format(
-                host=host,
-                port=port
-            ),
+            address=(host, port),
             authkey=authkey
         )
 
@@ -67,8 +64,8 @@ class CrawlerManager(BaseManager):
             "Method `get_completed_parser_tasks` has to be registered by subclass and not directly called."
         )
 
-    def get_new_client_id(self)->int:
-        """Return new client id."""
+    def get_clients(self)->Clients:
+        """Return shared `Clients` object."""
         raise NotImplementedError(
             "Method `get_client_id` has to be registered by subclass and not directly called."
         )
