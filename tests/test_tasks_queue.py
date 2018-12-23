@@ -35,4 +35,5 @@ def test_tasks_queue():
 
     tq.add(task)
 
-    print(tq)
+    with open("test_data/expected_tasks_queue_representation.json", "r") as f:
+        assert str(tq) == f.read()
