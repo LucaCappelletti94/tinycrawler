@@ -1,15 +1,7 @@
 from tinycrawler.managers import ServerCrawlerManager
 from tinycrawler.expirables import ClientData
-from httmock import urlmatch, response, HTTMock
-
-default = "232.232.232.111"
-
-
-@urlmatch(netloc=r'.*\.(org|me)')
-def mock_ip_success(*args):
-    """Method to mock successfull requests to various ip services."""
-    global default
-    return response(content=default)
+from .utils import mock_ip_success
+from httmock import HTTMock
 
 
 def test_server_crawler_manager():
@@ -22,6 +14,7 @@ def test_server_crawler_manager():
             default_url_timeout=0,
             robots_timeout=0,
             follow_robot_txt=True,
+            log_filename="logs/crawler.log",
             bloom_filter_capacity=10000)
 
         scm.handle_client_registration(ClientData(0))

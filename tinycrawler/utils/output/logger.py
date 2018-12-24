@@ -7,7 +7,7 @@ from multiprocessing import Lock
 class Logger:
     """Create a process-safe process object."""
 
-    def __init__(self, log_filename: str, level=logging.INFO):
+    def __init__(self, log_filename: str, level=logging.INFO, **kwargs):
         """Create a process-safe process object."""
         self._lock = Lock()
         os.makedirs(os.path.dirname(log_filename),  exist_ok=True)

@@ -1,11 +1,10 @@
-from tinycrawler.expirables import DownloaderTask, Response, Proxy
+from tinycrawler.expirables import DownloaderTask, Proxy
 from tinycrawler.utils import ProxyData
-from tinycrawler import Url, Domain
+from tinycrawler import Url
 import json
-from .utils import double_arguments_test
 
 
-def test_downloader_task_arguments():
+def test_downloader_task():
     with open("test_data/raw_proxy_data.json", "r") as f:
         proxy_data = ProxyData(data=json.load(f))
 
@@ -21,26 +20,50 @@ def test_downloader_task_arguments():
     downloader_task.used(True)
 
     try:
-        downloader_task.response
+        downloader_task.text
+        assert False
+    except ValueError:
+        pass
+
+    try:
+        downloader_task.response_status
+        assert False
     except ValueError:
         pass
 
     try:
         downloader_task.binary
+        assert False
     except ValueError:
         pass
 
-    downloader_task.response = "test/my_file.txt"
+    text = "test/my_file.txt"
+    response_status = 200
+
+    downloader_task.text = text
 
     try:
-        downloader_task.response = "test/my_file.txt"
+        downloader_task.text = text
     except ValueError:
         pass
 
     downloader_task.binary = True
 
-    downloader_task.response
-    assert downloader_task.binary == True
+    try:
+        downloader_task.binary = True
+    except ValueError:
+        pass
+
+    downloader_task.response_status = response_status
+
+    try:
+        downloader_task.response_status = response_status
+    except ValueError:
+        pass
+
+    assert downloader_task.text == text
+    assert downloader_task.response_status == response_status
+    assert downloader_task.binary
 
     with open("test_data/expected_downloader_task_representation.json", "r") as f:
         assert str(downloader_task) == f.read()

@@ -1,5 +1,5 @@
 from .task import Task
-from ..web import Url, Proxy, Response
+from ..web import Url, Proxy
 
 
 class DownloaderTask(Task):
@@ -13,8 +13,9 @@ class DownloaderTask(Task):
         super(DownloaderTask, self).__init__(task_id, **kwargs)
         self._proxy = proxy
         self._url = url
-        self._binary = False
-        self._response = None
+        self._binary = None
+        self._text = None
+        self._response_status = None
 
     def use(self, **kwargs):
         super(DownloaderTask, self).use(**kwargs)
@@ -35,22 +36,39 @@ class DownloaderTask(Task):
 
     @property
     def binary(self)->bool:
+        if self._binary is None:
+            raise ValueError("Binary was not elaborated yet.")
         return self._binary
 
     @property
-    def response(self)->str:
-        if self._response is None:
-            raise ValueError("Response was not elaborated yet.")
-        return self._response
+    def response_status(self)->int:
+        if self._response_status is None:
+            raise ValueError("Response status was not elaborated yet.")
+        return self._response_status
 
-    @response.setter
-    def response(self, response: str):
-        if self._response is not None:
-            raise ValueError("Response has already been elaborated.")
-        self._response = Response(response)
+    @property
+    def text(self)->str:
+        if self._text is None:
+            raise ValueError("Text was not elaborated yet.")
+        return self._text
+
+    @response_status.setter
+    def response_status(self, response_status)->int:
+        if self._response_status is not None:
+            raise ValueError(
+                "Response status has already been elaborated.")
+        self._response_status = response_status
+
+    @text.setter
+    def text(self, text)->int:
+        if self._text is not None:
+            raise ValueError("Text has already been elaborated.")
+        self._text = text
 
     @binary.setter
     def binary(self, binary: bool):
+        if self._binary is not None:
+            raise ValueError("Binary has already been elaborated.")
         self._binary = binary
 
     def ___repr___(self):

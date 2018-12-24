@@ -1,12 +1,27 @@
 from ..sporadic_sequential_expirable import SporadicSequentialExpirable
-from requests import Response as RequestsResponse
+from typing import Dict
+import json
 
 
 class Response(SporadicSequentialExpirable):
-    def __init__(self, response: RequestsResponse, **kwargs):
+    def __init__(self, text: str, status: int, url: str, **kwargs):
         super(Response, self).__init__(**kwargs)
-        self._response = response
+        self._text = text
+        self._status = status
+        self._url = url
 
     @property
-    def response(self)->RequestsResponse:
-        return self._response
+    def text(self)->str:
+        return self._text
+
+    @property
+    def json(self)->Dict:
+        return json.loads(self._text)
+
+    @property
+    def status(self)->int:
+        return self._status
+
+    @property
+    def url(self)->str:
+        return self._url

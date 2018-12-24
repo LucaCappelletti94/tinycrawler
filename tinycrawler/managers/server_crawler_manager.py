@@ -23,7 +23,7 @@ class ServerCrawlerManager(CrawlerManager):
         self._responses = ExpirablesQueue(Response, **kwargs)
         self._downloader_tasks = TasksQueue(DownloaderTask)
         self._parser_tasks = TasksQueue(ParserTask)
-        self._logger = Logger()
+        self._logger = Logger(**kwargs)
         self._completed_downloader_tasks = ExpirablesQueue(
             DownloaderTask,
             **kwargs

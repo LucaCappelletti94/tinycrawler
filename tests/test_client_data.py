@@ -1,24 +1,7 @@
 """Test to see if everything is working within ip."""
 from tinycrawler.expirables import ClientData
-from httmock import all_requests, response, HTTMock
-import platform
-
-default = "232.232.232.111"
-
-
-@all_requests
-def mock_ip_success(*args):
-    """Method to mock successfull requests to various ip services."""
-    global default
-    return response(content=default)
-
-
-def mock_platform(*args)->str:
-    """Method to mock calls to platform."""
-    return "Mocked platform"
-
-
-platform.platform = mock_platform
+from httmock import HTTMock
+from .utils import mock_ip_success
 
 
 def test_client_data():

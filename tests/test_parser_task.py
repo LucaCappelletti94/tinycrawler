@@ -10,11 +10,12 @@ def test_parser_task_arguments():
     except IllegalArgumentError:
         pass
 
-    parser_task = ParserTask(Response(""), 0)
+    url = "https://requests-mock.readthedocs.io/en/latest/response.html"
 
-    parser_task.response
+    parser_task = ParserTask(Response("", 200, url), 0)
+
     parser_task.add_url(
-        Url("https://requests-mock.readthedocs.io/en/latest/response.html"))
+        Url(url))
     parser_task.urls
 
     parser_task.use()
