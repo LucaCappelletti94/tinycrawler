@@ -52,7 +52,7 @@ def test_downloader_task_assembler():
     )
 
     assembler.start()
-    time.sleep(0.1)
+    time.sleep(0.5)
     e.set()
     assembler.join()
 
