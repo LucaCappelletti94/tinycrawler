@@ -4,7 +4,7 @@ from tinycrawler import IllegalArgumentError, Url
 
 def test_parser_task_arguments():
     try:
-        ParserTask(None, 0)
+        ParserTask(None)
         assert False
     except IllegalArgumentError:
         pass
@@ -12,7 +12,8 @@ def test_parser_task_arguments():
     url = "https://requests-mock.readthedocs.io/en/latest/response.html"
 
     response = Response("", 200, url)
-    parser_task = ParserTask(response, 0)
+    parser_task = ParserTask(response)
+    parser_task.task_id = 0
 
     url_object = Url(url)
 

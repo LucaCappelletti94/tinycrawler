@@ -5,6 +5,7 @@ from typing import Type
 from ...exceptions import IllegalArgumentError
 from queue import Empty
 from ...utils import Printable
+from multiprocessing import Lock
 
 
 class TasksQueue(Printable):
@@ -17,8 +18,10 @@ class TasksQueue(Printable):
         self._task_type = task_type
         self._tasks = ExpirablesQueue(task_type)
         self._client_specific_tasks = DomainsDict(ExpirablesQueue)
+        self._add_lock = Lock()
+        self._counter = 0
 
-    def pop(self, ip: Domain=None, **kwargs):
+    def pop(self, ip: Domain = None, **kwargs):
         if ip is not None and ip in self._client_specific_tasks:
             try:
                 return self._client_specific_tasks[ip].pop(**kwargs)
@@ -27,6 +30,10 @@ class TasksQueue(Printable):
         return self._tasks.pop(**kwargs)
 
     def add(self, task, ip: Domain = None, **kwargs):
+        if task.new:
+            with self._add_lock:
+                task.task_id = self._counter
+                self._counter += 1
         if ip is None:
             self._tasks.add(task, **kwargs)
         else:

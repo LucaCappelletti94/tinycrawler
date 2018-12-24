@@ -11,7 +11,7 @@
             "maximum_consecutive_errors": -1,
             "maximum_error_rate": 1,
             "sporadic_is_available": true,
-            "task_id": null,
+            "task_id": 0,
             "task_status": "UNASSIGNED",
             "task_type": "downloader task",
             "total_errors": 0,

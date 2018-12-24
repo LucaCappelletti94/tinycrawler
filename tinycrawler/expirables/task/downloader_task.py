@@ -4,13 +4,12 @@ from ..web import Url, Proxy
 
 class DownloaderTask(Task):
 
-    def __init__(self, proxy: Proxy, url: Url, task_id: int, **kwargs):
+    def __init__(self, proxy: Proxy, url: Url, **kwargs):
         """Create an unique task.
-            task_id:int, unique identifier of current task.
             proxy:Proxy, proxy to be used.
             url:Url, url to download from.
         """
-        super(DownloaderTask, self).__init__(task_id, **kwargs)
+        super(DownloaderTask, self).__init__(**kwargs)
         self._proxy = proxy
         self._url = url
         self._binary = None
@@ -22,7 +21,7 @@ class DownloaderTask(Task):
         self._proxy.use(domain=self._url.domain, **kwargs)
         self._url.use(**kwargs)
 
-    def used(self, success: bool):
+    def used(self, success: bool, **kwargs):
         super(DownloaderTask, self).used()
         self._proxy.used(success=success, domain=self._url.domain)
 

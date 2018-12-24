@@ -10,7 +10,8 @@ def test_tasks_queue():
         assert False
     except IllegalArgumentError:
         pass
-    task = DownloaderTask(12, None, None)
+    task = DownloaderTask(None, None)
+
     ip = Domain("12.121.121.33")
     ip2 = Domain("12.121.121.38")
     tq.add(task, ip=ip)

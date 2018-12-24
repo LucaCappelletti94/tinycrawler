@@ -2,13 +2,13 @@
     "robots": {
         "default_url_timeout": 1,
         "domains": {
-            "www.totally.fake.example.com": {
+            "www.totallyfakeexample.com": {
                 "crawl_delay": 2,
                 "domain": {
                     "SporadicExpirable_available": true,
                     "SporadicSequentialExpirable_available": true,
                     "consecutive_errors": 0,
-                    "domain": "www.totally.fake.example.com",
+                    "domain": "www.totallyfakeexample.com",
                     "error_rate": 0,
                     "expired": false,
                     "maximum_consecutive_errors": -1,
@@ -42,7 +42,7 @@
         "useragent": "*"
     },
     "urls": {
-        "www.totally.fake.example.com": [
+        "www.totallyfakeexample.com": [
             {
                 "SporadicExpirable_available": false,
                 "SporadicSequentialExpirable_available": false,
@@ -51,7 +51,7 @@
                     "SporadicExpirable_available": true,
                     "SporadicSequentialExpirable_available": true,
                     "consecutive_errors": 0,
-                    "domain": "www.totally.fake.example.com",
+                    "domain": "www.totallyfakeexample.com",
                     "error_rate": 0,
                     "expired": false,
                     "maximum_consecutive_errors": -1,
@@ -75,7 +75,7 @@
                 "sporadic_is_available": false,
                 "total_errors": 0,
                 "total_usages": 0,
-                "url": "http://www.totally.fake.example.com/new",
+                "url": "http://www.totallyfakeexample.com/new",
                 "use_timeout": 5,
                 "used_timeout": 0
             },
@@ -87,7 +87,7 @@
                     "SporadicExpirable_available": true,
                     "SporadicSequentialExpirable_available": true,
                     "consecutive_errors": 0,
-                    "domain": "www.totally.fake.example.com",
+                    "domain": "www.totallyfakeexample.com",
                     "error_rate": 0,
                     "expired": false,
                     "maximum_consecutive_errors": -1,
@@ -111,7 +111,7 @@
                 "sporadic_is_available": false,
                 "total_errors": 0,
                 "total_usages": 0,
-                "url": "http://www.totally.fake.example.com/1",
+                "url": "http://www.totallyfakeexample.com/1",
                 "use_timeout": 5.0,
                 "used_timeout": 0
             }

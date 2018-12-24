@@ -11,7 +11,8 @@ def test_downloader_task():
     url = Url("https://travis-ci.org/LucaCappelletti94/tinycrawler/builds/468601955")
     proxy = Proxy(proxy_data, maximum_usages=1)
 
-    downloader_task = DownloaderTask(proxy, url, 0)
+    downloader_task = DownloaderTask(proxy, url)
+    downloader_task.task_id = 0
 
     assert downloader_task.url == url.url
     assert downloader_task.proxy == proxy.data

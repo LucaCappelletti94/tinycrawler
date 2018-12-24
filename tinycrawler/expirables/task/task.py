@@ -15,13 +15,11 @@ class Task(SporadicExpirable):
         SUCCESS: SUCCESS
     }
 
-    def __init__(self, task_id: int, **kwargs):
-        """Create an unique task.
-            task_id:int, unique identifier of current task.
-        """
+    def __init__(self, **kwargs):
+        """Create an unique task"""
         super(Task, self).__init__(**kwargs)
         self._status = Task.UNASSIGNED
-        self._task_id = task_id
+        self._task_id = None
 
     def use(self, **kwargs):
         super(Task, self).use(**kwargs)
@@ -31,19 +29,30 @@ class Task(SporadicExpirable):
         super(Task, self).used(success=False)
         self._status = Task.UNASSIGNED
 
-    def is_available(self, **kwargs):
-        return super(Task, self).is_available(**kwargs)
-
     @property
-    def status(self):
+    def status(self)->str:
         return self._status
 
     @property
-    def task_id(self):
+    def new(self)->bool:
+        return self._task_id is None
+
+    @property
+    def task_id(self)->int:
+        if self.new:
+            raise IllegalArgumentError(
+                "Task's `task_id` is yet to be defined!")
         return self._task_id
 
+    @task_id.setter
+    def task_id(self, task_id: int):
+        if not self.new:
+            raise IllegalArgumentError(
+                "Task's `task_id` has already been defined!")
+        self._task_id = task_id
+
     @status.setter
-    def status(self, status: int):
+    def status(self, status: str):
         if status not in Task.TASK_NAMES:
             raise IllegalArgumentError(
                 "Given status {status} is invalid.".format(status=status))

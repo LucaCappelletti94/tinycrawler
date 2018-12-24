@@ -1,17 +1,16 @@
 from .task import Task
-from ..web import Url, Response
+from ..web import Response
 from ...exceptions import IllegalArgumentError
 from typing import Set
 from ...validators import path as is_valid_path
 
 
 class ParserTask(Task):
-    def __init__(self, response: Response, task_id: int, **kwargs):
+    def __init__(self, response: Response, **kwargs):
         """Create an unique task.
-            task_id:int, unique identifier of current task.
             response:Response, response to be parsed.
         """
-        super(ParserTask, self).__init__(task_id, **kwargs)
+        super(ParserTask, self).__init__(**kwargs)
         if response is None:
             raise IllegalArgumentError("Given response argument is None.")
         self._response = response

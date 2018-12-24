@@ -3,8 +3,10 @@ from multiprocessing import Process
 from threading import Event
 from typing import Tuple
 from queue import Empty
+from ..exceptions import Sleep
 from ..utils import Logger
 import traceback
+import time
 import sys
 
 
@@ -30,6 +32,8 @@ class QueueProcess(Process):
                 )
             except Empty:
                 break
+            except Sleep:
+                time.sleep(1)
             except Exception:
                 self._logger.error(traceback.print_exception(*sys.exc_info()))
                 break

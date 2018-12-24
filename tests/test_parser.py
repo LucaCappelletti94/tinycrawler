@@ -24,7 +24,7 @@ def setup_parser()->Tuple[Parser, TasksQueue, TasksQueue]:
     status = 200
 
     response = Response(content, status, url)
-    parser_task = ParserTask(response, 0)
+    parser_task = ParserTask(response)
     parser_task.use()
 
     tasks.add(parser_task)

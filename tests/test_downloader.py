@@ -69,8 +69,7 @@ def setup_downloader()->Tuple[Downloader, TasksQueue, TasksQueue]:
     url = Url("https://totallyfakewebsite.com")
     proxy = Proxy(proxy_data, maximum_usages=1)
 
-    downloader_task = DownloaderTask(proxy, url, 0)
-    downloader_task.use()
+    downloader_task = DownloaderTask(proxy, url)
 
     tasks.add(downloader_task)
 
