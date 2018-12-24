@@ -27,7 +27,7 @@ class Task(SporadicExpirable):
         super(Task, self).use(**kwargs)
         self._status = Task.ASSIGNED
 
-    def used(self):
+    def used(self, **kwargs):
         super(Task, self).used(success=False)
         self._status = Task.UNASSIGNED
 

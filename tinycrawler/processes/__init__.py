@@ -1,1 +1,3 @@
-from .client import Downloader
+from .client import Downloader, Parser
+
+__all__ = ["Downloader", "Parser"]

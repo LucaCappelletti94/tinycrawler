@@ -22,7 +22,7 @@ class ParserTask(Task):
         super(ParserTask, self).use(**kwargs)
         self._response.use(**kwargs)
 
-    def used(self):
+    def used(self, **kwargs):
         super(ParserTask, self).used()
         self._response.used(success=False)
 

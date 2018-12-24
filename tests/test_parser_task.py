@@ -1,6 +1,5 @@
 from tinycrawler.expirables import ParserTask, Response
 from tinycrawler import IllegalArgumentError, Url
-from .utils import double_arguments_test
 
 
 def test_parser_task_arguments():
@@ -16,8 +15,22 @@ def test_parser_task_arguments():
     parser_task = ParserTask(response, 0)
 
     url_object = Url(url)
+
+    try:
+        parser_task.urls
+        assert False
+    except ValueError:
+        pass
+
     parser_task.urls = set([url_object])
     assert parser_task.urls == set([url_object])
+
+    try:
+        parser_task.urls = set([url_object])
+        assert False
+    except ValueError:
+        pass
+
     assert parser_task.response == response
 
     parser_task.use()
@@ -25,11 +38,13 @@ def test_parser_task_arguments():
 
     try:
         parser_task.page
+        assert False
     except ValueError:
         pass
 
     try:
         parser_task.path
+        assert False
     except ValueError:
         pass
 
