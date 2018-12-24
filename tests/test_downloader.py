@@ -28,6 +28,13 @@ def mock_downloader_success_binary(*args):
 
 
 @urlmatch(netloc=r'\.*(totallyfakewebsite.com)')
+def mock_downloader_success_small_binary(*args):
+    """Method to mock successful small binary downloader request."""
+    with open("test_data/binary_file.jpg", 'rb') as f:
+        return response(content=f.read()[:100])
+
+
+@urlmatch(netloc=r'\.*(totallyfakewebsite.com)')
 def mock_downloader_failure(*args):
     """Method to mock failed downloader request."""
     raise requests.ConnectionError
@@ -36,7 +43,7 @@ def mock_downloader_failure(*args):
 @urlmatch(netloc=r'\.*(totallyfakewebsite.com)')
 def mock_downloader_failure_max_size(*args):
     """Method to mock failed downloader request for too big file."""
-    return response(headers={"Content-Length": 100000})
+    return response(content=expected_successful_download(), headers={"Content-Length": 100000})
 
 
 def setup_downloader()->Tuple[Downloader, TasksQueue, TasksQueue]:
@@ -75,7 +82,7 @@ def setup_downloader()->Tuple[Downloader, TasksQueue, TasksQueue]:
 
 def test_downloader_success():
     with HTTMock(mock_downloader_success):
-        downloader, tasks, completed_tasks = setup_downloader()
+        downloader, _, completed_tasks = setup_downloader()
         downloader._loop()
         completed = completed_tasks.pop()
         assert completed.text == expected_successful_download()
@@ -85,7 +92,16 @@ def test_downloader_success():
 
 def test_downloader_success_binary():
     with HTTMock(mock_downloader_success_binary):
-        downloader, tasks, completed_tasks = setup_downloader()
+        downloader, _, completed_tasks = setup_downloader()
+        downloader._loop()
+        completed = completed_tasks.pop()
+        assert completed.status == DownloaderTask.SUCCESS
+        assert completed.binary
+
+
+def test_downloader_success_small_binary():
+    with HTTMock(mock_downloader_success_small_binary):
+        downloader, _, completed_tasks = setup_downloader()
         downloader._loop()
         completed = completed_tasks.pop()
         assert completed.status == DownloaderTask.SUCCESS
@@ -94,7 +110,7 @@ def test_downloader_success_binary():
 
 def test_downloader_failure():
     with HTTMock(mock_downloader_failure):
-        downloader, tasks, completed_tasks = setup_downloader()
+        downloader, _, completed_tasks = setup_downloader()
         downloader._loop()
         completed = completed_tasks.pop()
         assert completed.status == DownloaderTask.FAILURE
@@ -102,7 +118,7 @@ def test_downloader_failure():
 
 def test_downloader_failure_max_size():
     with HTTMock(mock_downloader_failure_max_size):
-        downloader, tasks, completed_tasks = setup_downloader()
+        downloader, _, completed_tasks = setup_downloader()
         downloader._loop()
         completed = completed_tasks.pop()
         assert completed.status == DownloaderTask.FAILURE

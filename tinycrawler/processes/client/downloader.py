@@ -28,19 +28,26 @@ class Downloader(Worker):
                 stream=True
             )
 
-            if is_binary_string(next(response.iter_content(1000))):
+            small = False
+
+            try:
+                head = next(response.iter_content(1000))
+            except StopIteration:
+                head = response.text
+                small = True
+
+            if is_binary_string(head):
                 downloader_task.binary = True
-            elif not self._is_content_len_valid(response.headers):
+            elif not small and not self._is_content_len_valid(response.headers):
                 raise MaxFileSize()
             else:
                 downloader_task.binary = False
-                downloader_task.text = response.text
+                downloader_task.text = response.text if not small else head
                 downloader_task.response_status = response.status_code
             success, status = True, DownloaderTask.SUCCESS
         except (
             requests.ConnectionError,
-            MaxFileSize,
-            StopIteration
+            MaxFileSize
         ):
             pass
 
@@ -61,4 +68,5 @@ class Downloader(Worker):
 
     def _is_content_len_valid(self, headers)->bool:
         """Determine if given headers contains valid `Content-Length`."""
+        print(headers)
         return not self._has_content_len(headers) or headers["Content-Length"] <= self._max_content_len
