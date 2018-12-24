@@ -14,10 +14,9 @@ def test_parser_task_arguments():
 
     response = Response("", 200, url)
     parser_task = ParserTask(response, 0)
-    assert parser_task.urls == set()
 
     url_object = Url(url)
-    parser_task.add_url(url_object)
+    parser_task.urls = set([url_object])
     assert parser_task.urls == set([url_object])
     assert parser_task.response == response
 

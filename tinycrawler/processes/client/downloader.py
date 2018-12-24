@@ -14,12 +14,10 @@ class Downloader(Worker):
         self._user_agent = user_agent
         self._email = email
 
-    def _job(
+    def _work(
         self,
         downloader_task: DownloaderTask
-    )->Tuple[DownloaderTask]:
-        success = False
-        status = DownloaderTask.FAILURE
+    )->bool:
         try:
             response = requests.get(
                 downloader_task.url,
@@ -44,16 +42,13 @@ class Downloader(Worker):
                 downloader_task.binary = False
                 downloader_task.text = response.text if not small else head
                 downloader_task.response_status = response.status_code
-            success, status = True, DownloaderTask.SUCCESS
         except (
             requests.ConnectionError,
             MaxFileSize
         ):
-            pass
+            return False
 
-        downloader_task.used(success=success)
-        downloader_task.status = status
-        return (downloader_task,)
+        return True
 
     @property
     def _headers(self):
@@ -68,5 +63,4 @@ class Downloader(Worker):
 
     def _is_content_len_valid(self, headers)->bool:
         """Determine if given headers contains valid `Content-Length`."""
-        print(headers)
         return not self._has_content_len(headers) or headers["Content-Length"] <= self._max_content_len

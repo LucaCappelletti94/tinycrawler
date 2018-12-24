@@ -38,5 +38,11 @@ def test_worker():
 
     worker._sink(downloader_task)
 
+    try:
+        worker._work(None)
+        assert False
+    except NotImplementedError:
+        pass
+
     assert completed_tasks.pop(client_data.ip) == downloader_task
     assert worker._source()[0] == downloader_task

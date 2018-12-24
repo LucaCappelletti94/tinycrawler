@@ -15,7 +15,7 @@ class ParserTask(Task):
         if response is None:
             raise IllegalArgumentError("Given response argument is None.")
         self._response = response
-        self._urls = set()
+        self._urls = None
         self._page = self._path = None
 
     def use(self, **kwargs):
@@ -44,6 +44,8 @@ class ParserTask(Task):
 
     @property
     def urls(self)->Set[str]:
+        if self._urls is None:
+            raise ValueError("Urls was not elaborated yet.")
         return self._urls
 
     @page.setter
@@ -60,9 +62,11 @@ class ParserTask(Task):
             raise IllegalArgumentError("Given path is not safe.")
         self._path = path
 
-    def add_url(self, url: str):
-        """Add given url to set."""
-        self._urls.add(url)
+    @urls.setter
+    def urls(self, urls: Set[str])->Set[str]:
+        if self._urls is not None:
+            raise ValueError("Urls has already been elaborated.")
+        self._urls = urls
 
     def ___repr___(self):
         return {

@@ -1,5 +1,6 @@
 from ..queue_process import QueueProcess
 from ...expirables import TasksQueue, Task, ClientData
+from typing import Tuple
 
 
 class Worker(QueueProcess):
@@ -12,5 +13,19 @@ class Worker(QueueProcess):
     def _sink(self, completed_task: Task):
         self._completed_tasks.add(completed_task)
 
-    def _source(self):
+    def _job(self, task: Task)->Tuple[Task]:
+        success, status = False, Task.FAILURE
+        if self._work(task):
+            success, status = True, Task.SUCCESS
+        task.used(success=success)
+        task.status = status
+        return (task,)
+
+    def _work(self, task: Task):
+        """Handle the logical execution of the job."""
+        raise NotImplementedError(
+            "Method `_work` has to implement by subclasses of QueueProcess"
+        )
+
+    def _source(self)->Tuple[Task]:
         return (self._tasks.pop(self._client_data.ip),)
