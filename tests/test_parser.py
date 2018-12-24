@@ -19,7 +19,8 @@ def setup_parser()->Tuple[Parser, TasksQueue, TasksQueue]:
         client_data = ClientData(3)
 
     url = "https://requests-mock.readthedocs.io/en/latest/response.html"
-    content = "Imma be some good memes and the such."
+    with open("test_data/successfull_download.html", "r") as f:
+        content = f.read()
     status = 200
 
     response = Response(content, status, url)
@@ -42,3 +43,15 @@ def test_parser_success():
     parser._loop()
     completed = completed_tasks.pop()
     assert completed.status == ParserTask.SUCCESS
+
+
+def invalid_path(url: str):
+    raise Exception()
+
+
+def test_parser_failure():
+    parser, _, completed_tasks = setup_parser()
+    parser._path = invalid_path
+    parser._loop()
+    completed = completed_tasks.pop()
+    assert completed.status == ParserTask.FAILURE
