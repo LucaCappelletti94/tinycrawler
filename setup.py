@@ -88,7 +88,7 @@ setup(
     # https://packaging.python.org/en/latest/requirements.html
     tests_require=test_deps,
     install_requires=['validators', 'requests', 'user_agent', 'IPy',
-                      'pybloom_live', 'lxml', 'bs4', 'html5lib'],
+                      'pybloom_live', 'lxml', 'bs4', 'html5lib', 'binaryornot'],
     extras_require=extras,
 )
 
