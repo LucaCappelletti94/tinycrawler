@@ -1,9 +1,7 @@
 from tinycrawler.processes.server.assembler.task_assembler import TaskAssembler
-from tinycrawler.expirables import TasksQueue, DownloaderTask, Proxy, Url, ClientData
+from tinycrawler.expirables import TasksQueue, DownloaderTask, Proxy, Url
 from tinycrawler.utils import Logger, ProxyData
-from .utils import mock_ip_success
 from multiprocessing import Event
-from httmock import HTTMock
 import json
 
 
@@ -13,10 +11,6 @@ def test_task_assembler():
     errors = Logger(path)
 
     tasks = TasksQueue(DownloaderTask)
-    completed_tasks = TasksQueue(DownloaderTask)
-
-    with HTTMock(mock_ip_success):
-        client_data = ClientData(3)
 
     with open("test_data/raw_proxy_data.json", "r") as f:
         proxy_data = ProxyData(data=json.load(f))
