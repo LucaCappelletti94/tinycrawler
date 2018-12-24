@@ -39,4 +39,4 @@ def test_worker():
     worker._sink(downloader_task)
 
     assert completed_tasks.pop(client_data.ip) == downloader_task
-    assert worker._source() == downloader_task
+    assert worker._source()[0] == downloader_task

@@ -18,8 +18,8 @@ class TasksQueue(Printable):
         self._tasks = ExpirablesQueue(task_type)
         self._client_specific_tasks = DomainsDict(ExpirablesQueue)
 
-    def pop(self, ip: Domain, **kwargs):
-        if ip in self._client_specific_tasks:
+    def pop(self, ip: Domain=None, **kwargs):
+        if ip is not None and ip in self._client_specific_tasks:
             try:
                 return self._client_specific_tasks[ip].pop(**kwargs)
             except Empty:

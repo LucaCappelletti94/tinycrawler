@@ -13,4 +13,4 @@ class Worker(QueueProcess):
         self._completed_tasks.add(completed_task)
 
     def _source(self):
-        return self._tasks.pop(self._client_data.ip)
+        return (self._tasks.pop(self._client_data.ip),)

@@ -16,7 +16,7 @@ def test_task():
     assert task.status == Task.UNASSIGNED
     task.status = Task.SUCCESS
     try:
-        task.status = ["I'm not even an int."]
+        task.status = "Lo kebabbo non devi manducare."
         assert False
     except IllegalArgumentError:
         pass

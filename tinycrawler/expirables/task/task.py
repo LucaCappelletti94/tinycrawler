@@ -3,13 +3,17 @@ from ...exceptions import IllegalArgumentError
 
 
 class Task(SporadicExpirable):
-    UNASSIGNED = 0
-    ASSIGNED = 1
-    FAILURE = 2
-    SUCCESS = 3
+    UNASSIGNED = "UNASSIGNED"
+    ASSIGNED = "ASSIGNED"
+    FAILURE = "FAILURE"
+    SUCCESS = "SUCCESS"
 
-    TASK_STATUSES = [UNASSIGNED, ASSIGNED, FAILURE, SUCCESS]
-    TASK_NAMES = ["UNASSIGNED", "ASSIGNED", "FAILURE", "SUCCESS"]
+    TASK_NAMES = {
+        UNASSIGNED: UNASSIGNED,
+        ASSIGNED: ASSIGNED,
+        FAILURE: FAILURE,
+        SUCCESS: SUCCESS
+    }
 
     def __init__(self, task_id: int, **kwargs):
         """Create an unique task.
@@ -40,7 +44,7 @@ class Task(SporadicExpirable):
 
     @status.setter
     def status(self, status: int):
-        if status not in Task.TASK_STATUSES:
+        if status not in Task.TASK_NAMES:
             raise IllegalArgumentError(
                 "Given status {status} is invalid.".format(status=status))
         self._status = status
