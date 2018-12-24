@@ -21,6 +21,12 @@ def mock_downloader_success(*args):
 
 
 @urlmatch(netloc=r'\.*(totallyfakewebsite.com)')
+def mock_downloader_success_empty(*args):
+    """Method to mock successful downloader request."""
+    return response(content="")
+
+
+@urlmatch(netloc=r'\.*(totallyfakewebsite.com)')
 def mock_downloader_success_binary(*args):
     """Method to mock successful binary downloader request."""
     with open("test_data/binary_file.jpg", 'rb') as f:
@@ -86,6 +92,16 @@ def test_downloader_success():
         downloader._loop()
         completed = completed_tasks.pop()
         assert completed.text == expected_successful_download()
+        assert completed.status == DownloaderTask.SUCCESS
+        assert not completed.binary
+
+
+def test_downloader_success_empty():
+    with HTTMock(mock_downloader_success_empty):
+        downloader, _, completed_tasks = setup_downloader()
+        downloader._loop()
+        completed = completed_tasks.pop()
+        assert completed.text == ""
         assert completed.status == DownloaderTask.SUCCESS
         assert not completed.binary
 
