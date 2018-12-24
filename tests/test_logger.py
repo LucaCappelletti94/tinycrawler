@@ -7,3 +7,4 @@ def test_logger():
     logger.info("Imma be testing info.")
     logger.warning("Imma be testing warning.")
     logger.error("Imma be testing error.")
+    logger.critical("Imma be testing error.")
