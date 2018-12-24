@@ -28,7 +28,7 @@ class ParserTask(Task):
 
     @property
     def response(self)->Response:
-        return self._response.response
+        return self._response
 
     @property
     def page(self)->str:

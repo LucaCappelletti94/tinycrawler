@@ -12,11 +12,14 @@ def test_parser_task_arguments():
 
     url = "https://requests-mock.readthedocs.io/en/latest/response.html"
 
-    parser_task = ParserTask(Response("", 200, url), 0)
+    response = Response("", 200, url)
+    parser_task = ParserTask(response, 0)
+    assert parser_task.urls == set()
 
-    parser_task.add_url(
-        Url(url))
-    parser_task.urls
+    url_object = Url(url)
+    parser_task.add_url(url_object)
+    assert parser_task.urls == set([url_object])
+    assert parser_task.response == response
 
     parser_task.use()
     parser_task.used()
@@ -45,23 +48,26 @@ def test_parser_task_arguments():
         except IllegalArgumentError:
             pass
 
-    parser_task.path = "test/my_file.txt"
-    parser_task.page = "my page content"
+    path = "test/my_file.txt"
+    content = "my page content"
+
+    parser_task.path = path
+    parser_task.page = content
 
     try:
-        parser_task.path = "Trying to set again path"
+        parser_task.path = path
         assert False
     except ValueError:
         pass
 
     try:
-        parser_task.page = "Trying to set again page"
+        parser_task.page = content
         assert False
     except ValueError:
         pass
 
-    parser_task.page
-    parser_task.path
+    assert parser_task.page == content
+    assert parser_task.path == path
 
     with open("test_data/expected_parser_task_representation.json", "r") as f:
         assert str(parser_task) == f.read()
