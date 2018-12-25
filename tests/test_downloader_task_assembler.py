@@ -4,7 +4,7 @@ from tinycrawler.expirables import TasksQueue, DownloaderTask, Proxy, Url
 from tinycrawler.utils import Logger, ProxyData
 from multiprocessing import Event
 from httpretty import httprettified
-from .utils import mock_robots, build_default_url
+from .commons import mock_robots, build_default_url
 from tinycrawler.data import Proxies
 import time
 import json

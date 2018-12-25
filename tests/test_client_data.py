@@ -1,7 +1,7 @@
 """Test to see if everything is working within ip."""
 from tinycrawler.expirables import ClientData
 from httmock import HTTMock
-from .utils import mock_ip_success, mock_repr
+from .commons import mock_ip_success, mock_repr
 
 
 def setup():

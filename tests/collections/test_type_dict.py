@@ -1,5 +1,5 @@
 from tinycrawler.collections import TypeDict
-from ..utils import mock_repr
+from ..commons import mock_repr
 
 example_value = "Non devi manducare"
 

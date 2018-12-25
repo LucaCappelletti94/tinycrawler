@@ -1,6 +1,6 @@
 from tinycrawler.expirables import DomainsDict
 from tinycrawler import Domain
-from .utils import mock_repr
+from .commons import mock_repr
 from .test_domain import setup as domain_setup
 
 

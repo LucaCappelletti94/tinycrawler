@@ -1,6 +1,6 @@
 from tinycrawler.expirables.sporadic_sequential_expirable import SporadicSequentialExpirable
 import numpy as np
-from .utils import double_arguments_test
+from .commons import double_arguments_test
 
 
 def test_sporadic_sequential_expirable_arguments():

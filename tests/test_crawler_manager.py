@@ -1,5 +1,5 @@
 from tinycrawler.managers.crawler_manager import CrawlerManager
-from .utils import mock_repr
+from .commons import mock_repr
 
 
 def setup():

@@ -1,5 +1,5 @@
 from tinycrawler.expirables.expirable import Expirable
-from .utils import double_arguments_test
+from .commons import double_arguments_test
 import numpy as np
 
 

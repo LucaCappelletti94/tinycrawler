@@ -1,7 +1,7 @@
 from tinycrawler.data import Urls
 from tinycrawler import Url
 from queue import Empty
-from .utils import mock_robots, mock_sensitive_robots, build_default_url
+from .commons import mock_robots, mock_sensitive_robots, build_default_url
 from httpretty import httprettified, reset
 
 

@@ -1,7 +1,8 @@
+"""Return current machine public ip."""
 from requests import get, RequestException
 
 
-def ip()->str:
+def get_ip()->str:
     """Return current machine public ip."""
     services = [
         "https://api.ipify.org",

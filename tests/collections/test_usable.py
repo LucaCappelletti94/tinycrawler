@@ -1,5 +1,5 @@
 from tinycrawler.collections import Usable
-from ..utils import mock_repr
+from ..commons import mock_repr
 
 
 def setup():

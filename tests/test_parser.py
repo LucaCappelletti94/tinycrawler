@@ -2,7 +2,7 @@ from tinycrawler.expirables import TasksQueue, ParserTask, ClientData, Response
 from tinycrawler.processes import Parser
 from tinycrawler.utils import Logger
 from multiprocessing import Event
-from .utils import mock_ip_success
+from .commons import mock_ip_success
 from httmock import HTTMock
 from typing import Tuple
 

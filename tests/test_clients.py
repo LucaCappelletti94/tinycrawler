@@ -1,7 +1,7 @@
 """Test to verify that class CLients has everything in order."""
 from tinycrawler.data import Clients
 from tinycrawler.expirables import ClientData
-from .utils import mock_ip_success, mock_repr
+from .commons import mock_ip_success, mock_repr
 from httmock import HTTMock
 
 

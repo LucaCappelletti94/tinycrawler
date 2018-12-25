@@ -1,5 +1,5 @@
 from tinycrawler.managers import ClientCrawlerManager
-from .utils import mock_ip_success, mock_repr
+from .commons import mock_ip_success, mock_repr
 from .test_server_crawler_manager import setup as server_manager_setup
 from httmock import HTTMock
 

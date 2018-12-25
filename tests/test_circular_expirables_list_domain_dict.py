@@ -1,7 +1,7 @@
 from tinycrawler.expirables import CircularExpirablesQueuesDomainDict
 from tinycrawler import Url
 from queue import Empty
-from .utils import mock_repr
+from .commons import mock_repr
 
 
 def setup():

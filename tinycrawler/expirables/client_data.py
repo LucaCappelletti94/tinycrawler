@@ -2,7 +2,7 @@
 from .sporadic_expirable import SporadicExpirable
 from .web import Domain
 import platform
-from ..utils import ip
+from ..utils import get_ip
 
 
 class ClientData(SporadicExpirable):
@@ -14,7 +14,7 @@ class ClientData(SporadicExpirable):
         """
         super(ClientData, self).__init__(**kwargs)
         self._client_id = client_id
-        self._ip = Domain(ip())
+        self._ip = Domain(get_ip())
         self._platform = platform.platform()
 
     @property

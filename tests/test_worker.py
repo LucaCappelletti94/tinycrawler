@@ -1,7 +1,7 @@
 from tinycrawler.processes.client.worker import Worker
 from tinycrawler.expirables import TasksQueue, DownloaderTask, Proxy, Url, ClientData
 from tinycrawler.utils import Logger, ProxyData
-from .utils import mock_ip_success
+from .commons import mock_ip_success
 from multiprocessing import Event
 from httmock import HTTMock
 import json

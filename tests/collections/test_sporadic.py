@@ -1,5 +1,5 @@
 from tinycrawler.collections import Sporadic
-from ..utils import double_arguments_test, mock_repr
+from ..commons import double_arguments_test, mock_repr
 import numpy as np
 
 

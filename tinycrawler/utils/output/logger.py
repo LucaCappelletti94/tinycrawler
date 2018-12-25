@@ -7,14 +7,15 @@ from multiprocessing import Lock
 class Logger:
     """Create a process-safe process object."""
 
-    def __init__(self, log_filename: str, level=logging.INFO, **kwargs):
+    def __init__(self, log_filename: str, log_level=logging.INFO, **kwargs):
         """Create a process-safe process object."""
+        assert isinstance(log_filename, str)
         self._lock = Lock()
         os.makedirs(os.path.dirname(log_filename),  exist_ok=True)
         open(log_filename, 'w').close()
         logging.basicConfig(
             filename=log_filename,
-            level=level
+            level=log_level
         )
 
     def _log(self, logger, message):

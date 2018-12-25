@@ -1,8 +1,10 @@
+"""Create a wrapper for the data required to make a Proxy object function."""
 from typing import Dict
 from ..output import Printable
 
 
 class ProxyData(Printable):
+    """Create a wrapper for the data required to make a Proxy object function."""
     PROTOCOLS = {
         "http": "http",
         "https": "https",
@@ -13,6 +15,7 @@ class ProxyData(Printable):
     ADDRESS = "{protocol}://{ip}:{port}"
 
     def __init__(self, **kwargs):
+        """Create a wrapper for the data required to make a Proxy object function."""
         data = kwargs.get("data", None)
         self._data = {protocol:  ProxyData.ADDRESS.format(
             protocol=protocol,
@@ -23,13 +26,16 @@ class ProxyData(Printable):
 
     @property
     def ip(self):
+        """Return ip of proxy."""
         return self._ip
 
     @property
     def data(self):
+        """Return data of proxy required for requests get connection."""
         return self._data
 
-    def ___repr___(self):
+    def ___repr___(self)->Dict:
+        """Return a dictionary representing the object."""
         return {
             "data": self.data,
             "ip": self.ip

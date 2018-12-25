@@ -1,5 +1,5 @@
 from tinycrawler import Url
-from .utils import double_arguments_test, mock_repr
+from .commons import double_arguments_test, mock_repr
 
 
 def test_url_arguments():
