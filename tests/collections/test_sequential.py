@@ -1,21 +1,27 @@
 from tinycrawler.collections import Sequential
-from tinycrawler import NotInUseError, UnavailableError
+from ..utils import mock_repr
+
+
+def setup():
+    return Sequential(maximum_usages=1)
 
 
 def test_sequential():
-    sequential = Sequential(maximum_usages=1)
+    sequential = setup()
     try:
         sequential.used()
         assert False
-    except NotInUseError:
+    except AssertionError:
         pass
     sequential.use()
     try:
         sequential.use()
         assert False
-    except UnavailableError:
+    except AssertionError:
         pass
 
     sequential.used()
 
-    assert True
+
+def test_sequential_repr():
+    mock_repr(setup())

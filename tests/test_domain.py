@@ -3,7 +3,7 @@ from .utils import mock_repr
 
 
 def setup():
-    return Domain("https://www.youtube.com/watch?v=LxtppUZthug")
+    return Domain("http://www.totallyfakeexample.com")
 
 
 def test_domain():

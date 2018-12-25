@@ -1,5 +1,4 @@
 from tinycrawler.expirables.expirable import Expirable
-from tinycrawler import UnavailableError
 from .utils import double_arguments_test
 import numpy as np
 
@@ -87,7 +86,7 @@ def test_expiration():
     try:
         expirable.use()
         assert False
-    except UnavailableError:
+    except AssertionError:
         assert True
 
 

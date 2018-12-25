@@ -1,14 +1,16 @@
+"""Define an usable available object."""
 import abc
-import json
-from ..exceptions import UnavailableError
 from ..utils import Printable
+from typing import Dict
 
 
 class Usable(Printable):
+    """Define an usable available object."""
+
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, **kwargs):
-        pass
+        """Define an usable available object."""
 
     @abc.abstractmethod
     def used(self, **kwargs):
@@ -21,8 +23,8 @@ class Usable(Printable):
     @abc.abstractmethod
     def use(self, **kwargs):
         """Define what to do when object is used."""
-        if not self.is_available(**kwargs):
-            raise UnavailableError()
+        assert self.is_available(**kwargs)
 
-    def ___repr___(self):
+    def ___repr___(self)->Dict:
+        """Return a dictionary representing the object."""
         return {}

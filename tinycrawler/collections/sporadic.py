@@ -5,6 +5,8 @@ from time import time
 
 
 class Sporadic(Usable):
+    """Create sporadically available object."""
+
     def __init__(self, **kwargs):
         """Create sporadically available object.
             use_timeout:float, unavailability timeout after use.
@@ -39,14 +41,17 @@ class Sporadic(Usable):
         self._available_time = time() + timeout
 
     def use(self, **kwargs):
+        """Update next available timeout using the `use` timeout."""
         super(Sporadic, self).use(**kwargs)
         self._set_available_time(self._use_timeout)
 
     def used(self, **kwargs):
+        """Update next available timeout using the `used` timeout."""
         super(Sporadic, self).used(**kwargs)
         self._set_available_time(self._used_timeout)
 
     def ___repr___(self):
+        """Return a dictionary representing the object."""
         return {
             **super(Sporadic, self).___repr___(),
             **{

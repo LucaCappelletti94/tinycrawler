@@ -21,7 +21,7 @@ def test_expirable_keys_dict():
     try:
         "test" in d
         assert False
-    except IllegalArgumentError:
+    except AssertionError:
         pass
 
     domain = Domain(

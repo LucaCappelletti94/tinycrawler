@@ -8,17 +8,17 @@ def test_robots():
     with open("test_data/robots.txt", "r") as f:
         HTTPretty.register_uri(
             HTTPretty.GET,
-            "http://www.totally.fake.example.com/robots.txt",
+            "http://www.totallyfakeexample.com/robots.txt",
             body=f.read(),
             content_type="text/plain"
         )
 
     valid = [
-        "http://www.totally.fake.example.com/homepage"
+        "http://www.totallyfakeexample.com/homepage"
     ]
     invalid = [
-        "http://www.totally.fake.example.com/error",
-        "http://www.totally.fake.example.com/Locale"
+        "http://www.totallyfakeexample.com/error",
+        "http://www.totallyfakeexample.com/Locale"
     ]
 
     robots = Robots(

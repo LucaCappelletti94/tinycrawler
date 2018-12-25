@@ -1,5 +1,4 @@
 from tinycrawler.expirables.sporadic_sequential_expirable import SporadicSequentialExpirable
-from tinycrawler import UnavailableError
 import numpy as np
 from .utils import double_arguments_test
 
@@ -37,7 +36,7 @@ def test_sporadic_sequential_expirable():
     try:
         s.use()
         assert False
-    except UnavailableError:
+    except AssertionError:
         pass
 
     assert True

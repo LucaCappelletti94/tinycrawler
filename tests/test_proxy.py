@@ -18,7 +18,7 @@ def test_proxy():
     try:
         proxy.use(url.domain)
         assert False
-    except UnavailableError:
+    except AssertionError:
         pass
 
     proxy.used(url.domain, success=False)

@@ -1,5 +1,5 @@
 from tinycrawler import Url
-from .utils import double_arguments_test
+from .utils import double_arguments_test, mock_repr
 
 
 def test_url_arguments():
@@ -13,13 +13,17 @@ def test_url_arguments():
     double_arguments_test(Url, valid, invalid)
 
 
+def setup(default: str = "https://www.youtube.com/watch?v=LxtppUZthug"):
+    return Url(default)
+
+
 def test_url():
-    url_1 = Url("https://www.youtube.com/watch?v=LxtppUZthug")
-    url_2 = Url("https://www.youtube.com/watch?")
+    url_1 = setup()
+    url_2 = setup("https://www.youtube.com/watch?")
 
     assert url_1 != url_2
-
     assert url_1.timeout == 0
 
-    with open("test_data/expected_url_representation.json", "r") as f:
-        assert str(url_1) == f.read()
+
+def test_url_repr():
+    mock_repr(setup())

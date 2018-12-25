@@ -1,7 +1,13 @@
 from tinycrawler.collections import Sporadic
-from tinycrawler import UnavailableError
-from .utils import double_arguments_test
+from ..utils import double_arguments_test, mock_repr
 import numpy as np
+
+
+def setup():
+    return Sporadic(
+        used_timeout=1,
+        use_timeout=1
+    )
 
 
 def test_sporadic_arguments():
@@ -47,23 +53,20 @@ def test_sporadic_arguments():
 
 
 def test_sporadic():
-    sporadic = Sporadic(
-        used_timeout=1,
-        use_timeout=1
-    )
+    sporadic = setup()
 
     sporadic.use()
     try:
         sporadic.use()
         assert False
-    except UnavailableError:
+    except AssertionError:
         pass
 
     sporadic.used()
     try:
         sporadic.use()
         assert False
-    except UnavailableError:
+    except AssertionError:
         pass
 
     sporadic = Sporadic()
@@ -74,3 +77,7 @@ def test_sporadic():
     sporadic.used()
 
     assert True
+
+
+def test_sporadic_repr():
+    mock_repr(setup())

@@ -23,7 +23,7 @@ def test_downloader_task_assembler():
     )
 
     urls.add(
-        set([Url(build_default_url("/error"), use_timeout=5)]))
+        set([Url(build_default_url("/allowed"), use_timeout=5)]))
 
     proxies = Proxies(path="test_data/raw_proxies.json")
 
@@ -32,16 +32,6 @@ def test_downloader_task_assembler():
     errors = Logger(path)
 
     tasks = TasksQueue(DownloaderTask)
-
-    with open("test_data/raw_proxy_data.json", "r") as f:
-        proxy_data = ProxyData(data=json.load(f))
-
-    url = Url("https://travis-ci.org/LucaCappelletti94/tinycrawler/builds/468601955")
-    proxy = Proxy(proxy_data, maximum_usages=1)
-
-    downloader_task = DownloaderTask(proxy, url)
-
-    tasks.add(downloader_task)
 
     assembler = DownloaderTaskAssembler(
         urls,
@@ -55,5 +45,3 @@ def test_downloader_task_assembler():
     time.sleep(0.5)
     e.set()
     assembler.join()
-
-    assert tasks.pop() == downloader_task

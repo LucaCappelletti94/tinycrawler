@@ -1,6 +1,6 @@
 """Define an usable object with a maximum parallel usage."""
 from .usable import Usable
-from ..exceptions import NotInUseError
+from typing import Dict
 
 
 class Sequential(Usable):
@@ -26,11 +26,10 @@ class Sequential(Usable):
     def used(self, **kwargs):
         """Decrease parallel usages by one. Throws an exception if the usages are already zero."""
         super(Sequential, self).used(**kwargs)
-        if self._parallel_usages == 0:
-            raise NotInUseError()
+        assert self._parallel_usages > 0
         self._parallel_usages -= 1
 
-    def ___repr___(self)->dict:
+    def ___repr___(self)->Dict:
         """Return a dictionary representation of object."""
         return {
             "maximum_usages": self._maximum_usages,

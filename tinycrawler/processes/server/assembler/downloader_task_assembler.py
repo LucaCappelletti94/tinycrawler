@@ -14,7 +14,8 @@ class DownloaderTaskAssembler(TaskAssembler):
 
     def _source(self)->Tuple[Url, Proxy]:
         try:
-            return self._urls.pop(), self._proxies.pop()
+            url = self._urls.pop()
+            return url, self._proxies.pop(url.domain)
         except Empty:
             raise Sleep
 
