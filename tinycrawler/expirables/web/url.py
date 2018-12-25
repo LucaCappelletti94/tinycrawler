@@ -31,6 +31,7 @@ class Url(SporadicSequentialExpirable):
 
     @timeout.setter
     def timeout(self, timeout: float):
+        assert isinstance(timeout, float)
         if self._use_timeout != timeout:
             self._use_timeout = timeout
             if not Sporadic.is_available(self):

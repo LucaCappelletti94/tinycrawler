@@ -1,7 +1,6 @@
-from tinycrawler import IllegalArgumentError
 import json
+from tinycrawler import IllegalArgumentError
 from typing import List, Callable, Dict
-from pprint import pprint
 
 
 def recursive_arguments_test(classname: object, keys: List[str], arguments: Dict, handling: Callable, **kwargs):
@@ -17,8 +16,8 @@ def recursive_arguments_test(classname: object, keys: List[str], arguments: Dict
 def positive_handling(func: Callable, **kwargs):
     try:
         func(**kwargs)
-    except IllegalArgumentError:
-        print("Call to method {method} raised IllegalArgumentError with arguments {value}.".format(
+    except (AssertionError, IllegalArgumentError):
+        print("Call to method {method} raised AssertionError or  IllegalArgumentError with arguments {value}.".format(
             method=func.__name__,
             value=json.dumps(kwargs, indent=4)
         ))
@@ -28,12 +27,12 @@ def positive_handling(func: Callable, **kwargs):
 def negative_handling(func: Callable, **kwargs):
     try:
         func(**kwargs)
-        print("Call to method {method} did not raise IllegalArgumentError with arguments {value}.".format(
+        print("Call to method {method} did not raise AssertionError or  IllegalArgumentError with arguments {value}.".format(
             method=func.__name__,
             value=json.dumps(kwargs, indent=4)
         ))
         assert False
-    except IllegalArgumentError:
+    except (AssertionError, IllegalArgumentError):
         pass
 
 

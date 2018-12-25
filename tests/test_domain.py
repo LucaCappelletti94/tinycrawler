@@ -1,25 +1,14 @@
 from tinycrawler import Domain
-from .utils import double_arguments_test
+from .utils import mock_repr
 
 
-def test_domain_arguments():
-    valid = {
-        "url": ["https://sonarcloud.io/component_measures?branch=Tinycrawler2&id=tinycrawler.lucacappelletti&metric=new_coverage"]
-    }
-    invalid = {
-        "url": ["Ciao mi chiamo gustavo, gustavo la pasta."]
-    }
-
-    double_arguments_test(Domain, valid, invalid)
+def setup():
+    return Domain("https://www.youtube.com/watch?v=LxtppUZthug")
 
 
 def test_domain():
-    domain_1 = Domain("https://www.youtube.com/watch?v=LxtppUZthug")
-    domain_2 = Domain("https://www.youtube.com/watch?")
-    domain_3 = Domain(
-        "https://coveralls.io/github/LucaCappelletti94/tinycrawler")
-    assert domain_1 == domain_2
-    assert domain_1 != domain_3
+    assert setup() == setup()
 
-    with open("test_data/expected_domain_representation.json", "r") as f:
-        assert str(domain_1) == f.read()
+
+def test_domain_repr():
+    mock_repr(setup())
