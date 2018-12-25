@@ -1,11 +1,18 @@
 from tinycrawler.expirables import DomainsDict
-from tinycrawler import Domain, IllegalArgumentError
+from tinycrawler import Domain
+from .utils import mock_repr
+
+
+def setup():
+    domains = DomainsDict(Domain)
+    domain = Domain("http://www.totally.fake.example.com/error")
+    domains[domain] = domain
+    return domains
 
 
 def test_domains_dict():
-    d = DomainsDict(Domain)
-    domain = Domain("http://www.totally.fake.example.com/error")
-    d[domain] = domain
+    setup()
 
-    with open("test_data/expected_domains_dict_representation.json", "r") as f:
-        assert str(d) == f.read()
+
+def test_domains_dict_repr():
+    mock_repr(setup())
