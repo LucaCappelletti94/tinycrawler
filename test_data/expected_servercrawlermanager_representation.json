@@ -1,0 +1,41 @@
+{
+    "address": "0.0.0.0",
+    "clients": {
+        "clients": {}
+    },
+    "completed_downloader_tasks": [],
+    "completed_parser_tasks": [],
+    "downloader_tasks": {
+        "client_specific_tasks": {},
+        "tasks": [],
+        "type": "DownloaderTask"
+    },
+    "parser_tasks": {
+        "client_specific_tasks": {},
+        "tasks": [],
+        "type": "ParserTask"
+    },
+    "proxies": [],
+    "responses": [],
+    "robots": {
+        "default_url_timeout": 0,
+        "domains": {},
+        "follow_robot_txt": true,
+        "follow_robot_txt_black_list": [],
+        "follow_robot_txt_white_list": [],
+        "robots_timeout": 0,
+        "useragent": "*"
+    },
+    "urls": {
+        "robots": {
+            "default_url_timeout": 0,
+            "domains": {},
+            "follow_robot_txt": true,
+            "follow_robot_txt_black_list": [],
+            "follow_robot_txt_white_list": [],
+            "robots_timeout": 0,
+            "useragent": "*"
+        },
+        "urls": {}
+    }
+}

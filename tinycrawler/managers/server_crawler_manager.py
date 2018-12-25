@@ -3,6 +3,7 @@ from .crawler_manager import CrawlerManager
 from ..data import Robots, Urls, Proxies, Clients
 from ..expirables import ExpirablesQueue, TasksQueue, DownloaderTask, ParserTask, Response, ClientData, Proxy
 from ..utils import ProxyData, Logger
+from typing import Dict
 
 
 class ServerCrawlerManager(CrawlerManager):
@@ -15,7 +16,6 @@ class ServerCrawlerManager(CrawlerManager):
             port,
             authkey
         )
-
         self._robots = Robots(**kwargs)
         self._urls = Urls(**kwargs)
         self._proxies = Proxies(**kwargs)
@@ -80,7 +80,22 @@ class ServerCrawlerManager(CrawlerManager):
 
     def handle_client_registration(self, client: ClientData):
         """Handle client registration, eventually creating adhoc proxy."""
+        assert isinstance(client, ClientData)
         if self._clients.is_new_ip(client.ip):
             self._proxies.add(Proxy(ProxyData(ip=client.ip.domain)))
         if client not in self._clients:
             self._clients.register(client)
+
+    def ___repr___(self)->Dict:
+        return {
+            **super(ServerCrawlerManager, self).___repr___(),
+            "robots": self._robots.___repr___(),
+            "urls": self._urls.___repr___(),
+            "proxies": self._proxies.___repr___(),
+            "clients": self._clients.___repr___(),
+            "responses": self._responses.___repr___(),
+            "downloader_tasks": self._downloader_tasks.___repr___(),
+            "parser_tasks": self._parser_tasks.___repr___(),
+            "completed_downloader_tasks": self._completed_downloader_tasks.___repr___(),
+            "completed_parser_tasks": self._completed_parser_tasks.___repr___(),
+        }

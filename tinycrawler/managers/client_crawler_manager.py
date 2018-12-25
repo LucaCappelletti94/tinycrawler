@@ -1,6 +1,7 @@
 """Create a client side object for managing the crawler data."""
 from .crawler_manager import CrawlerManager
 from ..expirables import ClientData
+from typing import Dict
 
 
 class ClientCrawlerManager(CrawlerManager):
@@ -21,3 +22,9 @@ class ClientCrawlerManager(CrawlerManager):
         super(ClientCrawlerManager, self).connect()
         self._client = ClientData(self.get_clients().get_new_client_id())
         self.register_client(self._client)
+
+    def ___repr___(self)->Dict:
+        return {
+            **super(ClientCrawlerManager, self).___repr___(),
+            "client": self._client.___repr___()
+        }

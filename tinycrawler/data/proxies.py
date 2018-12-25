@@ -1,9 +1,10 @@
 from ..expirables import Proxy, ExpirablesQueue, Domain
-from ..utils import ProxyData
+from ..utils import ProxyData, Printable
+from typing import Dict
 import json
 
 
-class Proxies:
+class Proxies(Printable):
     def __init__(self, **kwargs):
         path = kwargs.get("path", None)
         self._proxies = ExpirablesQueue(Proxy)
@@ -23,3 +24,6 @@ class Proxies:
 
     def add(self, proxy: Proxy)->Proxy:
         return self._proxies.add(proxy, domain=None)
+
+    def ___repr___(self)->Dict:
+        return self._proxies.___repr___()

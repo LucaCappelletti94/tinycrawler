@@ -1,10 +1,9 @@
 from tinycrawler.managers import ServerCrawlerManager
-from tinycrawler.expirables import ClientData
-from .utils import mock_ip_success
+from .utils import mock_ip_success, mock_repr
 from httmock import HTTMock
 
 
-def test_server_crawler_manager():
+def setup():
     with HTTMock(mock_ip_success):
         scm = ServerCrawlerManager(
             "",
@@ -16,7 +15,13 @@ def test_server_crawler_manager():
             follow_robot_txt=True,
             log_filename="logs/crawler.log",
             bloom_filter_capacity=10000)
-
-        scm.handle_client_registration(ClientData(0))
-
         scm.start()
+        return scm
+
+
+def test_server_crawler_manager():
+    setup()
+
+
+def test_server_crawler_manager_repr():
+    mock_repr(setup())

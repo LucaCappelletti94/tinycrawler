@@ -3,14 +3,18 @@ from multiprocessing import Queue
 from multiprocessing.managers import BaseManager
 from ..data import Robots, Urls, Proxies, Clients
 from ..expirables import ExpirablesQueue, TasksQueue, ClientData
-from typing import List
+from ..utils import Printable
+from typing import List, Dict
 
 
-class CrawlerManager(BaseManager):
+class CrawlerManager(BaseManager, Printable):
     """Abstract object for managing the crawler data."""
 
     def __init__(self, host: str, port: int, authkey: str):
         """Abstract object for managing the crawler data."""
+        assert isinstance(host, str)
+        assert isinstance(port, int)
+        assert isinstance(authkey, bytes)
         super(CrawlerManager, self).__init__(
             address=(host, port),
             authkey=authkey
@@ -91,3 +95,8 @@ class CrawlerManager(BaseManager):
             service for service in set(dir(CrawlerManager)) - set(dir(BaseManager))
             if callable(getattr(CrawlerManager, service)) and (service.startswith("get_") or service == "register_client")
         ]
+
+    def ___repr___(self)->Dict:
+        return {
+            "address": self.address[0]
+        }
