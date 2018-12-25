@@ -1,10 +1,13 @@
 from tinycrawler.managers.crawler_manager import CrawlerManager
+from .utils import mock_repr
+
+
+def setup():
+    return CrawlerManager("", 0, b"abc")
 
 
 def test_crawler_manager():
-
-    manager = CrawlerManager("", 0, b"abc")
-
+    manager = setup()
     for endpoint in manager.endpoints:
         try:
             if endpoint == "register_client":
@@ -19,3 +22,7 @@ def test_crawler_manager():
             assert False
         except NotImplementedError:
             pass
+
+
+def test_crawler_manager_test():
+    mock_repr(setup())
