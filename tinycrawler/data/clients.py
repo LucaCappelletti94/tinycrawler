@@ -1,6 +1,5 @@
 from ..expirables import DomainsDict, ClientData, ExpirablesQueue, Domain
 from ..utils import Printable
-from ..exceptions import IllegalArgumentError
 from multiprocessing import Lock
 
 
@@ -17,10 +16,13 @@ class Clients(Printable):
             return self._client_counter
 
     def register(self, client_data: ClientData):
+        """Register given client to the clients.
+            client_data: ClientData, client to be registered
+        """
+        assert isinstance(client_data, ClientData)
+        assert client_data not in self
         if client_data.ip not in self._clients:
             self._clients[client_data.ip] = ExpirablesQueue(ClientData)
-        if client_data in self:
-            raise IllegalArgumentError("Given client is already registered.")
         self._clients[client_data.ip].append(client_data)
 
     def __contains__(self, client_data: ClientData)->bool:
