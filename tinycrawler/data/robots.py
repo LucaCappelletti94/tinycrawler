@@ -16,6 +16,10 @@ class Robots(Printable):
             follow_robot_txt_black_list:List[Domain], list of domains to not follow robots txts. Overrides follow_robot_txt value, if provided.
             follow_robot_txt_white_list:List[Domain], list of domains to follow robots txts. Overrides follow_robot_txt value, if provided.
         """
+        assert isinstance(kwargs["follow_robot_txt"], bool)
+        assert isinstance(kwargs["useragent"], str)
+        assert isinstance(kwargs["default_url_timeout"], (float, int))
+        assert isinstance(kwargs["robots_timeout"], (float, int))
         self._domains = DomainsDict(ExpirableRobotFileParser)
         self._useragent = kwargs["useragent"]
         self._default_url_timeout = kwargs["default_url_timeout"]

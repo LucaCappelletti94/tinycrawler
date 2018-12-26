@@ -1,3 +1,4 @@
+"""Creates a structure to hold proxies."""
 from ..expirables import Proxy, ExpirablesQueue, Domain
 from ..utils import ProxyData, Printable
 from typing import Dict
@@ -5,7 +6,12 @@ import json
 
 
 class Proxies(Printable):
+    """Creates a structure to hold proxies."""
+
     def __init__(self, **kwargs):
+        """Creates a structure to hold proxies.
+            path:str, path from where to load the proxies.
+        """
         path = kwargs.get("path", None)
         self._proxies = ExpirablesQueue(Proxy)
         if path:
@@ -13,17 +19,17 @@ class Proxies(Printable):
 
     def _load_proxies(self, path):
         with open(path, "r") as f:
-            [
+            for data in json.load(f):
                 self.add(
                     Proxy(ProxyData(data=data))
-                ) for data in json.load(f)
-            ]
+                )
 
     def pop(self, domain: Domain)->Proxy:
+        """Get a valid proxy for given domain."""
         return self._proxies.pop(domain=domain)
 
     def add(self, proxy: Proxy)->Proxy:
-        """"""
+        """Add given proxy to proxies, disabling domain test."""
         return self._proxies.add(proxy, domain=None)
 
     def ___repr___(self)->Dict:

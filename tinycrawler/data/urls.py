@@ -1,3 +1,4 @@
+"""Creates a structure to hold urls."""
 from ..expirables import Url, CircularExpirablesQueuesDomainDict
 from .robots import Robots
 from pybloom_live import BloomFilter
@@ -7,6 +8,8 @@ from ..utils import Printable
 
 
 class Urls(Printable):
+    """Creates a structure to hold urls."""
+
     def __init__(self,  **kwargs):
         """Creates a structure to hold urls.
             bloom_filter_capacity:int, the bloom filter capacity.
@@ -17,6 +20,7 @@ class Urls(Printable):
             follow_robot_txt_black_list:List[Domain], list of domains to not follow robots txts. Overrides follow_robot_txt value, if provided.
             follow_robot_txt_white_list:List[Domain], list of domains to follow robots txts. Overrides follow_robot_txt value, if provided.
         """
+        assert isinstance(kwargs["bloom_filter_capacity"], int)
         self._robots = Robots(**kwargs)
         self._bloom = BloomFilter(
             capacity=kwargs["bloom_filter_capacity"]
@@ -41,11 +45,12 @@ class Urls(Printable):
             urls:Set[Url], set of unique urls to be added
         """
         with self._add_lock:
-            [
-                self._add(url) for url in urls if url.url not in self._bloom and self._robots.can_download(url)
-            ]
+            for url in urls:
+                if url.url not in self._bloom and self._robots.can_download(url):
+                    self._add(url)
 
     def ___repr___(self):
+        """Return a dictionary representation of object."""
         return {
             "robots": self._robots.___repr___(),
             "urls": self._urls.___repr___()
