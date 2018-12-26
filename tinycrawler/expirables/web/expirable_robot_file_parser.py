@@ -1,14 +1,18 @@
+"""Create a sporadically, sequentially available robot file parser object that can expire."""
 from ...collections import Sporadic
 from collections import namedtuple
 from .domain import Domain
 from urllib.robotparser import RobotFileParser
-import requests
+from typing import Dict
 
 RequestRate = namedtuple("RequestRate", "requests seconds")
 
 
 class ExpirableRobotFileParser(Sporadic):
+    """Create a sporadically, sequentially available robot file parser object that can expire."""
+
     def __init__(self, domain: Domain, useragent: str, follow_robots: bool, default_timeout: float, **kwargs):
+        """Create a sporadically, sequentially available robot file parser object that can expire."""
         super(ExpirableRobotFileParser, self).__init__(**kwargs)
         self._domain = domain
         self._useragent = useragent
@@ -16,7 +20,8 @@ class ExpirableRobotFileParser(Sporadic):
         self._default_timeout = default_timeout
 
     @property
-    def robots_txt_address(self):
+    def robots_txt_address(self)->str:
+        """Return domain's robot address."""
         return "http://{domain}/robots.txt".format(domain=self._domain.domain)
 
     @property
@@ -33,7 +38,7 @@ class ExpirableRobotFileParser(Sporadic):
         return rate.seconds / rate.requests
 
     @property
-    def timeout(self):
+    def timeout(self)->float:
         """Return a float representing what has to be waited for current domain."""
         self._update()
         return max(self._crawl_delay_, self._request_rate_delay_, self._default_timeout)
@@ -56,7 +61,8 @@ class ExpirableRobotFileParser(Sporadic):
             self._robots.read()
             super(ExpirableRobotFileParser, self).use()
 
-    def ___repr___(self):
+    def ___repr___(self)->Dict:
+        """Return a dictionary representation of object."""
         rate = self._request_rate_
         return {
             **super(ExpirableRobotFileParser, self).___repr___(),

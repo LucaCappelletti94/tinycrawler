@@ -1,15 +1,15 @@
 {
     "SporadicExpirable_available": true,
-    "consecutive_errors": 1,
-    "error_rate": 1.0,
+    "consecutive_errors": 0,
+    "error_rate": 0,
     "expired": false,
     "maximum_consecutive_errors": -1,
     "maximum_error_rate": 1,
     "sporadic_is_available": true,
     "task_id": 0,
-    "task_status": "SUCCESS",
-    "total_errors": 1,
-    "total_usages": 1,
+    "task_status": "UNASSIGNED",
+    "total_errors": 0,
+    "total_usages": 0,
     "use_timeout": 0,
     "used_timeout": 0
 }

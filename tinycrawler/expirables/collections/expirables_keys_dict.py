@@ -1,41 +1,54 @@
+"""Create a dict which raises an assertion error when type does not match with given ones or isn't a subclass of Expirable."""
 from ...collections import TypeDict
-from ...exceptions import IllegalArgumentError, UnavailableError
 from ..expirable import Expirable
 from typing import Type
 
 
 class ExpirableKeysDict(TypeDict):
+    """Create a dict which raises an assertion error when type does not match with given ones or isn't a subclass of Expirable."""
+
     def __init__(self, expirable_type: Type, other: Type):
+        """Create a dict which raises an assertion error when type does not match with given ones or isn't a subclass of Expirable."""
         super(ExpirableKeysDict, self).__init__(expirable_type, other)
+        assert issubclass(expirable_type, Expirable)
+        self._expirables = TypeDict(expirable_type, expirable_type)
 
-        if not issubclass(expirable_type, Expirable):
-            raise IllegalArgumentError("Given type {type} is not a subclass of Expirable".format(
-                type=expirable_type.__name__))
+    def __getitem__(self, expirable: Expirable):
+        """Return item at given key checking for type and availability."""
+        return super(ExpirableKeysDict, self).__getitem__(
+            self._ensure_availability(expirable)
+        )
 
-        self._keys = TypeDict(expirable_type, expirable_type)
+    def __setitem__(self, expirable: Expirable, v):
+        """Set item at given key checking for type and availability."""
+        if expirable not in self._expirables:
+            self._expirables[expirable] = expirable
+        return super(ExpirableKeysDict, self).__setitem__(
+            self._ensure_availability(expirable), v
+        )
 
-    def __getitem__(self, k):
-        return super(ExpirableKeysDict, self).__getitem__(self._ensure_availability(k))
+    def __delitem__(self, expirable: Expirable):
+        """Delete item at given key checking for type and eliminating key from list too."""
+        del self._expirables[expirable]
+        return super(ExpirableKeysDict, self).__delitem__(expirable)
 
-    def __setitem__(self, k, v):
-        if k not in self._keys:
-            self._keys[k] = k
-        return super(ExpirableKeysDict, self).__setitem__(self._ensure_availability(k), v)
+    def used(self, expirable: Expirable, **kwargs):
+        """Call `used` on given key expirable object."""
+        self._expirables[expirable].used(**kwargs)
 
-    def __delitem__(self, k):
-        del self._keys[k]
-        return super(ExpirableKeysDict, self).__delitem__(k)
+    def use(self, expirable: Expirable, **kwargs):
+        """Call `use` on given key expirable object."""
+        self._expirables[expirable].use(**kwargs)
 
-    def used(self, k, **kwargs):
-        self._keys[k].used(**kwargs)
+    def is_available(self, e: Expirable, **kwargs)->bool:
+        """Return boolean representing if given object is available for use."""
+        return (
+            e in self and self._expirables[e].is_available(**kwargs)
+        ) or (
+            e not in self and e.is_available(**kwargs)
+        )
 
-    def use(self, k, **kwargs):
-        self._keys[k].use(**kwargs)
-
-    def is_available(self, k, **kwargs):
-        return (k in self and self._keys[k].is_available(**kwargs)) or (k not in self and k.is_available(**kwargs))
-
-    def _ensure_availability(self, key):
-        if not self.is_available(key):
-            raise UnavailableError()
-        return key
+    def _ensure_availability(self, expirable: Expirable)->Expirable:
+        """Raise AssertionError if given object is not available."""
+        assert self.is_available(expirable)
+        return expirable

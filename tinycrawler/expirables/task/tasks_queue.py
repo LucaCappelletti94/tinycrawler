@@ -1,27 +1,31 @@
+"""Create a queue of tasks of given type."""
 from ..collections import ExpirablesQueue
 from ..web import Domain, DomainsDict
 from .task import Task
-from typing import Type
-from ...exceptions import IllegalArgumentError
+from typing import Type, Dict
 from queue import Empty
 from ...utils import Printable
 from multiprocessing import Lock
 
 
 class TasksQueue(Printable):
+    """Create a queue of tasks of given type."""
+
     def __init__(self, task_type: Type):
-        if not issubclass(task_type, Task):
-            raise IllegalArgumentError(
-                "Given type {type} is not a subclass of TasksQueue".format(
-                    type=task_type.__name__
-                ))
+        """Create a queue of tasks of given type.
+            task_type: Type, type of tasks
+        """
+        assert issubclass(task_type, Task)
         self._task_type = task_type
         self._tasks = ExpirablesQueue(task_type)
         self._client_specific_tasks = DomainsDict(ExpirablesQueue)
         self._add_lock = Lock()
         self._counter = 0
 
-    def pop(self, ip: Domain = None, **kwargs):
+    def pop(self, ip: Domain = None, **kwargs)->Task:
+        """Return first available task at given ip, if provided.
+            ip: Domain, optional, specifies the ip of the workers for the task.
+        """
         if ip is not None and ip in self._client_specific_tasks:
             try:
                 return self._client_specific_tasks[ip].pop(**kwargs)
@@ -29,7 +33,11 @@ class TasksQueue(Printable):
                 pass
         return self._tasks.pop(**kwargs)
 
-    def add(self, task, ip: Domain = None, **kwargs):
+    def add(self, task: Task, ip: Domain = None, **kwargs):
+        """Add given task to its queue.
+            task: Task, task to be added
+            ip: Domain, optional, specifies the ip of the workers for the task.
+        """
         if task.new:
             with self._add_lock:
                 task.task_id = self._counter
@@ -43,7 +51,8 @@ class TasksQueue(Printable):
                 )
             self._client_specific_tasks[ip].add(task, **kwargs)
 
-    def ___repr___(self)->dict:
+    def ___repr___(self)->Dict:
+        """Return a dictionary representation of object."""
         return {
             "type": self._task_type.__name__,
             "tasks": self._tasks.___repr___(),

@@ -1,13 +1,13 @@
 {
-    "www.totallyfakeexample.com": {
+    "github.com": {
         "SporadicExpirable_available": true,
         "SporadicSequentialExpirable_available": true,
         "consecutive_errors": 0,
-        "domain": "www.totallyfakeexample.com",
+        "domain": "github.com",
         "error_rate": 0,
         "expired": false,
-        "maximum_consecutive_errors": -1,
-        "maximum_error_rate": 1,
+        "maximum_consecutive_errors": 1,
+        "maximum_error_rate": 0.5,
         "maximum_usages": -1,
         "parallel_usages": 0,
         "sequential_is_available": true,

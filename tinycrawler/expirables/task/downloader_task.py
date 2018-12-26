@@ -1,15 +1,20 @@
+"""Create an unique downloader task."""
 from .task import Task
 from ..web import Url, Proxy
+from typing import Dict
 
 
 class DownloaderTask(Task):
+    """Create an unique downloader task."""
 
     def __init__(self, proxy: Proxy, url: Url, **kwargs):
-        """Create an unique task.
+        """Create an unique downloader task.
             proxy:Proxy, proxy to be used.
             url:Url, url to download from.
         """
         super(DownloaderTask, self).__init__(**kwargs)
+        assert isinstance(proxy, Proxy)
+        assert isinstance(url, Url)
         self._proxy = proxy
         self._url = url
         self._binary = None
@@ -17,60 +22,68 @@ class DownloaderTask(Task):
         self._response_status = None
 
     def use(self, **kwargs):
+        """Update use status in proxy and url."""
         super(DownloaderTask, self).use(**kwargs)
         self._proxy.use(domain=self._url.domain, **kwargs)
         self._url.use(**kwargs)
 
-    def used(self, success: bool, **kwargs):
+    def used(self, **kwargs):
+        """Update used status in proxy and url.
+            success:bool, result of task
+        """
+        success = kwargs["success"]
+        assert isinstance(success, bool)
         super(DownloaderTask, self).used()
         self._proxy.used(success=success, domain=self._url.domain)
 
     @property
     def proxy(self)->Proxy:
+        """Return proxy data object."""
         return self._proxy.data
 
     @property
     def url(self)->str:
+        """Return url string."""
         return self._url.url
 
     @property
     def binary(self)->bool:
-        if self._binary is None:
-            raise ValueError("Binary was not elaborated yet.")
+        """Return boolean representing if request was to a binary file."""
+        assert self._binary is not None
         return self._binary
 
     @property
     def response_status(self)->int:
-        if self._response_status is None:
-            raise ValueError("Response status was not elaborated yet.")
+        """Return response status of request."""
+        assert self._response_status is not None
         return self._response_status
 
     @property
     def text(self)->str:
-        if self._text is None:
-            raise ValueError("Text was not elaborated yet.")
+        """Return textual response."""
+        assert self._text is not None
         return self._text
 
     @response_status.setter
-    def response_status(self, response_status)->int:
-        if self._response_status is not None:
-            raise ValueError(
-                "Response status has already been elaborated.")
+    def response_status(self, response_status: int):
+        """Set response status of request."""
+        assert self._response_status is None
         self._response_status = response_status
 
     @text.setter
     def text(self, text)->int:
-        if self._text is not None:
-            raise ValueError("Text has already been elaborated.")
+        """Set textual response of request."""
+        assert self._text is None
         self._text = text
 
     @binary.setter
     def binary(self, binary: bool):
-        if self._binary is not None:
-            raise ValueError("Binary has already been elaborated.")
+        """Set whetever response was binary or not."""
+        assert self._binary is None
         self._binary = binary
 
-    def ___repr___(self):
+    def ___repr___(self)->Dict:
+        """Return a dictionary representation of object."""
         return {
             **super(DownloaderTask, self).___repr___(),
             **{

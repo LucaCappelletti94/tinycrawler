@@ -1,5 +1,5 @@
 {
-    "docs.python.org": [
+    "www.youtube.com": [
         {
             "SporadicExpirable_available": true,
             "SporadicSequentialExpirable_available": true,
@@ -8,7 +8,7 @@
                 "SporadicExpirable_available": true,
                 "SporadicSequentialExpirable_available": true,
                 "consecutive_errors": 0,
-                "domain": "docs.python.org",
+                "domain": "www.youtube.com",
                 "error_rate": 0,
                 "expired": false,
                 "maximum_consecutive_errors": -1,
@@ -32,7 +32,7 @@
             "sporadic_is_available": true,
             "total_errors": 0,
             "total_usages": 0,
-            "url": "https://docs.python.org/3/tutorial/datastructures.html",
+            "url": "https://www.youtube.com/watch?v=LxtppUZthug",
             "use_timeout": 0,
             "used_timeout": 0
         }

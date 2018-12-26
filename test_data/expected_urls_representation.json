@@ -75,8 +75,8 @@
                 "sporadic_is_available": false,
                 "total_errors": 0,
                 "total_usages": 0,
-                "url": "http://www.totallyfakeexample.com/new",
-                "use_timeout": 5,
+                "url": "http://www.totallyfakeexample.com/1",
+                "use_timeout": 5.0,
                 "used_timeout": 0
             },
             {
@@ -111,8 +111,8 @@
                 "sporadic_is_available": false,
                 "total_errors": 0,
                 "total_usages": 0,
-                "url": "http://www.totallyfakeexample.com/1",
-                "use_timeout": 5.0,
+                "url": "http://www.totallyfakeexample.com/new",
+                "use_timeout": 5,
                 "used_timeout": 0
             }
         ]

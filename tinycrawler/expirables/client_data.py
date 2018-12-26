@@ -32,9 +32,9 @@ class ClientData(SporadicExpirable):
         """Return client public ip."""
         return self._ip
 
-    def __eq__(self, other)->bool:
-        """Determines if given object is same client_data object."""
-        return other is not None and isinstance(other, ClientData) and other.client_id == self.client_id and other.ip == self.ip and self.platform == other.platform
+    def __eq__(self, o)->bool:
+        """Determine if given object is same client_data object."""
+        return o is not None and isinstance(o, ClientData) and o.client_id == self.client_id and o.ip == self.ip and self.platform == o.platform
 
     def ___repr___(self):
         """Return a dictionary representation of object."""

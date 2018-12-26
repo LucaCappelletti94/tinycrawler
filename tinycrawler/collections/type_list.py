@@ -6,7 +6,7 @@ from ..utils import Printable
 class TypeList(list, Printable):
     """Create a list which raises an assertion error when type does not match with given one."""
 
-    def __init__(self, list_type: Type, *args, **kwargs):
+    def __init__(self, list_type: Type):
         """Create a list which raises an assertion error when type does not match with given one."""
         super(TypeList, self).__init__()
         self._type = list_type

@@ -1,0 +1,16 @@
+{
+    "SporadicExpirable_available": true,
+    "consecutive_errors": 0,
+    "error_rate": 0,
+    "expired": false,
+    "maximum_consecutive_errors": -1,
+    "maximum_error_rate": 1,
+    "sporadic_is_available": true,
+    "task_id": 0,
+    "task_status": "UNASSIGNED",
+    "task_type": "downloader task",
+    "total_errors": 0,
+    "total_usages": 0,
+    "use_timeout": 0,
+    "used_timeout": 0
+}
