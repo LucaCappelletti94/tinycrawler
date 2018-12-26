@@ -1,7 +1,7 @@
 from tinycrawler.processes import DownloaderTaskAssembler
 from tinycrawler.data import Urls
-from tinycrawler.expirables import TasksQueue, DownloaderTask, Proxy, Url
-from tinycrawler.utils import Logger, ProxyData
+from tinycrawler.expirables import TasksQueue, DownloaderTask, Url
+from tinycrawler.utils import Logger
 from multiprocessing import Event
 from httpretty import httprettified
 from ..commons import mock_robots, build_default_url
@@ -37,7 +37,8 @@ def test_downloader_task_assembler():
         proxies,
         tasks=tasks,
         stop=e,
-        logger=errors
+        logger=errors,
+        task_kwargs={}
     )
 
     assembler.start()

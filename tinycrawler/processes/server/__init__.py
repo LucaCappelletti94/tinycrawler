@@ -1,5 +1,6 @@
-from .assembler import DownloaderTaskAssembler
+from .assembler import DownloaderTaskAssembler, ParserTaskAssembler
 
 __all__ = [
-    "DownloaderTaskAssembler"
+    "DownloaderTaskAssembler",
+    "ParserTaskAssembler"
 ]

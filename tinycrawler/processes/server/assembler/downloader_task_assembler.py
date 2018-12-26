@@ -21,5 +21,5 @@ class DownloaderTaskAssembler(TaskAssembler):
 
     def _job(self, url: Url, proxy: Proxy)->Tuple[DownloaderTask, Domain]:
         return DownloaderTask(
-            proxy, url
+            proxy, url,  **self._task_kwargs
         ), proxy.ip if proxy.local else None

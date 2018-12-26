@@ -2,7 +2,6 @@ from tinycrawler.processes.server.assembler.task_assembler import TaskAssembler
 from tinycrawler.expirables import TasksQueue, DownloaderTask, Proxy, Url
 from tinycrawler.utils import Logger, ProxyData
 from multiprocessing import Event
-import time
 import json
 
 
@@ -26,7 +25,8 @@ def test_task_assembler():
     assembler = TaskAssembler(
         tasks,
         stop=e,
-        logger=errors
+        logger=errors,
+        task_kwargs={}
     )
 
     assembler._sink(downloader_task)

@@ -2,7 +2,6 @@ from tinycrawler.processes.server.disassembler.task_disassembler import TaskDisa
 from tinycrawler.expirables import TasksQueue, DownloaderTask, Proxy, Url
 from tinycrawler.utils import Logger, ProxyData
 from multiprocessing import Event
-import time
 import json
 
 
