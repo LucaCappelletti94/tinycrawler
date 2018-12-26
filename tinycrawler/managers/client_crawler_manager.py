@@ -24,6 +24,7 @@ class ClientCrawlerManager(CrawlerManager):
         self.register_client(self._client)
 
     def ___repr___(self)->Dict:
+        """Return a dictionary representing the object."""
         return {
             **super(ClientCrawlerManager, self).___repr___(),
             "client": self._client.___repr___()

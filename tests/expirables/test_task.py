@@ -1,5 +1,5 @@
 from tinycrawler.expirables.task.task import Task
-from ..commons import mock_repr, build_repr
+from ..commons import mock_repr
 
 
 def setup():

@@ -97,6 +97,7 @@ class CrawlerManager(BaseManager, Printable):
         ]
 
     def ___repr___(self)->Dict:
+        """Return a dictionary representing the object."""
         return {
             "address": self.address[0]
         }

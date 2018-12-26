@@ -1,5 +1,5 @@
 from tinycrawler.expirables.collections.expirables_keys_dict import ExpirableKeysDict
-from tinycrawler import Domain, IllegalArgumentError, UnavailableError
+from tinycrawler import Domain
 from .test_domain import setup as domain_setup
 from ..commons import mock_repr
 

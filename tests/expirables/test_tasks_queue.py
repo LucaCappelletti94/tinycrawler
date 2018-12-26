@@ -1,17 +1,22 @@
 from tinycrawler.expirables import TasksQueue, DownloaderTask, Domain
 from queue import Empty
-from .test_proxy import setup as proxy_setup
-from .test_url import setup as url_setup
+from .test_downloader_task import setup as downloader_task_setup
+from ..commons import mock_repr
+
+
+def setup():
+    return TasksQueue(DownloaderTask)
 
 
 def test_tasks_queue():
-    tq = TasksQueue(DownloaderTask)
+    tq = setup()
     try:
         TasksQueue(str)
         assert False
     except AssertionError:
         pass
-    task = DownloaderTask(proxy_setup(), url_setup())
+
+    task = downloader_task_setup()
 
     ip = Domain("12.121.121.33")
     ip2 = Domain("12.121.121.38")
@@ -37,5 +42,4 @@ def test_tasks_queue():
 
     tq.add(task)
 
-    with open("test_data/expected_tasks_queue_representation.json", "r") as f:
-        assert str(tq) == f.read()
+    mock_repr(tq)

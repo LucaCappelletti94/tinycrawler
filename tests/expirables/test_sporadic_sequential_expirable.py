@@ -1,6 +1,6 @@
 from tinycrawler.expirables.sporadic_sequential_expirable import SporadicSequentialExpirable
 import numpy as np
-from ..commons import double_arguments_test
+from ..commons import double_arguments_test, mock_repr
 
 
 def test_sporadic_sequential_expirable_arguments():
@@ -53,5 +53,4 @@ def test_sporadic_sequential_expirable_representation():
         s.use()
         s.used(success=0)
 
-    with open("test_data/expected_sporadic_sequential_expirable_representation.json", "r") as f:
-        assert str(s) == f.read()
+    mock_repr(s)

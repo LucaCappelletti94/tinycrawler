@@ -79,7 +79,9 @@ class ServerCrawlerManager(CrawlerManager):
         )
 
     def handle_client_registration(self, client: ClientData):
-        """Handle client registration, eventually creating adhoc proxy."""
+        """Handle client registration, eventually creating adhoc proxy.
+            client: ClientData, the client to be registered
+        """
         assert isinstance(client, ClientData)
         if self._clients.is_new_ip(client.ip):
             self._proxies.add(Proxy(ProxyData(ip=client.ip.domain)))
@@ -87,6 +89,7 @@ class ServerCrawlerManager(CrawlerManager):
             self._clients.register(client)
 
     def ___repr___(self)->Dict:
+        """Return a dictionary representing the object."""
         return {
             **super(ServerCrawlerManager, self).___repr___(),
             "robots": self._robots.___repr___(),

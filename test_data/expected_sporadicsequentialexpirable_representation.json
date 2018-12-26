@@ -1,0 +1,17 @@
+{
+    "SporadicExpirable_available": false,
+    "SporadicSequentialExpirable_available": false,
+    "consecutive_errors": 2,
+    "error_rate": 1.0,
+    "expired": true,
+    "maximum_consecutive_errors": 2,
+    "maximum_error_rate": 0.7,
+    "maximum_usages": 1,
+    "parallel_usages": 0,
+    "sequential_is_available": true,
+    "sporadic_is_available": true,
+    "total_errors": 2,
+    "total_usages": 2,
+    "use_timeout": 0,
+    "used_timeout": 0
+}

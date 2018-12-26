@@ -41,7 +41,7 @@ def test_expirable_robots_file_parser():
     assert robots._crawl_delay_ == 2
     assert robots._request_rate_delay_ == 5
 
-    with open("test_data/expected_robots_representation.json", "r") as f:
+    with open("test_data/expected_robots_file_parser_representation.json", "r") as f:
         assert str(robots) == f.read()
 
 
@@ -70,5 +70,5 @@ def test_unfollowed_expirable_robots_file_parser():
     assert robots._crawl_delay_ == 0
     assert robots._request_rate_delay_ == 0
 
-    with open("test_data/unfollowed_expected_robots_representation.json", "r") as f:
+    with open("test_data/unfollowed_expected_robots_file_parser_representation.json", "r") as f:
         assert str(robots) == f.read()
