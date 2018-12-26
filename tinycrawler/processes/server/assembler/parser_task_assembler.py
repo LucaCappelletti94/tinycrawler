@@ -1,3 +1,4 @@
+"""Define a process to create parser tasks."""
 from .task_assembler import TaskAssembler
 from ....expirables import ExpirablesQueue, ParserTask, Response
 from ....exceptions import Sleep
@@ -6,18 +7,21 @@ from typing import Tuple
 
 
 class ParserTaskAssembler(TaskAssembler):
+    """Define a process to create parser tasks."""
+
     def __init__(self, responses: ExpirablesQueue, **kwargs):
+        """Define a process to create parser tasks."""
         super(ParserTaskAssembler, self).__init__(**kwargs)
         self._responses = responses
 
     def _source(self)->Tuple[Response]:
         try:
-            return self._responses.pop()
+            return (self._responses.pop(),)
         except Empty:
             raise Sleep
 
     def _job(self, response: Response)->Tuple[ParserTask]:
-        return ParserTask(
+        return (ParserTask(
             response,
             **self._task_kwargs
-        )
+        ),)
