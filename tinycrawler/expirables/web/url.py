@@ -39,11 +39,11 @@ class Url(SporadicSequentialExpirable):
         """Set timeout after which url is available on usage.
             timeout:float, timeout value.
         """
-        assert isinstance(timeout, float)
+        assert isinstance(timeout, (float, int))
         if self._use_timeout != timeout:
+            if not Sporadic.is_available(self) and self._use_timeout < timeout:
+                self._set_available_time(timeout)
             self._use_timeout = timeout
-            if not Sporadic.is_available(self):
-                self._set_available_time(self._use_timeout)
 
     def __hash__(self):
         """Define hash function for Domain objects."""

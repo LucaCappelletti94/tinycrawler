@@ -23,7 +23,9 @@ class Proxies(Printable):
         return self._proxies.pop(domain=domain)
 
     def add(self, proxy: Proxy)->Proxy:
+        """"""
         return self._proxies.add(proxy, domain=None)
 
     def ___repr___(self)->Dict:
+        """Return a dictionary representation of object."""
         return self._proxies.___repr___()

@@ -23,6 +23,10 @@ def test_url():
 
     assert url_1 != url_2
     assert url_1.timeout == 0
+    url_1.timeout = 0
+    url_1.timeout = 3
+    url_1.use()
+    url_1.timeout = 4
 
 
 def test_url_repr():

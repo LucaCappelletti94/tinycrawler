@@ -1,8 +1,12 @@
+"""Creates a structure to hold parsed robots txts."""
 from ..expirables import ExpirableRobotFileParser, Domain, Url, DomainsDict
 from ..utils import Printable
+from typing import Dict
 
 
 class Robots(Printable):
+    """Creates a structure to hold parsed robots txts."""
+
     def __init__(self, **kwargs):
         """Creates a structure to hold parsed robots txts.
             follow_robot_txt:bool, whetever to follow robots txt in the first place.
@@ -57,7 +61,8 @@ class Robots(Printable):
         self._handle_creation(domain)
         return self._domains[domain].timeout
 
-    def ___repr___(self):
+    def ___repr___(self)->Dict:
+        """Return a dictionary representation of object."""
         return {
             "domains": self._domains.___repr___(),
             "useragent": self._useragent,

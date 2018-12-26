@@ -21,9 +21,20 @@ def test_circular_expirables_list_domain_dict():
     except Empty:
         pass
 
-    url = Url("https://docs.python.org/3/tutorial/datastructures.html")
+    try:
+        CircularExpirablesQueuesDomainDict().pop()
+        assert False
+    except Empty:
+        pass
+
+    url = Url(
+        "https://docs.python.org/3/tutorial/datastructures.html", use_timeout=500)
     q.add(url)
     assert q.pop() == url
+
+    url.use()
+
+    q.add(url)
 
     try:
         q.pop()
