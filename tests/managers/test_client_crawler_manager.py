@@ -14,6 +14,7 @@ def setup()->ClientCrawlerManager:
 
 def test_client_crawler_manager():
     ccm = setup()
+    assert ccm.end_event
     assert ccm.urls
     assert ccm.proxies
     assert ccm.clients

@@ -84,5 +84,8 @@ class ParserTask(Task):
         return {
             **super(ParserTask, self).___repr___(),
             **{
-                "task_type": "parser task"
+                "task_type": "parser task",
+                "urls": sorted(list(self.urls)) if self._urls else None,
+                "path": self.path if self._path else None,
+                "page": self.page if self._page else None
             }}

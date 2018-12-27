@@ -33,7 +33,7 @@
                 "key_type": "Domain",
                 "value_type": "ExpirableRobotFileParser"
             },
-            "follow_robot_txt": true,
+            "follow_robot_txt": false,
             "follow_robot_txt_black_list": [],
             "follow_robot_txt_white_list": [],
             "robots_timeout": 0,

@@ -17,7 +17,6 @@ class QueueProcess(Process):
         super(QueueProcess, self).__init__(
             target=self._loop
         )
-        assert isinstance(logger, Logger)
         assert isinstance(max_waiting_timeout, (int, float))
         self._stop = stop
         self._logger = logger

@@ -39,6 +39,16 @@ class Task(SporadicExpirable):
         return self._status
 
     @property
+    def failed(self)->bool:
+        """Return boolean representing if task has failed."""
+        return self.status == self.FAILURE
+
+    @property
+    def succeded(self)->bool:
+        """Return boolean representing if task has succeded."""
+        return self.status == self.SUCCESS
+
+    @property
     def new(self)->bool:
         """Return boolean representing if task still has to receive its id."""
         return self._task_id is None

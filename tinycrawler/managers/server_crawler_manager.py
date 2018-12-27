@@ -4,6 +4,7 @@ from ..data import Urls, Proxies, Clients
 from ..expirables import ExpirablesQueue, TasksQueue, DownloaderTask, ParserTask, Response, ClientData, Proxy
 from ..utils import ProxyData, Logger, ServerQueueWrapper
 from typing import Dict
+from multiprocessing import Event
 
 
 class ServerCrawlerManager(CrawlerManager):
@@ -19,6 +20,7 @@ class ServerCrawlerManager(CrawlerManager):
         self._urls = ServerQueueWrapper(Urls(**kwargs))
         self._proxies = ServerQueueWrapper(Proxies(**kwargs))
         self._clients = Clients()
+        self._end_event = Event()
         self._responses = ServerQueueWrapper(
             ExpirablesQueue(Response, **kwargs)
         )
@@ -73,6 +75,10 @@ class ServerCrawlerManager(CrawlerManager):
         self.register(
             "register_client",
             callable=self.handle_client_registration
+        )
+        self.register(
+            "get_end_event",
+            callable=lambda: self._end_event
         )
 
     def handle_client_registration(self, client: ClientData):

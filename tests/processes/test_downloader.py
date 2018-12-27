@@ -55,7 +55,6 @@ def mock_downloader_failure_max_size(*args):
 
 
 def setup_downloader()->Tuple[Downloader, TasksQueue, TasksQueue]:
-    e = Event()
     manager = client_crawler_manager_setup()
     tasks = manager.downloader_tasks
     completed_tasks = manager.completed_downloader_tasks
@@ -72,17 +71,17 @@ def setup_downloader()->Tuple[Downloader, TasksQueue, TasksQueue]:
         client_data=client_data_setup(),
         tasks=tasks,
         completed_tasks=completed_tasks,
-        stop=e,
+        stop=manager.end_event,
         logger=logger_setup(),
         max_waiting_timeout=1
-    ), tasks, completed_tasks, e
+    ), tasks, completed_tasks, manager.end_event
 
 
 def test_downloader_success():
     with HTTMock(mock_downloader_success):
         downloader, _, completed_tasks, e = setup_downloader()
         downloader.start()
-        time.sleep(0.5)
+        time.sleep(1)
         e.set()
         downloader.join()
         completed = completed_tasks.pop()
@@ -95,7 +94,7 @@ def test_downloader_success_empty():
     with HTTMock(mock_downloader_success_empty):
         downloader, _, completed_tasks, e = setup_downloader()
         downloader.start()
-        time.sleep(0.5)
+        time.sleep(1)
         e.set()
         downloader.join()
         completed = completed_tasks.pop()
@@ -108,7 +107,7 @@ def test_downloader_success_binary():
     with HTTMock(mock_downloader_success_binary):
         downloader, _, completed_tasks, e = setup_downloader()
         downloader.start()
-        time.sleep(0.5)
+        time.sleep(1)
         e.set()
         downloader.join()
         completed = completed_tasks.pop()
@@ -120,7 +119,7 @@ def test_downloader_success_small_binary():
     with HTTMock(mock_downloader_success_small_binary):
         downloader, _, completed_tasks, e = setup_downloader()
         downloader.start()
-        time.sleep(0.5)
+        time.sleep(1)
         e.set()
         downloader.join()
         completed = completed_tasks.pop()
@@ -132,7 +131,7 @@ def test_downloader_failure():
     with HTTMock(mock_downloader_failure):
         downloader, _, completed_tasks, e = setup_downloader()
         downloader.start()
-        time.sleep(0.5)
+        time.sleep(1)
         e.set()
         downloader.join()
         completed = completed_tasks.pop()
@@ -143,7 +142,7 @@ def test_downloader_failure_max_size():
     with HTTMock(mock_downloader_failure_max_size):
         downloader, _, completed_tasks, e = setup_downloader()
         downloader.start()
-        time.sleep(0.5)
+        time.sleep(1)
         e.set()
         downloader.join()
         completed = completed_tasks.pop()

@@ -12,7 +12,7 @@ def setup():
             useragent="*",
             default_url_timeout=0,
             robots_timeout=0,
-            follow_robot_txt=True,
+            follow_robot_txt=False,
             log_filename="logs/crawler.log",
             bloom_filter_capacity=10000)
         scm.start()

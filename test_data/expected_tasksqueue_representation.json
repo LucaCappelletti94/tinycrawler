@@ -18,6 +18,7 @@
             "task_type": "downloader task",
             "total_errors": 0,
             "total_usages": 0,
+            "url": "https://www.totallyfakewebsite.com",
             "use_timeout": 0,
             "used_timeout": 0
         }

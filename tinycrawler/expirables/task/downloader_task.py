@@ -1,7 +1,7 @@
 """Create an unique downloader task."""
 from .task import Task
 from ..web import Url, Proxy
-from typing import Dict
+from typing import Dict, Tuple
 
 
 class DownloaderTask(Task):
@@ -47,6 +47,11 @@ class DownloaderTask(Task):
         return self._url.url
 
     @property
+    def data(self)->Tuple[Url, Proxy]:
+        """Return task original data."""
+        return self._url, self._proxy
+
+    @property
     def binary(self)->bool:
         """Return boolean representing if request was to a binary file."""
         assert self._binary is not None
@@ -87,5 +92,6 @@ class DownloaderTask(Task):
         return {
             **super(DownloaderTask, self).___repr___(),
             **{
-                "task_type": "downloader task"
+                "task_type": "downloader task",
+                "url": self.url
             }}

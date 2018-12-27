@@ -1,48 +1,36 @@
+"""Test if everything works in downloader task assembler."""
 from tinycrawler.processes import DownloaderTaskAssembler
-from tinycrawler.data import Urls
-from tinycrawler.expirables import TasksQueue, DownloaderTask, Url
-from tinycrawler.utils import Logger
-from multiprocessing import Event
-from httpretty import httprettified
-from ..commons import mock_robots, build_default_url
-from tinycrawler.data import Proxies
+from ..managers.test_client_crawler_manager import setup as manager_setup
+from ..expirables.test_url import setup as url_setup
+from ..expirables.test_proxy import setup_local as setup_local_proxy
+from ..commons import mock_repr
 import time
 
 
-@httprettified
 def test_downloader_task_assembler():
-    mock_robots()
-
-    urls = Urls(
-        bloom_filter_capacity=10000,
-        follow_robot_txt=True,
-        useragent="*",
-        default_url_timeout=1,
-        robots_timeout=0
-    )
-
-    urls.add(
-        set([Url(build_default_url("/allowed"), use_timeout=5)]))
-
-    proxies = Proxies(path="test_data/raw_proxies.json")
-
-    e = Event()
-    path = "logs/test_queue_process.log"
-    errors = Logger(path)
-
-    tasks = TasksQueue(DownloaderTask)
-
+    """Test if everything works in downloader task assembler."""
+    manager = manager_setup()
     assembler = DownloaderTaskAssembler(
-        urls=urls,
-        proxies=proxies,
-        tasks=tasks,
-        stop=e,
-        logger=errors,
+        urls=manager.urls,
+        proxies=manager.proxies,
+        tasks=manager.downloader_tasks,
+        stop=manager.end_event,
+        logger=manager.logger,
         task_kwargs={},
         max_waiting_timeout=60
     )
 
+    url, proxy = url_setup(), setup_local_proxy()
+    manager.urls.add([url])
+
+    manager.proxies.add(proxy)
+
     assembler.start()
     time.sleep(0.5)
-    e.set()
+    manager.end_event.set()
     assembler.join()
+
+    task = manager.downloader_tasks.pop()
+
+    assert (url, proxy) == task.data
+    mock_repr(task, "assembler")

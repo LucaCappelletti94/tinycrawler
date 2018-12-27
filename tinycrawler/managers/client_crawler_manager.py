@@ -19,6 +19,7 @@ class ClientCrawlerManager(CrawlerManager):
             self.register(endpoint)
 
         self._urls = None
+        self._end_event = None
         self._proxies = None
         self._clients = None
         self._responses = None
@@ -29,44 +30,59 @@ class ClientCrawlerManager(CrawlerManager):
         self._completed_parser_tasks = None
 
     @property
+    def end_event(self):
+        assert self._end_event is not None
+        return self._end_event
+
+    @property
     def urls(self):
+        assert self._urls is not None
         return self._urls
 
     @property
     def proxies(self):
+        assert self._proxies is not None
         return self._proxies
 
     @property
     def clients(self):
+        assert self._clients is not None
         return self._clients
 
     @property
     def responses(self):
+        assert self._responses is not None
         return self._responses
 
     @property
     def downloader_tasks(self):
+        assert self._downloader_tasks is not None
         return self._downloader_tasks
 
     @property
     def parser_tasks(self):
+        assert self._parser_tasks is not None
         return self._parser_tasks
 
     @property
     def logger(self):
+        assert self._logger is not None
         return self._logger
 
     @property
     def completed_downloader_tasks(self):
+        assert self._completed_downloader_tasks is not None
         return self._completed_downloader_tasks
 
     @property
     def completed_parser_tasks(self):
+        assert self._completed_parser_tasks is not None
         return self._completed_parser_tasks
 
     def connect(self):
         """Handle connection to the server manager."""
         super(ClientCrawlerManager, self).connect()
+        self._end_event = self.get_end_event()
         self._urls = ClientQueueWrapper(self.get_urls())
         self._proxies = ClientQueueWrapper(self.get_proxies())
         self._clients = self.get_clients()

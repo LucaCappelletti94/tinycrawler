@@ -5,6 +5,7 @@ from ..data import Urls, Proxies, Clients
 from ..expirables import ExpirablesQueue, TasksQueue, ClientData
 from ..utils import Printable
 from typing import List, Dict
+from threading import Event
 
 
 class CrawlerManager(BaseManager, Printable):
@@ -24,6 +25,12 @@ class CrawlerManager(BaseManager, Printable):
         """Return shared `Urls` object."""
         raise NotImplementedError(
             "Method `get_urls` has to be registered by subclass and not directly called."
+        )
+
+    def get_end_event(self)->Event:
+        """Return shared end event Event."""
+        raise NotImplementedError(
+            "Method `get_end_event` has to be registered by subclass and not directly called."
         )
 
     def get_responses(self)->ExpirablesQueue:

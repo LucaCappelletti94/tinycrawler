@@ -5,12 +5,15 @@
     "expired": false,
     "maximum_consecutive_errors": -1,
     "maximum_error_rate": 1,
+    "page": null,
+    "path": null,
     "sporadic_is_available": true,
     "task_id": 0,
     "task_status": "UNASSIGNED",
     "task_type": "parser task",
     "total_errors": 0,
     "total_usages": 0,
+    "urls": null,
     "use_timeout": 0,
     "used_timeout": 0
 }

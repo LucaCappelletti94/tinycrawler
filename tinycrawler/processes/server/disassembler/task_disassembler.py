@@ -12,5 +12,8 @@ class TaskDisassembler(QueueProcess):
         super(TaskDisassembler, self).__init__(**kwargs)
         self._tasks = tasks
 
+    def _sink(self, *args):
+        pass
+
     def _source(self)->Tuple[Task]:
-        return self._tasks.pop(None)
+        return (self._tasks.pop(),)

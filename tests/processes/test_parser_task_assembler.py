@@ -1,33 +1,30 @@
+"""Test if everything works in parser task assembler."""
 from tinycrawler.processes import ParserTaskAssembler
-from tinycrawler.expirables import TasksQueue, ParserTask, ExpirablesQueue, Response
-from tinycrawler.utils import Logger
-from multiprocessing import Event
-from ..expirables.test_response import setup as response_setup
+from ..managers.test_client_crawler_manager import setup as manager_setup
+from ..expirables.test_response import setup as setup_response
 import time
 
 
 def test_parser_task_assembler():
-
-    responses = ExpirablesQueue(Response)
-
-    responses.add(response_setup())
-
-    e = Event()
-    path = "logs/test_queue_process.log"
-    errors = Logger(path)
-
-    tasks = TasksQueue(ParserTask)
-
+    """Test if everything works in parser task assembler."""
+    manager = manager_setup()
     assembler = ParserTaskAssembler(
-        responses=responses,
-        tasks=tasks,
-        stop=e,
-        logger=errors,
+        responses=manager.responses,
+        tasks=manager.parser_tasks,
+        stop=manager.end_event,
+        logger=manager.logger,
         task_kwargs={},
         max_waiting_timeout=60
     )
 
+    response = setup_response()
+    manager.responses.add(response)
+
     assembler.start()
     time.sleep(1)
-    e.set()
+    manager.end_event.set()
     assembler.join()
+
+    task = manager.parser_tasks.pop()
+
+    assert task.response == response

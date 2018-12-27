@@ -32,6 +32,9 @@ class Response(SporadicSequentialExpirable):
         """Return url to where the request was made."""
         return self._url
 
+    def __eq__(self, other)->bool:
+        return other is not None and isinstance(other, Response) and self.status == other.status and self.url == other.url and self.text == other.text
+
     def ___repr___(self)->Dict:
         """Return a dictionary representation of object."""
         return {
