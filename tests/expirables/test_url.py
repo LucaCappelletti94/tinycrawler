@@ -13,7 +13,7 @@ def test_url_arguments():
     double_arguments_test(Url, valid, invalid)
 
 
-def setup(default: str = "https://www.youtube.com/watch?v=LxtppUZthug"):
+def setup(default: str = "https://www.totallyfakewebsite.com"):
     return Url(default)
 
 

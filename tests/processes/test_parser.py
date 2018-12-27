@@ -9,7 +9,7 @@ import time
 from ..managers.test_client_crawler_manager import setup as client_crawler_manager_setup
 
 
-def setup()->Tuple[Parser, TasksQueue, TasksQueue, Event]:
+def setup(page=None)->Tuple[Parser, TasksQueue, TasksQueue, Event]:
     e = Event()
 
     manager = client_crawler_manager_setup()
@@ -17,13 +17,13 @@ def setup()->Tuple[Parser, TasksQueue, TasksQueue, Event]:
     tasks = manager.parser_tasks
     completed_tasks = manager.completed_parser_tasks
 
-    parser_task = parser_task_setup()
-    parser_task.use()
-
-    tasks.add(parser_task)
+    task = parser_task_setup()
+    task.use()
+    tasks.add(task)
 
     return Parser(
         client_data=client_data_setup(),
+        page=page,
         tasks=tasks,
         completed_tasks=completed_tasks,
         stop=e,
@@ -40,3 +40,19 @@ def test_parser():
     parser.join()
     completed = completed_tasks.pop()
     assert completed.status == ParserTask.SUCCESS
+
+
+def fail(*args):
+    raise Exception
+
+
+def test_parser_failure():
+    parser, _, completed_tasks, e = setup(
+        page=fail
+    )
+    parser.start()
+    time.sleep(0.5)
+    e.set()
+    parser.join()
+    completed = completed_tasks.pop()
+    assert completed.status == ParserTask.FAILURE

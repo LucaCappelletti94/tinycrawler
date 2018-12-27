@@ -2,6 +2,8 @@
     "robots": {
         "default_url_timeout": 1,
         "domains": {
+            "key_type": "Domain",
+            "value_type": "ExpirableRobotFileParser",
             "www.totallyfakeexample.com": {
                 "crawl_delay": 2,
                 "domain": {
@@ -42,6 +44,8 @@
         "useragent": "*"
     },
     "urls": {
+        "key_type": "Domain",
+        "value_type": "ExpirablesQueue",
         "www.totallyfakeexample.com": [
             {
                 "SporadicExpirable_available": false,

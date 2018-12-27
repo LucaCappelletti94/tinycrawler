@@ -1,11 +1,15 @@
 from tinycrawler.expirables import Proxy
-from ..utils.test_proxy_data import setup as setup_proxy_data
 from ..commons import mock_repr
 from .test_url import setup as setup_url
+from ..utils.test_proxy_data import setup as proxy_data_setup
 
 
 def setup(path=None)->Proxy:
-    return Proxy(setup_proxy_data(path), maximum_usages=1)
+    return Proxy(proxy_data_setup(path), maximum_usages=1)
+
+
+def setup_local(path=None)->Proxy:
+    return Proxy(proxy_data_setup(path), maximum_usages=1)
 
 
 def test_proxy():

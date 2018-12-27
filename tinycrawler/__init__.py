@@ -1,2 +1,2 @@
 from .expirables import Domain, Url
-from .exceptions import IllegalArgumentError, NotInUseError, UnavailableError
+from .exceptions import IllegalArgumentError

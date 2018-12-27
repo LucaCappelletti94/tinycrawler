@@ -48,7 +48,8 @@ class Downloader(Worker):
         except (
             requests.ConnectionError,
             MaxFileSize
-        ):
+        ) as e:
+            print(e)
             return False
 
         return True

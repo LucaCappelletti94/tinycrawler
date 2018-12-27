@@ -1,7 +1,7 @@
 """Abstract object for managing the crawler data."""
 from multiprocessing import Queue
 from multiprocessing.managers import BaseManager
-from ..data import Robots, Urls, Proxies, Clients
+from ..data import Urls, Proxies, Clients
 from ..expirables import ExpirablesQueue, TasksQueue, ClientData
 from ..utils import Printable
 from typing import List, Dict
@@ -18,12 +18,6 @@ class CrawlerManager(BaseManager, Printable):
         super(CrawlerManager, self).__init__(
             address=(host, port),
             authkey=authkey
-        )
-
-    def get_robots(self)->Robots:
-        """Return shared `Robots` object."""
-        raise NotImplementedError(
-            "Method `get_robots` has to be registered by subclass and not directly called."
         )
 
     def get_urls(self)->Urls:

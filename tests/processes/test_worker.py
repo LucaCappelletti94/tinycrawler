@@ -16,7 +16,7 @@ def test_worker():
 
     tasks.add(downloader_task_setup())
 
-    Worker(
+    worker = Worker(
         client_data=client_data_setup(),
         tasks=tasks,
         completed_tasks=completed_tasks,
@@ -24,3 +24,9 @@ def test_worker():
         logger=logger_setup(),
         max_waiting_timeout=60
     )
+
+    try:
+        worker._work(None)
+        assert False
+    except NotImplementedError:
+        pass

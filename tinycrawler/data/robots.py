@@ -42,6 +42,7 @@ class Robots(Printable):
 
     def _handle_creation(self, domain: Domain):
         """Creates ExpirableRobotFileParser if not already present"""
+        assert isinstance(domain, Domain)
         if domain not in self._domains:
             self._domains[domain] = ExpirableRobotFileParser(
                 domain,
@@ -55,6 +56,7 @@ class Robots(Printable):
         """Return a boolean representing if url can be downloaded.
             url:Url, url to check for.
         """
+        assert isinstance(url, Url)
         self._handle_creation(url.domain)
         return self._domains[url.domain].can_download(url.url)
 
@@ -62,6 +64,7 @@ class Robots(Printable):
         """Return a float representing what has to be waited for a given domain.
             domain:Domain, domain to check for.
         """
+        assert isinstance(domain, Domain)
         self._handle_creation(domain)
         return self._domains[domain].timeout
 

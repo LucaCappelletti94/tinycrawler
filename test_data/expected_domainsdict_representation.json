@@ -16,5 +16,7 @@
         "total_usages": 0,
         "use_timeout": 0,
         "used_timeout": 0
-    }
+    },
+    "key_type": "Domain",
+    "value_type": "Domain"
 }

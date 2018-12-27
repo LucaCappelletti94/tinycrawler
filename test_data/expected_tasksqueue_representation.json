@@ -1,6 +1,8 @@
 {
     "client_specific_tasks": {
-        "12.121.121.33": []
+        "12.121.121.33": [],
+        "key_type": "Domain",
+        "value_type": "ExpirablesQueue"
     },
     "tasks": [
         {

@@ -6,13 +6,15 @@ default_robots_url = build_default_url("/robots.txt")
 
 def mock_robots(path: str = "test_data/robots.txt"):
     global default_robots_url
+    httpretty.reset()
     with open(path, "r") as f:
-        httpretty.register_uri(
-            httpretty.GET,
-            default_robots_url,
-            body=f.read(),
-            content_type="text/plain"
-        )
+        content = f.read()
+    httpretty.register_uri(
+        httpretty.GET,
+        default_robots_url,
+        body=content,
+        content_type="text/plain"
+    )
 
 
 def mock_sensitive_robots():

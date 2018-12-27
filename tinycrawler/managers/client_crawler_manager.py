@@ -18,7 +18,6 @@ class ClientCrawlerManager(CrawlerManager):
         for endpoint in self.endpoints:
             self.register(endpoint)
 
-        self._robots = None
         self._urls = None
         self._proxies = None
         self._clients = None
@@ -28,10 +27,6 @@ class ClientCrawlerManager(CrawlerManager):
         self._logger = None
         self._completed_downloader_tasks = None
         self._completed_parser_tasks = None
-
-    @property
-    def robots(self):
-        return self._robots
 
     @property
     def urls(self):
@@ -72,7 +67,6 @@ class ClientCrawlerManager(CrawlerManager):
     def connect(self):
         """Handle connection to the server manager."""
         super(ClientCrawlerManager, self).connect()
-        self._robots = self.get_robots()
         self._urls = ClientQueueWrapper(self.get_urls())
         self._proxies = ClientQueueWrapper(self.get_proxies())
         self._clients = self.get_clients()
@@ -93,5 +87,12 @@ class ClientCrawlerManager(CrawlerManager):
         """Return a dictionary representing the object."""
         return {
             **super(ClientCrawlerManager, self).___repr___(),
-            "client": self._client.___repr___()
+            "client": self._client.___repr___(),
+            "urls": self.urls.___repr___(),
+            "proxies": self.proxies.___repr___(),
+            "responses": self.responses.___repr___(),
+            "downloader_tasks": self.downloader_tasks.___repr___(),
+            "parser_tasks": self.parser_tasks.___repr___(),
+            "completed_downloader_tasks": self.completed_downloader_tasks.___repr___(),
+            "completed_parser_tasks": self.completed_parser_tasks.___repr___(),
         }

@@ -28,7 +28,6 @@ class QueueProcess(Process):
         self._last_sleep_time = time.time()
         while not self._stop.is_set() and time.time() - self._last_sleep_time < self._max_waiting_timeout:
             try:
-                print("LOOPING")
                 self._sink(
                     *self._job(
                         *self._source()

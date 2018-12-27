@@ -47,6 +47,7 @@ class ExpirableRobotFileParser(Sporadic):
         """Return a boolean representing if url can be downloaded.
             url:Url, url to check for.
         """
+        assert isinstance(url, str)
         if not self._follow_robots:
             return True
         self._update()

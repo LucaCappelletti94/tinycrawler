@@ -16,7 +16,6 @@ def test_expirables_queue():
         pass
 
     q = setup()
-    q.pop()
 
     try:
         q.pop()

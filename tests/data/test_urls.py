@@ -1,13 +1,13 @@
 from tinycrawler.data import Urls
 from tinycrawler import Url
 from queue import Empty
-from ..commons import mock_robots, mock_sensitive_robots, build_default_url, mock_repr
-from httpretty import httprettified, reset
+from ..commons import mock_robots, mock_sensitive_robots, build_default_url, mock_repr, build_repr
+from httpretty import httprettified
 
 
-def setup____()->Urls:
+@httprettified
+def test_urls():
     mock_robots()
-
     urls = Urls(
         bloom_filter_capacity=10000,
         follow_robot_txt=True,
@@ -18,14 +18,6 @@ def setup____()->Urls:
 
     urls.add(
         set([Url(build_default_url("/error"), use_timeout=5)]))
-
-    return urls
-
-
-@httprettified
-def test_urls():
-
-    urls = setup____()
 
     # Failure 'cos of robots can download
     try:
@@ -64,9 +56,8 @@ def test_urls():
     url3 = Url(build_default_url("/3"), use_timeout=5)
     urls.add([url1, url3, url2])
 
-    reset()
-
     mock_sensitive_robots()
 
     assert urls.pop() == url3
+    build_repr(urls)
     mock_repr(urls)

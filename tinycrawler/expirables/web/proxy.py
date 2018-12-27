@@ -14,7 +14,7 @@ class Proxy(SporadicSequentialExpirable):
         super(Proxy, self).__init__(**kwargs)
         self._ip = Domain(proxy_data.ip)
         self._data = proxy_data.data
-        self._domains = DomainsDict(Domain)
+        self._domains = {}
 
     def is_available(self, **kwargs)->bool:
         """Return boolean representing if given proxy and domain are available for use."""

@@ -1,6 +1,6 @@
 """Server side object for managing the crawler data."""
 from .crawler_manager import CrawlerManager
-from ..data import Robots, Urls, Proxies, Clients
+from ..data import Urls, Proxies, Clients
 from ..expirables import ExpirablesQueue, TasksQueue, DownloaderTask, ParserTask, Response, ClientData, Proxy
 from ..utils import ProxyData, Logger, ServerQueueWrapper
 from typing import Dict
@@ -16,7 +16,6 @@ class ServerCrawlerManager(CrawlerManager):
             port,
             authkey
         )
-        self._robots = Robots(**kwargs)
         self._urls = ServerQueueWrapper(Urls(**kwargs))
         self._proxies = ServerQueueWrapper(Proxies(**kwargs))
         self._clients = Clients()
@@ -35,10 +34,6 @@ class ServerCrawlerManager(CrawlerManager):
             **kwargs
         ))
 
-        self.register(
-            "get_robots",
-            callable=lambda: self._robots
-        )
         self.register(
             "get_urls",
             callable=lambda: self._urls
@@ -94,7 +89,6 @@ class ServerCrawlerManager(CrawlerManager):
         """Return a dictionary representing the object."""
         return {
             **super(ServerCrawlerManager, self).___repr___(),
-            "robots": self._robots.___repr___(),
             "urls": self._urls.___repr___(),
             "proxies": self._proxies.___repr___(),
             "clients": self._clients.___repr___(),

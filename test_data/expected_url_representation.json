@@ -6,7 +6,7 @@
         "SporadicExpirable_available": true,
         "SporadicSequentialExpirable_available": true,
         "consecutive_errors": 0,
-        "domain": "www.youtube.com",
+        "domain": "www.totallyfakewebsite.com",
         "error_rate": 0,
         "expired": false,
         "maximum_consecutive_errors": -1,
@@ -30,7 +30,7 @@
     "sporadic_is_available": true,
     "total_errors": 0,
     "total_usages": 0,
-    "url": "https://www.youtube.com/watch?v=LxtppUZthug",
+    "url": "https://www.totallyfakewebsite.com",
     "use_timeout": 0,
     "used_timeout": 0
 }

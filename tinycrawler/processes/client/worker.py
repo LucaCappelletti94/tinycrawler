@@ -21,7 +21,6 @@ class Worker(QueueProcess):
     def _job(self, *args)->Tuple[Task]:
         success, status = False, Task.FAILURE
         (task,) = args
-        task.use()
         if self._work(task):
             success, status = True, Task.SUCCESS
         task.used(success=success)

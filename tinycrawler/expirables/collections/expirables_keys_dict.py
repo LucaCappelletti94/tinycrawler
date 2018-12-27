@@ -23,9 +23,8 @@ class ExpirableKeysDict(TypeDict):
         """Set item at given key checking for type and availability."""
         if expirable not in self._expirables:
             self._expirables[expirable] = expirable
-        return super(ExpirableKeysDict, self).__setitem__(
-            self._ensure_availability(expirable), v
-        )
+        super(ExpirableKeysDict, self).__setitem__(
+            self._ensure_availability(expirable), v)
 
     def __delitem__(self, expirable: Expirable):
         """Delete item at given key checking for type and eliminating key from list too."""
@@ -34,10 +33,12 @@ class ExpirableKeysDict(TypeDict):
 
     def used(self, expirable: Expirable, **kwargs):
         """Call `used` on given key expirable object."""
+        assert expirable in self._expirables
         self._expirables[expirable].used(**kwargs)
 
     def use(self, expirable: Expirable, **kwargs):
         """Call `use` on given key expirable object."""
+        assert expirable in self._expirables
         self._expirables[expirable].use(**kwargs)
 
     def is_available(self, e: Expirable, **kwargs)->bool:
