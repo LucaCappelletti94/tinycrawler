@@ -1,7 +1,6 @@
 """Create a sporadically, sequentially available response object that can expire."""
 from ..sporadic_sequential_expirable import SporadicSequentialExpirable
 from typing import Dict
-import json
 
 
 class Response(SporadicSequentialExpirable):
@@ -22,11 +21,6 @@ class Response(SporadicSequentialExpirable):
     def text(self)->str:
         """Return text object."""
         return self._text
-
-    @property
-    def json(self)->Dict:
-        """Return text parsed as json object."""
-        return json.loads(self.text)
 
     @property
     def status(self)->int:

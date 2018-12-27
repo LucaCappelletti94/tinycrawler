@@ -19,11 +19,12 @@ def test_parser_task_assembler():
     tasks = TasksQueue(ParserTask)
 
     assembler = ParserTaskAssembler(
-        responses,
+        responses=responses,
         tasks=tasks,
         stop=e,
         logger=errors,
-        task_kwargs={}
+        task_kwargs={},
+        max_waiting_timeout=60
     )
 
     assembler.start()

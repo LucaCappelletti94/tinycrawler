@@ -33,12 +33,13 @@ def test_downloader_task_assembler():
     tasks = TasksQueue(DownloaderTask)
 
     assembler = DownloaderTaskAssembler(
-        urls,
-        proxies,
+        urls=urls,
+        proxies=proxies,
         tasks=tasks,
         stop=e,
         logger=errors,
-        task_kwargs={}
+        task_kwargs={},
+        max_waiting_timeout=60
     )
 
     assembler.start()

@@ -1,3 +1,4 @@
+"""Create a parser tasks worker process."""
 from .worker import Worker
 from ...expirables import ParserTask
 from typing import Callable
@@ -10,8 +11,10 @@ import validators
 
 
 class Parser(Worker):
+    """Create a parser tasks worker process."""
 
     def __init__(self, page: Callable = None, path: Callable = None, url: Callable = None, **kwargs):
+        """Create a parser tasks worker process."""
         super(Parser, self).__init__(**kwargs)
         self._page = page if page is not None else lambda response, soup: response.text
         self._path = path if path is not None else url_to_path

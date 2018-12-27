@@ -11,6 +11,11 @@ class TypeList(list, Printable):
         super(TypeList, self).__init__()
         self._type = list_type
 
+    @property
+    def type(self)->Type:
+        """Return list type."""
+        return self._type
+
     def __setitem__(self, index, value):
         """Disable direct setting of an element in list."""
         raise NotImplementedError("Set item is not available in TypeList.")

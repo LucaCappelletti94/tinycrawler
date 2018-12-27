@@ -5,10 +5,8 @@ from .test_domain import setup as domain_setup
 from ..commons import mock_repr
 
 
-def setup():
-    q = ExpirablesQueue(Domain)
-    q.add(domain_setup())
-    return q
+def setup(classtype=None):
+    return ExpirablesQueue(classtype or Domain)
 
 
 def test_expirables_queue():

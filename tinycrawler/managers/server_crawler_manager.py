@@ -2,7 +2,7 @@
 from .crawler_manager import CrawlerManager
 from ..data import Robots, Urls, Proxies, Clients
 from ..expirables import ExpirablesQueue, TasksQueue, DownloaderTask, ParserTask, Response, ClientData, Proxy
-from ..utils import ProxyData, Logger
+from ..utils import ProxyData, Logger, ServerQueueWrapper
 from typing import Dict
 
 
@@ -17,21 +17,23 @@ class ServerCrawlerManager(CrawlerManager):
             authkey
         )
         self._robots = Robots(**kwargs)
-        self._urls = Urls(**kwargs)
-        self._proxies = Proxies(**kwargs)
+        self._urls = ServerQueueWrapper(Urls(**kwargs))
+        self._proxies = ServerQueueWrapper(Proxies(**kwargs))
         self._clients = Clients()
-        self._responses = ExpirablesQueue(Response, **kwargs)
-        self._downloader_tasks = TasksQueue(DownloaderTask)
-        self._parser_tasks = TasksQueue(ParserTask)
+        self._responses = ServerQueueWrapper(
+            ExpirablesQueue(Response, **kwargs)
+        )
+        self._downloader_tasks = ServerQueueWrapper(TasksQueue(DownloaderTask))
+        self._parser_tasks = ServerQueueWrapper(TasksQueue(ParserTask))
         self._logger = Logger(**kwargs)
-        self._completed_downloader_tasks = ExpirablesQueue(
+        self._completed_downloader_tasks = ServerQueueWrapper(ExpirablesQueue(
             DownloaderTask,
             **kwargs
-        )
-        self._completed_parser_tasks = ExpirablesQueue(
+        ))
+        self._completed_parser_tasks = ServerQueueWrapper(ExpirablesQueue(
             ParserTask,
             **kwargs
-        )
+        ))
 
         self.register(
             "get_robots",

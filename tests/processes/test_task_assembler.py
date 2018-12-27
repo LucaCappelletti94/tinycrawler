@@ -1,34 +1,22 @@
+"""Test if everything is ok with the task assembler."""
 from tinycrawler.processes.server.assembler.task_assembler import TaskAssembler
-from tinycrawler.expirables import TasksQueue, DownloaderTask, Proxy, Url
-from tinycrawler.utils import Logger, ProxyData
+from tinycrawler.expirables import TasksQueue, DownloaderTask
 from multiprocessing import Event
-import json
+from ..expirables.test_downloader_task import setup as downloader_task_setup
+from ..utils.test_logger import setup as logger_setup
 
 
 def test_task_assembler():
+    """Test if everything is ok with the task assembler."""
     e = Event()
-    path = "logs/test_queue_process.log"
-    errors = Logger(path)
-
     tasks = TasksQueue(DownloaderTask)
 
-    with open("test_data/raw_proxy_data.json", "r") as f:
-        proxy_data = ProxyData(data=json.load(f))
+    tasks.add(downloader_task_setup())
 
-    url = Url("https://travis-ci.org/LucaCappelletti94/tinycrawler/builds/468601955")
-    proxy = Proxy(proxy_data, maximum_usages=1)
-
-    downloader_task = DownloaderTask(proxy, url)
-
-    tasks.add(downloader_task)
-
-    assembler = TaskAssembler(
+    TaskAssembler(
         tasks,
         stop=e,
-        logger=errors,
-        task_kwargs={}
+        logger=logger_setup(),
+        task_kwargs={},
+        max_waiting_timeout=60
     )
-
-    assembler._sink(downloader_task)
-
-    assert tasks.pop() == downloader_task

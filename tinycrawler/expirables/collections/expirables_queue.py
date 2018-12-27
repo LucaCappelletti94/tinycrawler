@@ -1,12 +1,11 @@
 """Create a queue which raises an assertion error when type does not match with given one."""
 from ...collections import TypeList
 from ..expirable import Expirable
-from typing import Type
+from typing import Type, Dict
 from queue import Empty
-from ...utils import Printable
 
 
-class ExpirablesQueue(TypeList, Printable):
+class ExpirablesQueue(TypeList):
     """Create a queue which raises an assertion error when type does not match with given one."""
 
     def __init__(self, expirable_type: Type, **kwargs):
@@ -34,7 +33,7 @@ class ExpirablesQueue(TypeList, Printable):
         else:
             super(ExpirablesQueue, self).prepend(expirable)
 
-    def ___repr___(self):
+    def ___repr___(self)->Dict:
         """Return a dictionary representation of object."""
         return [
             value.___repr___() for value in self

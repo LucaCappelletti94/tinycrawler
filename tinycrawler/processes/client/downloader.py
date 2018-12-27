@@ -1,14 +1,17 @@
+"""Create a downloader tasks worker process."""
 from .worker import Worker
 from ...expirables import DownloaderTask
 from ...exceptions import MaxFileSize
 import requests
-from typing import Tuple
 from binaryornot.helpers import is_binary_string
 from user_agent import generate_user_agent
 
 
 class Downloader(Worker):
+    """Create a downloader tasks worker process."""
+
     def __init__(self, max_content_len: int, user_agent: str, email: str, *args, **kwargs):
+        """Create a downloader tasks worker process."""
         super(Downloader, self).__init__(*args, **kwargs)
         self._max_content_len = max_content_len
         self._user_agent = user_agent

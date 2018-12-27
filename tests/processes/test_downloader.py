@@ -1,12 +1,15 @@
-from tinycrawler.expirables import TasksQueue, DownloaderTask, Proxy, Url, ClientData
+from tinycrawler.expirables import TasksQueue, DownloaderTask
 from tinycrawler.processes import Downloader
-from tinycrawler.utils import Logger, ProxyData
-from ..commons import mock_ip_success
 from multiprocessing import Event
 import requests
 from httmock import HTTMock, urlmatch, response
 from typing import Tuple
-import json
+import time
+from ..expirables.test_downloader_task import setup as downloader_task_setup
+from ..utils.test_logger import setup as logger_setup
+from ..expirables.test_client_data import setup as client_data_setup
+from ..expirables.test_expirables_queue import setup as expirables_queue_setup
+from ..managers.test_client_crawler_manager import setup as client_crawler_manager_setup
 
 
 def expected_successful_download()->str:
@@ -54,40 +57,33 @@ def mock_downloader_failure_max_size(*args):
 
 def setup_downloader()->Tuple[Downloader, TasksQueue, TasksQueue]:
     e = Event()
-    path = "logs/test_queue_process.log"
-    errors = Logger(path)
+    manager = client_crawler_manager_setup()
+    tasks = manager.downloader_tasks
+    completed_tasks = manager.completed_downloader_tasks
 
-    tasks = TasksQueue(DownloaderTask)
-    completed_tasks = TasksQueue(DownloaderTask)
-
-    with HTTMock(mock_ip_success):
-        client_data = ClientData(3)
-
-    with open("test_data/raw_proxy_data.json", "r") as f:
-        proxy_data = ProxyData(data=json.load(f))
-
-    url = Url("https://totallyfakewebsite.com")
-    proxy = Proxy(proxy_data, maximum_usages=1)
-
-    downloader_task = DownloaderTask(proxy, url)
-
-    tasks.add(downloader_task)
+    tasks.add(downloader_task_setup())
+    completed_tasks.add(downloader_task_setup())
 
     return Downloader(
         max_content_len=10000,
         user_agent="*",
         email="myemail@email.com",
-        client_data=client_data,
+        client_data=client_data_setup(),
         tasks=tasks,
         completed_tasks=completed_tasks,
         stop=e,
-        logger=errors
-    ), tasks, completed_tasks
+        logger=logger_setup(),
+        max_waiting_timeout=1
+    ), tasks, completed_tasks, e
 
 
 def test_downloader_success():
     with HTTMock(mock_downloader_success):
-        downloader, _, completed_tasks = setup_downloader()
+        downloader, _, completed_tasks, e = setup_downloader()
+        # downloader.start()
+        # time.sleep(0.5)
+        # e.set()
+        # downloader.join()
         downloader._loop()
         completed = completed_tasks.pop()
         assert completed.text == expected_successful_download()
@@ -95,45 +91,60 @@ def test_downloader_success():
         assert not completed.binary
 
 
-def test_downloader_success_empty():
-    with HTTMock(mock_downloader_success_empty):
-        downloader, _, completed_tasks = setup_downloader()
-        downloader._loop()
-        completed = completed_tasks.pop()
-        assert completed.text == ""
-        assert completed.status == DownloaderTask.SUCCESS
-        assert not completed.binary
+# def test_downloader_success_empty():
+#     with HTTMock(mock_downloader_success_empty):
+#         downloader, _, completed_tasks, e = setup_downloader()
+#         downloader.start()
+#         time.sleep(0.5)
+#         e.set()
+#         downloader.join()
+#         completed = completed_tasks.pop()
+#         assert completed.text == ""
+#         assert completed.status == DownloaderTask.SUCCESS
+#         assert not completed.binary
 
 
-def test_downloader_success_binary():
-    with HTTMock(mock_downloader_success_binary):
-        downloader, _, completed_tasks = setup_downloader()
-        downloader._loop()
-        completed = completed_tasks.pop()
-        assert completed.status == DownloaderTask.SUCCESS
-        assert completed.binary
+# def test_downloader_success_binary():
+#     with HTTMock(mock_downloader_success_binary):
+#         downloader, _, completed_tasks, e = setup_downloader()
+#         downloader.start()
+#         time.sleep(0.5)
+#         e.set()
+#         downloader.join()
+#         completed = completed_tasks.pop()
+#         assert completed.status == DownloaderTask.SUCCESS
+#         assert completed.binary
 
 
-def test_downloader_success_small_binary():
-    with HTTMock(mock_downloader_success_small_binary):
-        downloader, _, completed_tasks = setup_downloader()
-        downloader._loop()
-        completed = completed_tasks.pop()
-        assert completed.status == DownloaderTask.SUCCESS
-        assert completed.binary
+# def test_downloader_success_small_binary():
+#     with HTTMock(mock_downloader_success_small_binary):
+#         downloader, _, completed_tasks, e = setup_downloader()
+#         downloader.start()
+#         time.sleep(0.5)
+#         e.set()
+#         downloader.join()
+#         completed = completed_tasks.pop()
+#         assert completed.status == DownloaderTask.SUCCESS
+#         assert completed.binary
 
 
-def test_downloader_failure():
-    with HTTMock(mock_downloader_failure):
-        downloader, _, completed_tasks = setup_downloader()
-        downloader._loop()
-        completed = completed_tasks.pop()
-        assert completed.status == DownloaderTask.FAILURE
+# def test_downloader_failure():
+#     with HTTMock(mock_downloader_failure):
+#         downloader, _, completed_tasks, e = setup_downloader()
+#         downloader.start()
+#         time.sleep(0.5)
+#         e.set()
+#         downloader.join()
+#         completed = completed_tasks.pop()
+#         assert completed.status == DownloaderTask.FAILURE
 
 
-def test_downloader_failure_max_size():
-    with HTTMock(mock_downloader_failure_max_size):
-        downloader, _, completed_tasks = setup_downloader()
-        downloader._loop()
-        completed = completed_tasks.pop()
-        assert completed.status == DownloaderTask.FAILURE
+# def test_downloader_failure_max_size():
+#     with HTTMock(mock_downloader_failure_max_size):
+#         downloader, _, completed_tasks, e = setup_downloader()
+#         downloader.start()
+#         time.sleep(0.5)
+#         e.set()
+#         downloader.join()
+#         completed = completed_tasks.pop()
+#         assert completed.status == DownloaderTask.FAILURE

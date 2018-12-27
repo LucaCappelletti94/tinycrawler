@@ -1,9 +1,13 @@
 from tinycrawler.utils import Logger
 
 
-def test_logger():
+def setup()->Logger:
     path = "logs/testing_logger.log"
-    logger = Logger(path)
+    return Logger(path)
+
+
+def test_logger():
+    logger = setup()
     logger.info("Imma be testing info.")
     logger.warning("Imma be testing warning.")
     logger.error("Imma be testing error.")

@@ -1,17 +1,16 @@
 from tinycrawler.processes.queue_process import QueueProcess
-from tinycrawler.utils import Logger
 from multiprocessing import Event
+from ..utils.test_logger import setup as logger_setup
 
 
 def test_queue_process():
     e = Event()
-    path = "logs/test_queue_process.log"
-    errors = Logger(path)
-    qp1 = QueueProcess(e, errors)
+    errors = logger_setup()
+    qp1 = QueueProcess(e, errors, 60)
     qp1.start()
     qp1.join()
 
-    qp2 = QueueProcess(e, errors)
+    qp2 = QueueProcess(e, errors, 60)
     e.set()
     qp2.start()
     qp2.join()
