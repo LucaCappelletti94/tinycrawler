@@ -27,7 +27,12 @@ def test_urls():
 
     url = build_default_url("/homepage")
     urls.add(url)
-    assert urls.pop().url == url
+    popped = urls.pop()
+    assert popped.url == url
+
+    popped.use()
+    popped.used(success=True)
+    popped.timeout = 60
 
     # Failure 'cos of bloom filter
     url = build_default_url("/homepage")
