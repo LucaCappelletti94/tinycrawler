@@ -21,7 +21,7 @@ def test_parser_task_assembler():
     manager.responses.add(response)
 
     assembler.start()
-    time.sleep(1)
+    time.sleep(2)
     manager.end_event.set()
     assembler.join()
 

@@ -36,7 +36,7 @@ def setup(page=None)->Tuple[Parser, TasksQueue, TasksQueue, Event]:
 def test_parser():
     parser, _, completed_tasks, e = setup()
     parser.start()
-    time.sleep(1)
+    time.sleep(2)
     e.set()
     parser.join()
     completed = completed_tasks.pop()
@@ -53,7 +53,7 @@ def test_parser_failure():
         page=fail
     )
     parser.start()
-    time.sleep(0.5)
+    time.sleep(2)
     e.set()
     parser.join()
     completed = completed_tasks.pop()

@@ -1,7 +1,7 @@
 from tinycrawler.data import Urls
 from tinycrawler import Url
 from queue import Empty
-from ..commons import mock_robots, mock_sensitive_robots, build_default_url, mock_repr, build_repr
+from ..commons import mock_robots, mock_sensitive_robots, build_default_url, mock_repr
 from httpretty import httprettified
 
 
@@ -59,5 +59,4 @@ def test_urls():
     mock_sensitive_robots()
 
     assert urls.pop() == url3
-    build_repr(urls)
     mock_repr(urls)

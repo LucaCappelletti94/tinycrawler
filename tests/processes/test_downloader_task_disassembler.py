@@ -46,7 +46,7 @@ def test_downloader_task_disassembler_success():
     manager.proxies.pop(url.domain)
 
     disassembler.start()
-    time.sleep(1)
+    time.sleep(2)
     manager.end_event.set()
     disassembler.join()
 
@@ -82,7 +82,7 @@ def test_downloader_task_disassembler_binary():
     manager.proxies.pop(url.domain)
 
     disassembler.start()
-    time.sleep(1)
+    time.sleep(2)
     manager.end_event.set()
     disassembler.join()
 
@@ -114,7 +114,7 @@ def test_downloader_task_disassembler_failure():
     manager.completed_downloader_tasks.add(task)
 
     disassembler.start()
-    time.sleep(1)
+    time.sleep(2)
     manager.end_event.set()
     disassembler.join()
 

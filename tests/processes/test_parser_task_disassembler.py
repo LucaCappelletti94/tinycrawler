@@ -34,7 +34,7 @@ def test_parser_task_disassembler_success():
     manager.completed_parser_tasks.add(task)
 
     disassembler.start()
-    time.sleep(1)
+    time.sleep(2)
     manager.end_event.set()
     disassembler.join()
 
@@ -57,7 +57,7 @@ def test_parser_task_disassembler_failure():
     manager.completed_parser_tasks.add(task)
 
     disassembler.start()
-    time.sleep(1)
+    time.sleep(2)
     manager.end_event.set()
     disassembler.join()
 

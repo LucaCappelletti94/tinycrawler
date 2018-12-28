@@ -41,5 +41,4 @@ def test_tasks_queue():
     assert tq.pop(ip=ip2) == task
 
     tq.add(task)
-
     mock_repr(tq)

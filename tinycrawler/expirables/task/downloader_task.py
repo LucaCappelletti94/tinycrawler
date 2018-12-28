@@ -93,5 +93,9 @@ class DownloaderTask(Task):
             **super(DownloaderTask, self).___repr___(),
             **{
                 "task_type": "downloader task",
-                "url": self.url
+                "url": self.url,
+                "proxy": self._proxy.___repr___(),
+                "binary": self.binary if self._binary else None,
+                "text": self.text if self._text else None,
+                "response_status": self.response_status if self._response_status else None
             }}

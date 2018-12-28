@@ -26,7 +26,7 @@ def test_downloader_task_assembler():
     manager.proxies.add(proxy)
 
     assembler.start()
-    time.sleep(0.5)
+    time.sleep(2)
     manager.end_event.set()
     assembler.join()
 
