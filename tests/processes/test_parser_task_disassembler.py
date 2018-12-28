@@ -3,6 +3,7 @@ from tinycrawler.processes import ParserTaskDisassembler
 from tinycrawler.managers import ClientCrawlerManager
 from ..managers.test_client_crawler_manager import setup as manager_setup
 from ..expirables.test_parser_task import setup as setup_parser_task
+from ..commons import default_url
 import time
 import os
 from typing import Tuple
@@ -15,6 +16,8 @@ def setup()->Tuple[ParserTaskDisassembler, ClientCrawlerManager]:
         tasks=manager.completed_parser_tasks,
         stop=manager.end_event,
         logger=manager.logger,
+        urls=manager.urls,
+        proxies=manager.proxies,
         task_kwargs={},
         max_waiting_timeout=60
     )
@@ -27,7 +30,7 @@ def test_parser_task_disassembler_success():
 
     task = setup_parser_task()
     task.status = task.SUCCESS
-    task.urls = []
+    task.urls = {default_url}
     task.page = "ICH BINE EIN BERLINER."
     task.path = "test_data/kennedy.txt"
 
@@ -38,6 +41,7 @@ def test_parser_task_disassembler_success():
     manager.end_event.set()
     disassembler.join()
 
+    assert manager.urls.pop().url == default_url
     assert os.path.exists(task.path)
     with open(task.path, "r") as f:
         assert task.page == f.read()
@@ -50,7 +54,7 @@ def test_parser_task_disassembler_failure():
 
     task = setup_parser_task()
     task.status = task.FAILURE
-    task.urls = []
+    task.urls = {default_url}
     task.page = "ICH BINE EIN BERLINER."
     task.path = "test_data/kennedy.txt"
 

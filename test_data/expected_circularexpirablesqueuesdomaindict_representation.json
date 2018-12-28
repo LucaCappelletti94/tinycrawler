@@ -28,7 +28,7 @@
             "expired": false,
             "maximum_consecutive_errors": -1,
             "maximum_error_rate": 1,
-            "maximum_usages": -1,
+            "maximum_usages": 1,
             "parallel_usages": 0,
             "sequential_is_available": true,
             "sporadic_is_available": true,

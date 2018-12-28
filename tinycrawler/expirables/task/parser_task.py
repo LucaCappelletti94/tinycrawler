@@ -57,6 +57,7 @@ class ParserTask(Task):
         """Set parsed page value.
             page:str, parsed page.
         """
+        assert isinstance(page, str)
         assert self._page is None
         self._page = page
 
@@ -65,6 +66,7 @@ class ParserTask(Task):
         """Set parsed path value.
             path:str, parsed path.
         """
+        assert isinstance(path, str)
         assert self._path is None
         if not is_valid_path(path):
             raise IllegalArgumentError("Given path is not safe.")
@@ -76,6 +78,7 @@ class ParserTask(Task):
             urls:Set[str], extract urls set.
         """
         assert self._urls is None
+        assert isinstance(urls, set)
         assert all([isinstance(url, str) for url in urls])
         self._urls = urls
 

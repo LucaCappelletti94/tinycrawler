@@ -23,7 +23,10 @@ def test_circular_expirables_list_domain_dict():
         CircularExpirablesQueuesDomainDict().pop()
 
     url = Url(
-        "https://docs.python.org/3/tutorial/datastructures.html", use_timeout=500)
+        "https://docs.python.org/3/tutorial/datastructures.html",
+        maximum_consecutive_errors=1,
+        maximum_error_rate=0.5
+    )
     q.add(url)
     assert q.pop() == url
 

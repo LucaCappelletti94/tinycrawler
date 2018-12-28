@@ -72,18 +72,21 @@ class DownloaderTask(Task):
     @response_status.setter
     def response_status(self, response_status: int):
         """Set response status of request."""
+        assert isinstance(response_status, int)
         assert self._response_status is None
         self._response_status = response_status
 
     @text.setter
     def text(self, text)->int:
         """Set textual response of request."""
+        assert isinstance(text, str)
         assert self._text is None
         self._text = text
 
     @binary.setter
     def binary(self, binary: bool):
         """Set whetever response was binary or not."""
+        assert isinstance(binary, bool)
         assert self._binary is None
         self._binary = binary
 

@@ -14,6 +14,8 @@ def setup():
             robots_timeout=0,
             follow_robot_txt=False,
             log_filename="logs/crawler.log",
+            url_maximum_consecutive_errors=3,
+            url_maximum_error_rate=0.5,
             bloom_filter_capacity=10000)
         scm.start()
         return scm

@@ -1,7 +1,7 @@
 """Create a generic task worker process."""
 from ..queue_process import QueueProcess
 from ...expirables import TasksQueue, Task, ClientData, ExpirablesQueue
-from typing import Tuple
+from typing import Tuple, Type
 
 
 class Worker(QueueProcess):
@@ -27,7 +27,7 @@ class Worker(QueueProcess):
         task.status = status
         return (task,)
 
-    def _work(self, task: Task)->bool:
+    def _work(self, task: Type[Task])->bool:
         """Handle the logical execution of the job."""
         raise NotImplementedError(
             "Method `_work` has to implement by subclasses of QueueProcess"

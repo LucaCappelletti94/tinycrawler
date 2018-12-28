@@ -13,7 +13,7 @@ class DownloaderTaskDisassembler(DownloaderTaskHandler, ParserTaskHandler, TaskD
         assert isinstance(task, DownloaderTask)
         if task.failed:
             url, proxy = task.data
-            self._urls.add([url])
+            self._urls.add(url)
             self._proxies.add(proxy)
         elif task.binary:
             # In future this will be logged in the statistics

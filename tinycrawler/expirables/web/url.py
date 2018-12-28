@@ -9,13 +9,13 @@ class Url(SporadicSequentialExpirable):
 
     def __init__(self, url: str, **kwargs):
         """Create object representing an Url.
-            use_timeout:float, unavailability timeout after use.
-            used_timeout:float, unavailability timeout after used.
-            maximum_usages:int, maximum parallel usages.
             maximum_consecutive_errors:int, maximum number of consecutive errors before object expires.
             maximum_error_rate:float, maximum threshold of error/attempts before the object expires.
         """
-        super(Url, self).__init__(**kwargs)
+        assert "maximum_usages" not in kwargs
+        assert "use_timeout" not in kwargs
+        assert "used_timeout" not in kwargs
+        super(Url, self).__init__(maximum_usages=1, use_timeout=0, **kwargs)
         self._domain = Domain(url)
         self._url = url
 
@@ -40,10 +40,10 @@ class Url(SporadicSequentialExpirable):
             timeout:float, timeout value.
         """
         assert isinstance(timeout, (float, int))
-        if self._use_timeout != timeout:
-            if not Sporadic.is_available(self) and self._use_timeout < timeout:
+        if self._used_timeout != timeout:
+            if not Sporadic.is_available(self) and self._used_timeout < timeout:
                 self._set_available_time(timeout)
-            self._use_timeout = timeout
+            self._used_timeout = timeout
 
     def __hash__(self):
         """Define hash function for Domain objects."""

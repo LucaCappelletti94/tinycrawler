@@ -3,6 +3,7 @@ from .task_assembler import TaskAssembler
 from ....expirables import Url, Proxy, Domain, DownloaderTask
 from ..downloader_task_handler import DownloaderTaskHandler
 from typing import Tuple
+from queue import Empty
 
 
 class DownloaderTaskAssembler(DownloaderTaskHandler, TaskAssembler):
@@ -10,7 +11,11 @@ class DownloaderTaskAssembler(DownloaderTaskHandler, TaskAssembler):
 
     def _source(self)->Tuple[Url, Proxy]:
         url = self._urls.pop()
-        return url, self._proxies.pop(url.domain)
+        try:
+            return url, self._proxies.pop(url.domain)
+        except Empty:
+            self._urls.add(url)
+            raise Empty
 
     def _job(self, *args)->Tuple[DownloaderTask, Domain]:
         url, proxy = args

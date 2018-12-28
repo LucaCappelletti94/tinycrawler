@@ -24,7 +24,7 @@ class Proxies(Printable):
                     Proxy(ProxyData(data=data))
                 )
 
-    def pop(self, domain: Domain)->Proxy:
+    def pop(self, domain: Domain = None)->Proxy:
         """Get a valid proxy for given domain."""
         return self._proxies.pop(domain=domain)
 

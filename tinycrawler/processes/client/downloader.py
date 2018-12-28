@@ -17,10 +17,7 @@ class Downloader(Worker):
         self._user_agent = user_agent
         self._email = email
 
-    def _work(
-        self,
-        downloader_task: DownloaderTask
-    )->bool:
+    def _work(self, downloader_task: DownloaderTask)->bool:
         try:
             response = requests.get(
                 downloader_task.url,
