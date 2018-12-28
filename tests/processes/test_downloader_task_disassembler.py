@@ -7,6 +7,7 @@ from ..commons import mock_repr
 from typing import Tuple
 from queue import Empty
 import time
+import pytest
 
 
 def expected_successful_download()->str:
@@ -50,17 +51,11 @@ def test_downloader_task_disassembler_success():
     manager.end_event.set()
     disassembler.join()
 
-    try:
+    with pytest.raises(Empty):
         manager.urls.pop()
-        assert False
-    except Empty:
-        pass
 
-    try:
+    with pytest.raises(Empty):
         manager.proxies.pop(url.domain)
-        assert False
-    except Empty:
-        pass
 
     response = manager.responses.pop()
     mock_repr(response, "disassembler")
@@ -86,23 +81,14 @@ def test_downloader_task_disassembler_binary():
     manager.end_event.set()
     disassembler.join()
 
-    try:
+    with pytest.raises(Empty):
         manager.urls.pop()
-        assert False
-    except Empty:
-        pass
 
-    try:
+    with pytest.raises(Empty):
         manager.proxies.pop(url.domain)
-        assert False
-    except Empty:
-        pass
 
-    try:
+    with pytest.raises(Empty):
         manager.responses.pop()
-        assert False
-    except Empty:
-        pass
 
 
 def test_downloader_task_disassembler_failure():

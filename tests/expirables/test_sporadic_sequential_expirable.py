@@ -1,6 +1,7 @@
 from tinycrawler.expirables.sporadic_sequential_expirable import SporadicSequentialExpirable
 import numpy as np
 from ..commons import double_arguments_test, mock_repr
+import pytest
 
 
 def test_sporadic_sequential_expirable_arguments():
@@ -18,8 +19,6 @@ def test_sporadic_sequential_expirable_arguments():
     double_arguments_test(SporadicSequentialExpirable,
                           valid_arguments, [])
 
-    assert True
-
 
 def test_sporadic_sequential_expirable():
     s = SporadicSequentialExpirable(
@@ -33,13 +32,8 @@ def test_sporadic_sequential_expirable():
     s.use()
     s.use()
     # Now the error count will raise to 1
-    try:
+    with pytest.raises(AssertionError):
         s.use()
-        assert False
-    except AssertionError:
-        pass
-
-    assert True
 
 
 def test_sporadic_sequential_expirable_representation():

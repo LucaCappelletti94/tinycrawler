@@ -1,6 +1,7 @@
 from tinycrawler.processes.queue_process import QueueProcess
 from multiprocessing import Event
 from ..utils.test_logger import setup as logger_setup
+import pytest
 
 
 def test_queue_process():
@@ -15,20 +16,11 @@ def test_queue_process():
     qp2.start()
     qp2.join()
 
-    try:
+    with pytest.raises(NotImplementedError):
         qp1._source()
-        assert False
-    except NotImplementedError:
-        pass
 
-    try:
+    with pytest.raises(NotImplementedError):
         qp1._job()
-        assert False
-    except NotImplementedError:
-        pass
 
-    try:
+    with pytest.raises(NotImplementedError):
         qp1._sink()
-        assert False
-    except NotImplementedError:
-        pass

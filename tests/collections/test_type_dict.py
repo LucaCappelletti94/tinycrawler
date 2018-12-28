@@ -1,6 +1,6 @@
 from tinycrawler.collections import TypeDict
 from ..commons import mock_repr
-
+import pytest
 example_value = "Non devi manducare"
 
 
@@ -15,44 +15,26 @@ def test_type_dict():
     type_dict[example_value] = example_value
     assert type_dict[example_value] == example_value
 
-    try:
+    with pytest.raises(AssertionError):
         type_dict[2] = 6
-        assert False
-    except AssertionError:
-        pass
 
-    try:
+    with pytest.raises(AssertionError):
         type_dict["hjk"] = 6
-        assert False
-    except AssertionError:
-        pass
 
-    try:
+    with pytest.raises(NotImplementedError):
         type_dict.setdefault(3)
-        assert False
-    except NotImplementedError:
-        pass
 
-    try:
+    with pytest.raises(NotImplementedError):
         type_dict.get(3)
-        assert False
-    except NotImplementedError:
-        pass
 
     del type_dict[example_value]
     assert example_value not in type_dict
 
-    try:
+    with pytest.raises(AssertionError):
         del type_dict[2]
-        assert False
-    except AssertionError:
-        pass
 
-    try:
+    with pytest.raises(AssertionError):
         2 in type_dict
-        assert False
-    except AssertionError:
-        pass
 
 
 def test_type_dict_repr():

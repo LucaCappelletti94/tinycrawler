@@ -1,6 +1,7 @@
 from tinycrawler.collections import Sporadic
 from ..commons import double_arguments_test, mock_repr
 import numpy as np
+import pytest
 
 
 def setup():
@@ -56,18 +57,12 @@ def test_sporadic():
     sporadic = setup()
 
     sporadic.use()
-    try:
+    with pytest.raises(AssertionError):
         sporadic.use()
-        assert False
-    except AssertionError:
-        pass
 
     sporadic.used()
-    try:
+    with pytest.raises(AssertionError):
         sporadic.use()
-        assert False
-    except AssertionError:
-        pass
 
     sporadic = Sporadic()
 

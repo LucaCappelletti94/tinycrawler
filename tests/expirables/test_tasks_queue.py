@@ -2,6 +2,7 @@ from tinycrawler.expirables import TasksQueue, DownloaderTask, Domain
 from queue import Empty
 from .test_downloader_task import setup as downloader_task_setup
 from ..commons import mock_repr
+import pytest
 
 
 def setup():
@@ -10,11 +11,8 @@ def setup():
 
 def test_tasks_queue():
     tq = setup()
-    try:
+    with pytest.raises(AssertionError):
         TasksQueue(str)
-        assert False
-    except AssertionError:
-        pass
 
     task = downloader_task_setup()
 
@@ -22,19 +20,13 @@ def test_tasks_queue():
     ip2 = Domain("12.121.121.38")
     tq.add(task, ip=ip)
 
-    try:
+    with pytest.raises(Empty):
         tq.pop(ip=ip2)
-        assert False
-    except Empty:
-        pass
 
     assert tq.pop(ip=ip) == task
 
-    try:
+    with pytest.raises(Empty):
         tq.pop(ip=ip)
-        assert False
-    except Empty:
-        pass
 
     tq.add(task)
 

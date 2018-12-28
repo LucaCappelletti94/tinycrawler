@@ -2,6 +2,7 @@ from tinycrawler.expirables import Proxy
 from ..commons import mock_repr
 from .test_url import setup as setup_url
 from ..utils.test_proxy_data import setup as proxy_data_setup
+import pytest
 
 
 def setup(path=None)->Proxy:
@@ -20,13 +21,10 @@ def test_proxy():
     proxy.use(
         domain=url.domain
     )
-    try:
+    with pytest.raises(AssertionError):
         proxy.use(
             domain=url.domain
         )
-        assert False
-    except AssertionError:
-        pass
 
     proxy.used(
         domain=url.domain,

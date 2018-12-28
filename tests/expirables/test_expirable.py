@@ -1,6 +1,7 @@
 from tinycrawler.expirables.expirable import Expirable
 from ..commons import double_arguments_test
 import numpy as np
+import pytest
 
 
 def test_expirable_arguments():
@@ -83,11 +84,8 @@ def test_expiration():
 
     assert expirable.expired
 
-    try:
+    with pytest.raises(AssertionError):
         expirable.use()
-        assert False
-    except AssertionError:
-        assert True
 
 
 def test_expiration_representation():

@@ -1,6 +1,6 @@
-import json
 from tinycrawler import IllegalArgumentError
 from typing import List, Callable, Dict
+import pytest
 
 
 def recursive_arguments_test(classname: object, keys: List[str], arguments: Dict, handling: Callable, **kwargs):
@@ -14,26 +14,12 @@ def recursive_arguments_test(classname: object, keys: List[str], arguments: Dict
 
 
 def positive_handling(func: Callable, **kwargs):
-    try:
-        func(**kwargs)
-    except (AssertionError, IllegalArgumentError):
-        print("Call to method {method} raised AssertionError or  IllegalArgumentError with arguments {value}.".format(
-            method=func.__name__,
-            value=json.dumps(kwargs, indent=4)
-        ))
-        assert False
+    func(**kwargs)
 
 
 def negative_handling(func: Callable, **kwargs):
-    try:
+    with pytest.raises((AssertionError, IllegalArgumentError)):
         func(**kwargs)
-        print("Call to method {method} did not raise AssertionError or  IllegalArgumentError with arguments {value}.".format(
-            method=func.__name__,
-            value=json.dumps(kwargs, indent=4)
-        ))
-        assert False
-    except (AssertionError, IllegalArgumentError):
-        pass
 
 
 def arguments_test(classname: object, arguments_list: List[Dict], handling: Callable):

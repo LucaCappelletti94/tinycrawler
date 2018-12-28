@@ -3,6 +3,7 @@ from tinycrawler import Domain
 from queue import Empty
 from .test_domain import setup as domain_setup
 from ..commons import mock_repr
+import pytest
 
 
 def setup(classtype=None):
@@ -10,28 +11,21 @@ def setup(classtype=None):
 
 
 def test_expirables_queue():
-    try:
+    with pytest.raises(AssertionError):
         ExpirablesQueue(str)
-    except AssertionError:
-        pass
 
     q = setup()
 
-    try:
+    with pytest.raises(Empty):
         q.pop()
-        assert False
-    except Empty:
-        pass
 
     domain = domain_setup()
 
     domain.use()
     domain.used(success=False)
 
-    try:
+    with pytest.raises(AssertionError):
         q.add(domain)
-    except AssertionError:
-        pass
 
     domain = Domain(
         "https://github.com/LucaCappelletti94/tinycrawler")
@@ -46,11 +40,8 @@ def test_expirables_queue():
 
     assert q.pop() == domain
 
-    try:
+    with pytest.raises(Empty):
         q.pop()
-        assert False
-    except Empty:
-        pass
 
     unavailable_domain.used(success=True)
 

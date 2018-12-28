@@ -5,6 +5,7 @@ from multiprocessing import Event
 from ..expirables.test_downloader_task import setup as downloader_task_setup
 from ..expirables.test_client_data import setup as client_data_setup
 from ..utils.test_logger import setup as logger_setup
+import pytest
 
 
 def test_worker():
@@ -25,8 +26,5 @@ def test_worker():
         max_waiting_timeout=60
     )
 
-    try:
+    with pytest.raises(NotImplementedError):
         worker._work(None)
-        assert False
-    except NotImplementedError:
-        pass

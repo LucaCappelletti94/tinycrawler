@@ -1,5 +1,6 @@
 from tinycrawler.collections import Sequential
 from ..commons import mock_repr
+import pytest
 
 
 def setup():
@@ -8,17 +9,11 @@ def setup():
 
 def test_sequential():
     sequential = setup()
-    try:
+    with pytest.raises(AssertionError):
         sequential.used()
-        assert False
-    except AssertionError:
-        pass
     sequential.use()
-    try:
+    with pytest.raises(AssertionError):
         sequential.use()
-        assert False
-    except AssertionError:
-        pass
 
     sequential.used()
 

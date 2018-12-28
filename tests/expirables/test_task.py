@@ -1,5 +1,6 @@
 from tinycrawler.expirables.task.task import Task
 from ..commons import mock_repr
+import pytest
 
 
 def setup():
@@ -16,26 +17,19 @@ def test_task_eq():
 
 def test_task():
     task = setup()
-    try:
+    with pytest.raises(AssertionError):
         task.task_id
-        assert False
-    except AssertionError:
-        pass
+
     task.task_id = 0
-    try:
+    with pytest.raises(AssertionError):
         task.task_id = 0
-        assert False
-    except AssertionError:
-        pass
+
     task.use()
     task.used()
     assert task.status == Task.UNASSIGNED
     task.status = Task.SUCCESS
-    try:
+    with pytest.raises(AssertionError):
         task.status = "Lo kebabbo non devi manducare."
-        assert False
-    except AssertionError:
-        pass
 
 
 def test_task_repr():

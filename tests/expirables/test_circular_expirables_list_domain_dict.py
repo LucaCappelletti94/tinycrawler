@@ -3,6 +3,7 @@ from tinycrawler import Url
 from queue import Empty
 from ..commons import mock_repr
 from .test_url import setup as url_setup
+import pytest
 
 
 def setup():
@@ -15,17 +16,11 @@ def test_circular_expirables_list_domain_dict():
     q = setup()
     q.pop()
 
-    try:
+    with pytest.raises(Empty):
         q.pop()
-        assert False
-    except Empty:
-        pass
 
-    try:
+    with pytest.raises(Empty):
         CircularExpirablesQueuesDomainDict().pop()
-        assert False
-    except Empty:
-        pass
 
     url = Url(
         "https://docs.python.org/3/tutorial/datastructures.html", use_timeout=500)
@@ -36,11 +31,8 @@ def test_circular_expirables_list_domain_dict():
 
     q.add(url)
 
-    try:
+    with pytest.raises(Empty):
         q.pop()
-        assert False
-    except Empty:
-        pass
 
 
 def test_circular_expirables_list_domain_dict_repr():

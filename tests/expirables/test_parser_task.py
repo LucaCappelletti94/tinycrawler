@@ -3,6 +3,7 @@ from tinycrawler import IllegalArgumentError
 from .test_response import setup as response_setup
 from .test_response import default_url
 from ..commons import mock_repr
+import pytest
 
 
 def setup(response=None):
@@ -15,33 +16,25 @@ def test_parser_task_arguments():
     response = response_setup()
     parser_task = setup(response)
 
-    try:
+    with pytest.raises(AssertionError):
         parser_task.urls
-    except AssertionError:
-        pass
 
     parser_task.urls = set([default_url])
     assert parser_task.urls == set([default_url])
 
-    try:
+    with pytest.raises(AssertionError):
         parser_task.urls = set([default_url])
-    except AssertionError:
-        pass
 
     assert parser_task.response == response
 
     parser_task.use()
     parser_task.used()
 
-    try:
+    with pytest.raises(AssertionError):
         parser_task.page
-    except AssertionError:
-        pass
 
-    try:
+    with pytest.raises(AssertionError):
         parser_task.path
-    except AssertionError:
-        pass
 
     invalid_paths = [
         "test/my_file/",
@@ -51,11 +44,8 @@ def test_parser_task_arguments():
     ]
 
     for path in invalid_paths:
-        try:
+        with pytest.raises(IllegalArgumentError):
             parser_task.path = path
-            assert False
-        except IllegalArgumentError:
-            pass
 
     path = "test/my_file.txt"
     content = "my page content"
@@ -63,15 +53,11 @@ def test_parser_task_arguments():
     parser_task.path = path
     parser_task.page = content
 
-    try:
+    with pytest.raises(AssertionError):
         parser_task.path = path
-    except AssertionError:
-        pass
 
-    try:
+    with pytest.raises(AssertionError):
         parser_task.page = content
-    except AssertionError:
-        pass
 
     assert parser_task.page == content
     assert parser_task.path == path

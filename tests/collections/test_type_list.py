@@ -1,5 +1,6 @@
 from tinycrawler.collections import TypeList
 from ..commons import mock_repr
+import pytest
 
 
 def setup():
@@ -11,23 +12,14 @@ def setup():
 def test_type_list():
     type_list = setup()
 
-    try:
+    with pytest.raises(AssertionError):
         type_list.append(2)
-        assert False
-    except AssertionError:
-        pass
 
-    try:
+    with pytest.raises(AssertionError):
         type_list.prepend(2)
-        assert False
-    except AssertionError:
-        pass
 
-    try:
+    with pytest.raises(NotImplementedError):
         type_list[2] = 3
-        assert False
-    except NotImplementedError:
-        pass
 
 
 def test_type_list_repr():

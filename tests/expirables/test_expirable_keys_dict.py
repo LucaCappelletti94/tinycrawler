@@ -2,6 +2,7 @@ from tinycrawler.expirables.collections.expirables_keys_dict import ExpirableKey
 from tinycrawler import Domain
 from .test_domain import setup as domain_setup
 from ..commons import mock_repr
+import pytest
 
 
 def setup():
@@ -11,31 +12,21 @@ def setup():
 
 
 def test_expirable_keys_dict():
-    try:
+    with pytest.raises(AssertionError):
         ExpirableKeysDict(str, str)
-    except AssertionError:
-        pass
 
     d = ExpirableKeysDict(Domain, object)
 
-    try:
+    with pytest.raises(NotImplementedError):
         d.get("test")
-        assert False
-    except NotImplementedError:
-        pass
 
-    try:
+    with pytest.raises(AssertionError):
         "test" in d
-    except AssertionError:
-        pass
 
     domain = domain_setup()
 
-    try:
+    with pytest.raises(NotImplementedError):
         d.setdefault(domain, 0)
-        assert False
-    except NotImplementedError:
-        pass
 
     d[domain] = "test"
     d.use(domain)
@@ -44,10 +35,8 @@ def test_expirable_keys_dict():
 
     d.used(domain, success=False)
 
-    try:
+    with pytest.raises(AssertionError):
         d[domain] = 0
-    except AssertionError:
-        pass
 
     del d[domain]
 

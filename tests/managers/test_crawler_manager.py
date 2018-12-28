@@ -1,5 +1,6 @@
 from tinycrawler.managers.crawler_manager import CrawlerManager
 from ..commons import mock_repr
+import pytest
 
 
 def setup():
@@ -9,19 +10,11 @@ def setup():
 def test_crawler_manager():
     manager = setup()
     for endpoint in manager.endpoints:
-        try:
+        with pytest.raises(NotImplementedError):
             if endpoint == "register_client":
                 getattr(manager, endpoint)(None)
             else:
                 getattr(manager, endpoint)()
-            print(
-                "Endpoint {endpoint} did not raise NotImplementedError.".format(
-                    endpoint=endpoint
-                )
-            )
-            assert False
-        except NotImplementedError:
-            pass
 
 
 def test_crawler_manager_test():
