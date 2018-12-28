@@ -42,14 +42,10 @@ def test_urls():
     with pytest.raises(Empty):
         urls.pop()
 
-    # Extraction of last inserted as it is ready
-    url1 = Url(build_default_url("/1"))
-    url1.use()
     url2 = Url(build_default_url("/sensitive"))
     url3 = Url(build_default_url("/3"))
-    urls.add(url1)
-    urls.add(url2)
     urls.add(url3)
+    urls.add(url2)
 
     mock_sensitive_robots()
 
