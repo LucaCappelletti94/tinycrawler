@@ -26,7 +26,7 @@ class ParserTask(Task):
 
     def used(self, **kwargs):
         """Update used status in response."""
-        super(ParserTask, self).used()
+        super(ParserTask, self).used(**kwargs)
         self._response.used(success=False)
 
     @property

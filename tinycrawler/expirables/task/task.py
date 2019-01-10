@@ -30,7 +30,7 @@ class Task(SporadicExpirable):
 
     def used(self, **kwargs):
         """Update used task status."""
-        super(Task, self).used(success=False)
+        super(Task, self).used(**kwargs)
         self._status = Task.UNASSIGNED
 
     @property

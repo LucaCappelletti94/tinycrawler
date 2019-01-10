@@ -36,8 +36,9 @@ class DownloaderTask(Task):
         """
         success = kwargs["success"]
         assert isinstance(success, bool)
-        super(DownloaderTask, self).used()
+        super(DownloaderTask, self).used(**kwargs)
         self._proxy.used(success=success, domain=self._url.domain)
+        self._url.used(**kwargs)
 
     @property
     def proxy(self)->Proxy:
@@ -99,7 +100,7 @@ class DownloaderTask(Task):
             **super(DownloaderTask, self).___repr___(),
             **{
                 "task_type": "downloader task",
-                "url": self.url,
+                "url": self._url.___repr___(),
                 "proxy": self._proxy.___repr___(),
                 "binary": self.binary if self._binary else None,
                 "text": self.text if self._text else None,

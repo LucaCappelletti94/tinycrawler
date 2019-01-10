@@ -1,5 +1,4 @@
 """Create a queue of tasks of given type."""
-from ..collections import ExpirablesQueue
 from ..web import Domain
 from .task import Task
 from typing import Dict
@@ -18,25 +17,30 @@ class TasksQueue(Printable):
         self._add_lock = Lock()
         self._counter = 0
 
+    def _get_first_available(self, source: Dict[Task, Task], **kwargs)->Task:
+        for task in source.values():
+            if task.is_available(**kwargs):
+                return task
+        raise Empty
+
     def _pop(self, ip: Domain, **kwargs)->Task:
         """Return first available task at given ip, if provided.
             ip: Domain, optional, specifies the ip of the workers for the task.
         """
         if ip is not None and ip in self._client_domains:
             try:
-                return self._client_domains[ip].pop(**kwargs)
+                return self._get_first_available(self._client_domains[ip], **kwargs)
             except Empty:
                 pass
-        return self._tasks.pop(**kwargs)
+        return self._get_first_available(self._tasks, **kwargs)
 
     def pop(self, ip: Domain = None, **kwargs)->Task:
         """Return first available task at given ip, if provided.
             ip: Domain, optional, specifies the ip of the workers for the task.
         """
-        assert isinstance(ip, (Domain, None))
+        assert ip is None or isinstance(ip, Domain)
         task = self._pop(ip, **kwargs)
         task.use()
-        self.add(task, ip)
         return task
 
     def delete(self, task: Task)->bool:
@@ -58,9 +62,8 @@ class TasksQueue(Printable):
             ip: Domain, optional, specifies the ip of the workers for the task.
         """
         assert isinstance(task, Task)
-        assert isinstance(ip, (Domain, None))
+        assert ip is None or isinstance(ip, Domain) and not ip.expired
         assert not task.expired
-        assert not ip.expired
         if task.new:
             with self._add_lock:
                 task.task_id = self._counter
@@ -69,12 +72,18 @@ class TasksQueue(Printable):
             self._tasks[task] = task
         else:
             if ip not in self._client_domains:
-                self._client_domains[ip] = ExpirablesQueue()
-            self._client_domains[ip].add(task, **kwargs)
+                self._client_domains[ip] = {}
+            self._client_domains[ip][task] = task
 
     def ___repr___(self)->Dict:
         """Return a dictionary representation of object."""
         return {
-            "tasks": self._tasks,
-            "client_specific_tasks": self._client_domains
+            "tasks": {
+                t_key.task_id: task.___repr___() for t_key, task in self._tasks.items()
+            },
+            "client_specific_tasks": {
+                domain.domain: {
+                    t_key.task_id: task.___repr___() for t_key, task in tasks.items()
+                } for domain, tasks in self._client_domains.items()
+            }
         }
