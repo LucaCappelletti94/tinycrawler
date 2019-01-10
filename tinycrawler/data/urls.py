@@ -1,5 +1,5 @@
 """Creates a structure to hold urls."""
-from ..expirables import Url, CircularExpirablesQueuesDomainDict
+from ..expirables import Url, CircularUrlQueue
 from .robots import Robots
 from pybloom_live import BloomFilter
 from multiprocessing import Lock
@@ -34,7 +34,7 @@ class Urls(Printable):
         self._bloom = BloomFilter(
             capacity=kwargs["bloom_filter_capacity"]
         )
-        self._urls = CircularExpirablesQueuesDomainDict()
+        self._urls = CircularUrlQueue()
         self._add_lock = Lock()
         self._url_maximum_consecutive_errors = kwargs["url_maximum_consecutive_errors"]
         self._url_maximum_error_rate = kwargs["url_maximum_error_rate"]

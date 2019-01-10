@@ -6,13 +6,11 @@ from ..commons import mock_repr
 import pytest
 
 
-def setup(classtype=None):
-    return ExpirablesQueue(classtype or Domain)
+def setup():
+    return ExpirablesQueue()
 
 
 def test_expirables_queue():
-    with pytest.raises(AssertionError):
-        ExpirablesQueue(str)
 
     q = setup()
 

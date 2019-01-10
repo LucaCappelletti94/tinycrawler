@@ -1,7 +1,7 @@
 from tinycrawler.data import Robots
 from tinycrawler import Url
 from httpretty import httprettified
-from ..commons import mock_repr, mock_robots
+from ..commons import mock_repr, mock_robots, build_repr
 
 
 def setup():
@@ -36,4 +36,5 @@ def test_robots():
     for url in invalid:
         assert not robots.can_download(Url(url))
 
+    build_repr(robots)
     mock_repr(robots)

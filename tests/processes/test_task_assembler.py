@@ -9,7 +9,7 @@ from ..utils.test_logger import setup as logger_setup
 def test_task_assembler():
     """Test if everything is ok with the task assembler."""
     e = Event()
-    tasks = TasksQueue(DownloaderTask)
+    tasks = TasksQueue()
 
     tasks.add(downloader_task_setup())
 

@@ -6,13 +6,11 @@ import pytest
 
 
 def setup():
-    return TasksQueue(DownloaderTask)
+    return TasksQueue()
 
 
 def test_tasks_queue():
     tq = setup()
-    with pytest.raises(AssertionError):
-        TasksQueue(str)
 
     task = downloader_task_setup()
 

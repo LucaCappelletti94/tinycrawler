@@ -1,17 +1,35 @@
 {
-    "clients": {
-        "232.232.232.111": [
+    "domains": [
+        {
+            "SporadicExpirable_available": true,
+            "SporadicSequentialExpirable_available": true,
+            "consecutive_errors": 0,
+            "domain": "www.totallyfakewebsite.com",
+            "error_rate": 0,
+            "expired": false,
+            "maximum_consecutive_errors": -1,
+            "maximum_error_rate": 1,
+            "maximum_usages": -1,
+            "parallel_usages": 0,
+            "sequential_is_available": true,
+            "sporadic_is_available": true,
+            "total_errors": 0,
+            "total_usages": 0,
+            "use_timeout": 0,
+            "used_timeout": 0
+        }
+    ],
+    "urls": {
+        "www.totallyfakewebsite.com": [
             {
                 "SporadicExpirable_available": true,
-                "client_id": 1,
+                "SporadicSequentialExpirable_available": true,
                 "consecutive_errors": 0,
-                "error_rate": 0,
-                "expired": false,
-                "ip": {
+                "domain": {
                     "SporadicExpirable_available": true,
                     "SporadicSequentialExpirable_available": true,
                     "consecutive_errors": 0,
-                    "domain": "232.232.232.111",
+                    "domain": "www.totallyfakewebsite.com",
                     "error_rate": 0,
                     "expired": false,
                     "maximum_consecutive_errors": -1,
@@ -25,12 +43,17 @@
                     "use_timeout": 0,
                     "used_timeout": 0
                 },
+                "error_rate": 0,
+                "expired": false,
                 "maximum_consecutive_errors": -1,
                 "maximum_error_rate": 1,
-                "platform": "Mocked platform",
+                "maximum_usages": 1,
+                "parallel_usages": 0,
+                "sequential_is_available": true,
                 "sporadic_is_available": true,
                 "total_errors": 0,
                 "total_usages": 0,
+                "url": "https://www.totallyfakewebsite.com",
                 "use_timeout": 0,
                 "used_timeout": 0
             }

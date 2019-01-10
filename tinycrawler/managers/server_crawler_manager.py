@@ -22,19 +22,14 @@ class ServerCrawlerManager(CrawlerManager):
         self._clients = Clients()
         self._end_event = Event()
         self._responses = ServerQueueWrapper(
-            ExpirablesQueue(Response, **kwargs)
+            ExpirablesQueue()
         )
-        self._downloader_tasks = ServerQueueWrapper(TasksQueue(DownloaderTask))
-        self._parser_tasks = ServerQueueWrapper(TasksQueue(ParserTask))
+        self._downloader_tasks = ServerQueueWrapper(TasksQueue())
+        self._parser_tasks = ServerQueueWrapper(TasksQueue())
         self._logger = Logger(**kwargs)
-        self._completed_downloader_tasks = ServerQueueWrapper(ExpirablesQueue(
-            DownloaderTask,
-            **kwargs
-        ))
-        self._completed_parser_tasks = ServerQueueWrapper(ExpirablesQueue(
-            ParserTask,
-            **kwargs
-        ))
+        self._completed_downloader_tasks = ServerQueueWrapper(
+            ExpirablesQueue())
+        self._completed_parser_tasks = ServerQueueWrapper(ExpirablesQueue())
 
         self.register(
             "get_urls",

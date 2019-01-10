@@ -1,5 +1,5 @@
 """Creates a structure to hold clients data."""
-from ..expirables import DomainsDict, ClientData, ExpirablesQueue, Domain
+from ..expirables import ClientData, ExpirablesQueue, Domain
 from ..utils import Printable
 from multiprocessing import Lock
 
@@ -11,7 +11,7 @@ class Clients(Printable):
         """Creates a structure to hold clients data."""
         self._client_counter = 0
         self._new_id_lock = Lock()
-        self._clients = DomainsDict(ExpirablesQueue)
+        self._clients = {}
 
     def get_new_client_id(self)->int:
         """Return an unique client id."""
@@ -26,8 +26,8 @@ class Clients(Printable):
         assert isinstance(client_data, ClientData)
         assert client_data not in self
         if client_data.ip not in self._clients:
-            self._clients[client_data.ip] = ExpirablesQueue(ClientData)
-        self._clients[client_data.ip].append(client_data)
+            self._clients[client_data.ip] = ExpirablesQueue()
+        self._clients[client_data.ip].add(client_data)
 
     def __contains__(self, client_data: ClientData)->bool:
         """Determine if given client data is already in structure."""
@@ -40,5 +40,7 @@ class Clients(Printable):
     def ___repr___(self):
         """Return a dictionary representation of object."""
         return {
-            "clients": self._clients.___repr___()
+            "clients": {
+                domain.domain: client.___repr___() for domain, client in self._clients.items()
+            }
         }

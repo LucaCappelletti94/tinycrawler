@@ -1,5 +1,5 @@
 """Creates a structure to hold parsed robots txts."""
-from ..expirables import ExpirableRobotFileParser, Domain, Url, DomainsDict
+from ..expirables import ExpirableRobotFileParser, Domain, Url
 from ..utils import Printable
 from typing import Dict
 
@@ -20,7 +20,7 @@ class Robots(Printable):
         assert isinstance(kwargs["useragent"], str)
         assert isinstance(kwargs["default_url_timeout"], (float, int))
         assert isinstance(kwargs["robots_timeout"], (float, int))
-        self._domains = DomainsDict(ExpirableRobotFileParser)
+        self._domains = {}
         self._useragent = kwargs["useragent"]
         self._default_url_timeout = kwargs["default_url_timeout"]
         self._robots_timeout = kwargs["robots_timeout"]
@@ -71,7 +71,9 @@ class Robots(Printable):
     def ___repr___(self)->Dict:
         """Return a dictionary representation of object."""
         return {
-            "domains": self._domains.___repr___(),
+            "domains": {
+                domain.domain: robot.___repr___() for domain, robot in self._domains.items()
+            },
             "useragent": self._useragent,
             "default_url_timeout": self._default_url_timeout,
             "robots_timeout": self._robots_timeout,

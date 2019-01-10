@@ -13,7 +13,7 @@ class Proxies(Printable):
             path:str, path from where to load the proxies.
         """
         path = kwargs.get("path", None)
-        self._proxies = ExpirablesQueue(Proxy)
+        self._proxies = ExpirablesQueue()
         if path:
             self._load_proxies(path)
 
@@ -26,10 +26,12 @@ class Proxies(Printable):
 
     def pop(self, domain: Domain = None)->Proxy:
         """Get a valid proxy for given domain."""
+        assert isinstance(domain, Domain)
         return self._proxies.pop(domain=domain)
 
     def add(self, proxy: Proxy)->Proxy:
         """Add given proxy to proxies, disabling domain test."""
+        assert isinstance(proxy, Proxy)
         return self._proxies.add(proxy, domain=None)
 
     def ___repr___(self)->Dict:

@@ -1,10 +1,12 @@
 """Create a circular dictionary of domains keys and expirable queue of urls."""
 from ..collections import ExpirablesQueue
+from ...utils import Printable
 from ..web import Url
 from queue import Empty
+from typing import Dict
 
 
-class CircularUrlQueue:
+class CircularUrlQueue(Printable):
     """Create a circular dictionary of domains keys and expirable queue of urls."""
 
     def __init__(self):
@@ -42,3 +44,14 @@ class CircularUrlQueue:
             self._domain_list.append(url.domain)
             self._urls[url.domain] = ExpirablesQueue()
         self._urls[url.domain].add(url)
+
+    def ___repr___(self)->Dict:
+        """Return a dictionary representation of object."""
+        return {
+            "domains": [
+                domain.___repr___() for domain in self._domain_list
+            ],
+            "urls": {
+                domain.domain: urls.___repr___() for domain, urls in self._urls.items()
+            }
+        }

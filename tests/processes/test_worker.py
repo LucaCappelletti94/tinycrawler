@@ -12,8 +12,8 @@ def test_worker():
     """Test if everything is ok with the worker."""
     e = Event()
 
-    tasks = TasksQueue(DownloaderTask)
-    completed_tasks = TasksQueue(DownloaderTask)
+    tasks = TasksQueue()
+    completed_tasks = TasksQueue()
 
     tasks.add(downloader_task_setup())
 

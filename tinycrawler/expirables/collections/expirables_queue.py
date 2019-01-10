@@ -13,7 +13,7 @@ class ExpirablesQueue:
 
     def empty(self, **kwargs)->bool:
         """Determine if there is an available element in the queue."""
-        return not self or not self._expirables[-1].is_available(**kwargs)
+        return not self._expirables or not self._expirables[-1].is_available(**kwargs)
 
     def pop(self, **kwargs)->Expirable:
         """Return first available element of queue."""
@@ -28,6 +28,10 @@ class ExpirablesQueue:
             self._expirables.append(expirable)
         else:
             self._expirables.insert(0, expirable)
+
+    def __contains__(self, expirable: Expirable)->bool:
+        """Return a boolean representing if given element is contained in list."""
+        return expirable in self._expirables
 
     def ___repr___(self)->Dict:
         """Return a dictionary representation of object."""
