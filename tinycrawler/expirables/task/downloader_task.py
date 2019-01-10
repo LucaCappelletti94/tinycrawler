@@ -21,6 +21,9 @@ class DownloaderTask(Task):
         self._text = None
         self._response_status = None
 
+    def is_available(self, **kwargs) -> bool:
+        return super(DownloaderTask, self).is_available(**kwargs) and self._proxy.is_available(domain=self._url.domain, **kwargs) and self._url.is_available(**kwargs)
+
     def use(self, **kwargs):
         """Update use status in proxy and url."""
         super(DownloaderTask, self).use(**kwargs)
