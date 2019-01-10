@@ -81,7 +81,7 @@ class Task(SporadicExpirable):
 
     def __eq__(self, other):
         """Define equal rule for Domain objects."""
-        return other is not None and other.__hash__() == self.__hash__()
+        return other is not None and isinstance(other, Task) and other.__hash__() == self.__hash__()
 
     def ___repr___(self)->Dict:
         """Return a dictionary representation of object."""

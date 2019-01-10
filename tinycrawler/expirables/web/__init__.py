@@ -3,8 +3,7 @@ from .url import Url
 from .response import Response
 from .proxy import Proxy
 from .expirable_robot_file_parser import ExpirableRobotFileParser
-from .domains_dict import DomainsDict
-from .circular_expirables_list_domain_dict import CircularExpirablesQueuesDomainDict
+from .circular_url_queue import CircularUrlQueue
 
 __all__ = [
     "Domain",
@@ -12,6 +11,5 @@ __all__ = [
     "Response",
     "Proxy",
     "ExpirableRobotFileParser",
-    "DomainsDict",
-    "CircularExpirablesQueuesDomainDict"
+    "CircularUrlQueue"
 ]

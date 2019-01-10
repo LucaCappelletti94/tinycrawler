@@ -1,6 +1,5 @@
 """Create a sporadically, sequentially available proxy object that can expire."""
 from ..sporadic_sequential_expirable import SporadicSequentialExpirable
-from .domains_dict import DomainsDict
 from .domain import Domain
 from ...utils import ProxyData
 from typing import Dict
@@ -10,7 +9,9 @@ class Proxy(SporadicSequentialExpirable):
     """Create a sporadically, sequentially available proxy object that can expire."""
 
     def __init__(self, proxy_data: ProxyData, **kwargs):
-        """Create a sporadically, sequentially available proxy object that can expire."""
+        """Create a sporadically, sequentially available proxy object that can expire.
+            proxy_data: ProxyData, the data on which to build the proxy
+        """
         super(Proxy, self).__init__(**kwargs)
         self._ip = Domain(proxy_data.ip)
         self._data = proxy_data.data
