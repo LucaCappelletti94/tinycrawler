@@ -1,7 +1,7 @@
 from tinycrawler.expirables import TasksQueue, Domain
 from queue import Empty
 from .test_downloader_task import setup as downloader_task_setup
-from ..commons import mock_repr, build_repr
+from ..commons import mock_repr
 import pytest
 
 
@@ -23,6 +23,7 @@ def test_tasks_queue():
         tq.pop(ip=ip2)
 
     assert tq.pop(ip=ip) == task
+    assert tq.delete(task)
 
     # Should raise Empty because there are no tasks with True `is_available` with given ip.
     with pytest.raises(Empty):
@@ -32,7 +33,8 @@ def test_tasks_queue():
     tq.add(task)
 
     assert tq.pop(ip=ip2) == task
+    assert tq.delete(task)
+    assert not tq.delete(task)
 
     tq.add(task)
-    build_repr(tq)
     mock_repr(tq)

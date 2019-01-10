@@ -56,7 +56,7 @@ class TasksQueue(Printable):
             return True
         return False
 
-    def add(self, task: Task, ip: Domain = None, **kwargs):
+    def add(self, task: Task, ip: Domain = None):
         """Add given task to its queue.
             task: Task, task to be added
             ip: Domain, optional, specifies the ip of the workers for the task.
