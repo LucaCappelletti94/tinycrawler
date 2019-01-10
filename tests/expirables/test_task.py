@@ -25,7 +25,7 @@ def test_task():
         task.task_id = 0
 
     task.use()
-    task.used()
+    task.used(success=True)
     assert task.status == Task.UNASSIGNED
     task.status = Task.SUCCESS
     with pytest.raises(AssertionError):

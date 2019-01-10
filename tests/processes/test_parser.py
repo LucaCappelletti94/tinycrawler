@@ -19,7 +19,6 @@ def setup(page=None)->Tuple[Parser, TasksQueue, TasksQueue, Event]:
     completed_tasks = manager.completed_parser_tasks
 
     task = parser_task_setup()
-    task.use()
     tasks.add(task)
 
     return Parser(

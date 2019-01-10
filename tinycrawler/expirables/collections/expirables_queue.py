@@ -1,10 +1,11 @@
 """Create a queue which raises an assertion error when type does not match with given one."""
 from ..expirable import Expirable
+from ...utils import Printable
 from typing import Dict
 from queue import Empty
 
 
-class ExpirablesQueue:
+class ExpirablesQueue(Printable):
     """Create a queue which raises an assertion error when type does not match with given one."""
 
     def __init__(self):

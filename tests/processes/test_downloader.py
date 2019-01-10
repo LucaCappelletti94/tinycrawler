@@ -60,7 +60,6 @@ def setup_downloader()->Tuple[Downloader, TasksQueue, TasksQueue]:
     completed_tasks = manager.completed_downloader_tasks
 
     task = downloader_task_local_setup()
-    task.use()
 
     tasks.add(task)
 

@@ -28,7 +28,7 @@ def test_parser_task_arguments():
     assert parser_task.response == response
 
     parser_task.use()
-    parser_task.used()
+    parser_task.used(success=True)
 
     with pytest.raises(AssertionError):
         parser_task.page
