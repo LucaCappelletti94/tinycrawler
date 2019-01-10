@@ -2,12 +2,12 @@ from tinycrawler.expirables import ParserTask
 from tinycrawler import IllegalArgumentError
 from .test_response import setup as response_setup
 from .test_response import default_url
-from ..commons import mock_repr
+from ..commons import mock_repr, build_repr
 import pytest
 
 
 def setup(response=None):
-    task = ParserTask(response or response_setup())
+    task = ParserTask(response or response_setup(), use_timeout=10)
     task.task_id = 0
     return task
 
@@ -64,4 +64,5 @@ def test_parser_task_arguments():
 
 
 def test_parser_task_repr():
+    build_repr(setup())
     mock_repr(setup())

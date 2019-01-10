@@ -2,7 +2,7 @@
     "client_specific_tasks": {
         "12.121.121.33": {
             "0": {
-                "SporadicExpirable_available": true,
+                "SporadicExpirable_available": false,
                 "binary": null,
                 "consecutive_errors": 0,
                 "error_rate": 0.0,
@@ -65,7 +65,7 @@
                     "used_timeout": 0
                 },
                 "response_status": null,
-                "sporadic_is_available": true,
+                "sporadic_is_available": false,
                 "task_id": 0,
                 "task_status": "ASSIGNED",
                 "task_type": "downloader task",
@@ -108,14 +108,14 @@
                     "use_timeout": 0,
                     "used_timeout": 0
                 },
-                "use_timeout": 0,
+                "use_timeout": 10,
                 "used_timeout": 0
             }
         }
     },
     "tasks": {
         "0": {
-            "SporadicExpirable_available": true,
+            "SporadicExpirable_available": false,
             "binary": null,
             "consecutive_errors": 0,
             "error_rate": 0.0,
@@ -178,7 +178,7 @@
                 "used_timeout": 0
             },
             "response_status": null,
-            "sporadic_is_available": true,
+            "sporadic_is_available": false,
             "task_id": 0,
             "task_status": "ASSIGNED",
             "task_type": "downloader task",
@@ -221,7 +221,7 @@
                 "use_timeout": 0,
                 "used_timeout": 0
             },
-            "use_timeout": 0,
+            "use_timeout": 10,
             "used_timeout": 0
         }
     }

@@ -1,7 +1,7 @@
 {
     "SporadicExpirable_available": true,
-    "consecutive_errors": 1,
-    "error_rate": 1.0,
+    "consecutive_errors": 0,
+    "error_rate": 0.0,
     "expired": false,
     "maximum_consecutive_errors": -1,
     "maximum_error_rate": 1,
@@ -11,7 +11,7 @@
     "task_id": 0,
     "task_status": "SUCCESS",
     "task_type": "parser task",
-    "total_errors": 1,
+    "total_errors": 0,
     "total_usages": 1,
     "urls": [
         "http://blog.coveralls.io/",
@@ -46,6 +46,6 @@
         "https://travis-ci.org/LucaCappelletti94/tinycrawler/jobs/471814682",
         "https://twitter.com/CoverallsApp"
     ],
-    "use_timeout": 0,
+    "use_timeout": 10,
     "used_timeout": 0
 }

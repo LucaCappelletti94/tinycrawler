@@ -6,7 +6,7 @@ from ..expirables.test_parser_task import setup as parser_task_setup
 from ..utils.test_logger import setup as logger_setup
 from ..expirables.test_client_data import setup as client_data_setup
 import time
-from ..commons import mock_repr
+from ..commons import mock_repr, build_repr
 from ..managers.test_client_crawler_manager import setup as client_crawler_manager_setup
 
 
@@ -39,12 +39,14 @@ def test_parser():
     e.set()
     parser.join()
     completed = completed_tasks.pop()
+    build_repr(completed, "parser")
     mock_repr(completed, "parser")
     assert completed.status == ParserTask.SUCCESS
 
 
 def fail(*args):
-    raise Exception
+    raise Exception(
+        "I'm a planned exception that should happen. Don't freak out.")
 
 
 def test_parser_failure():

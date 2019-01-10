@@ -26,7 +26,7 @@ class Proxies(Printable):
 
     def pop(self, domain: Domain = None)->Proxy:
         """Get a valid proxy for given domain."""
-        assert isinstance(domain, Domain)
+        assert domain is None or isinstance(domain, Domain)
         return self._proxies.pop(domain=domain)
 
     def add(self, proxy: Proxy)->Proxy:
