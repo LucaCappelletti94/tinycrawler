@@ -39,6 +39,7 @@ def test_downloader_task_disassembler_success():
     task.binary = False
     task.response_status = 200
     task.text = expected_successful_download()
+    manager.downloader_tasks.add(task)
     manager.completed_downloader_tasks.add(task)
 
     url, _ = task.data
@@ -69,6 +70,7 @@ def test_downloader_task_disassembler_binary():
     task.status = task.SUCCESS
     task.binary = True
     task.response_status = 200
+    manager.downloader_tasks.add(task)
     manager.completed_downloader_tasks.add(task)
 
     url, _ = task.data
@@ -97,6 +99,7 @@ def test_downloader_task_disassembler_failure():
 
     task = setup_downloader_task()
     task.status = task.FAILURE
+    manager.downloader_tasks.add(task)
     manager.completed_downloader_tasks.add(task)
 
     disassembler.start()

@@ -1,6 +1,7 @@
 """Create a queue of tasks."""
 from .task import Task
 from typing import Dict
+from queue import Empty
 from ...utils import Printable
 from .tasks_queue import TasksQueue
 
@@ -13,6 +14,11 @@ class TasksSink(Printable):
         assert isinstance(source, TasksQueue)
         self._tasks = []
         self._source = source
+
+    def pop(self)->Task:
+        if self._tasks:
+            return self._tasks.pop()
+        raise Empty
 
     def add(self, task: Task):
         """Add given task to its queue.

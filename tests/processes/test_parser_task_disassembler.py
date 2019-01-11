@@ -34,6 +34,7 @@ def test_parser_task_disassembler_success():
     task.page = "ICH BINE EIN BERLINER."
     task.path = "test_data/kennedy.txt"
 
+    manager.parser_tasks.add(task)
     manager.completed_parser_tasks.add(task)
 
     disassembler.start()
@@ -58,6 +59,7 @@ def test_parser_task_disassembler_failure():
     task.page = "ICH BINE EIN BERLINER."
     task.path = "test_data/kennedy.txt"
 
+    manager.parser_tasks.add(task)
     manager.completed_parser_tasks.add(task)
 
     disassembler.start()

@@ -1,7 +1,7 @@
 """Server side object for managing the crawler data."""
 from .crawler_manager import CrawlerManager
 from ..data import Urls, Proxies, Clients
-from ..expirables import ExpirablesQueue, TasksQueue, DownloaderTask, ParserTask, Response, ClientData, Proxy
+from ..expirables import ExpirablesQueue, TasksQueue, TasksSink, ClientData, Proxy
 from ..utils import ProxyData, Logger, ServerQueueWrapper
 from typing import Dict
 from multiprocessing import Event
@@ -24,12 +24,16 @@ class ServerCrawlerManager(CrawlerManager):
         self._responses = ServerQueueWrapper(
             ExpirablesQueue()
         )
-        self._downloader_tasks = ServerQueueWrapper(TasksQueue())
-        self._parser_tasks = ServerQueueWrapper(TasksQueue())
+        self._downloader_tasks = TasksQueue()
+        self._parser_tasks = TasksQueue()
+        self._wrapped_downloader_tasks = ServerQueueWrapper(
+            self._downloader_tasks)
+        self._wrapped_parser_tasks = ServerQueueWrapper(self._parser_tasks)
         self._logger = Logger(**kwargs)
         self._completed_downloader_tasks = ServerQueueWrapper(
-            ExpirablesQueue())
-        self._completed_parser_tasks = ServerQueueWrapper(ExpirablesQueue())
+            TasksSink(self._downloader_tasks))
+        self._completed_parser_tasks = ServerQueueWrapper(
+            TasksSink(self._parser_tasks))
 
         self.register(
             "get_urls",
@@ -45,11 +49,11 @@ class ServerCrawlerManager(CrawlerManager):
         )
         self.register(
             "get_downloader_tasks",
-            callable=lambda: self._downloader_tasks
+            callable=lambda: self._wrapped_downloader_tasks
         )
         self.register(
             "get_parser_tasks",
-            callable=lambda: self._parser_tasks
+            callable=lambda: self._wrapped_parser_tasks
         )
         self.register(
             "get_completed_downloader_tasks",

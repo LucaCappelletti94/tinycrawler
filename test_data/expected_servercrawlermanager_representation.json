@@ -3,8 +3,12 @@
     "clients": {
         "clients": {}
     },
-    "completed_downloader_tasks": [],
-    "completed_parser_tasks": [],
+    "completed_downloader_tasks": {
+        "tasks": []
+    },
+    "completed_parser_tasks": {
+        "tasks": []
+    },
     "downloader_tasks": {
         "client_specific_tasks": {},
         "tasks": {}
