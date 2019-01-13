@@ -13,7 +13,11 @@ class QueueProcess(Process):
     """Create a process object specialized for consumer-producer queues."""
 
     def __init__(self, stop: Event, logger: Logger, max_waiting_timeout: float, **kwargs):
-        """Create a process object specialized for consumer-producer queues."""
+        """Create a process object specialized for consumer-producer queues.
+            stop: Event, event to signal to process that the end has been reached.
+            logger: Logger, logger where to log the process exceptions.
+            max_waiting_timeout: float, maximum amount of time that the process has to wait doing nothing before quitting.
+        """
         super(QueueProcess, self).__init__(
             target=self._loop
         )

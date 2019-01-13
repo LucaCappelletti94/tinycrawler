@@ -11,7 +11,17 @@ class Downloader(Worker):
     """Create a downloader tasks worker process."""
 
     def __init__(self, max_content_len: int, user_agent: str, email: str, *args, **kwargs):
-        """Create a downloader tasks worker process."""
+        """Create a downloader tasks worker process.
+            stop: Event, event to signal to process that the end has been reached.
+            logger: Logger, logger where to log the process exceptions.
+            max_waiting_timeout: float, maximum amount of time that the process has to wait doing nothing before quitting.
+            client_data: ClientData, informations about the client that is running this Worker process.
+            tasks: TasksQueue, queue of tasks that the worker will run through.
+            completed_tasks: TasksSink, queue of tasks where the worker will put completed tasks.
+            max_content_len: int, maximum content size of downloaded pages.
+            user_agent: str, user agent to use for requests. Use `*` for random useragent.
+            email: str, email to offer for contact pourposes from website admins.
+        """
         super(Downloader, self).__init__(*args, **kwargs)
         self._max_content_len = max_content_len
         self._user_agent = user_agent
