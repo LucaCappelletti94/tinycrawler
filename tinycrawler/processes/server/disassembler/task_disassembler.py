@@ -8,7 +8,12 @@ class TaskDisassembler(QueueProcess):
     """Define a process to disassemble tasks."""
 
     def __init__(self, tasks: TasksQueue, **kwargs):
-        """Define a process to disassemble tasks."""
+        """Define a process to disassemble tasks.
+            stop: Event, event to signal to process that the end has been reached.
+            logger: Logger, logger where to log the process exceptions.
+            max_waiting_timeout: float, maximum amount of time that the process has to wait doing nothing before quitting.
+            tasks: TasksQueue, completed tasks to disassemble.
+        """
         super(TaskDisassembler, self).__init__(**kwargs)
         self._tasks = tasks
 
