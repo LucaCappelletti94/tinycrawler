@@ -10,7 +10,7 @@ tinycrawler.egg-*
 
 tmp_tested_proxy\.json
 crawler.log
-.coverage
+.coverage*
 coverage.xml
 test.sh
 .vscode
