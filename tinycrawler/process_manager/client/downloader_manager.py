@@ -11,6 +11,7 @@ class DownloaderManager(WorkerManager):
             stop: Event, event to signal to process that the end has been reached.
             logger: Logger, logger where to log the process exceptions.
             max_waiting_timeout: float, maximum amount of time that the process has to wait doing nothing before quitting.
+            max_processes: int, maximum number of processes of this kind that can be spawned.
             client_data: ClientData, informations about the client that is running this Worker process.
             tasks: TasksQueue, queue of tasks that the worker will run through.
             completed_tasks: TasksSink, queue of tasks where the worker will put completed tasks.
