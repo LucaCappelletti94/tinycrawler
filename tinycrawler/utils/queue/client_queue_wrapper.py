@@ -16,5 +16,8 @@ class ClientQueueWrapper(QueueWrapper):
             raise Empty
         return value
 
+    def size(self, *args, **kwargs):
+        return self._queue.size(*args, **kwargs)
+
     def ___repr___(self)->Dict:
         return self._queue.visualize()

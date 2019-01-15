@@ -16,6 +16,9 @@ class ServerQueueWrapper(QueueWrapper):
         except Empty:
             return None
 
+    def size(self, *args, **kwargs):
+        return self._queue.size(*args, **kwargs)
+
     def visualize(self)->Dict:
         return self._queue.___repr___()
 
