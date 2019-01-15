@@ -14,6 +14,10 @@ class Sequential(Usable):
         self._maximum_usages = kwargs.get("maximum_usages", -1)
         self._parallel_usages = 0
 
+    def in_use(self)->bool:
+        """Return a boolean representing if object is currently used at least by one process."""
+        return self._parallel_usages > 0
+
     def is_available(self, **kwargs)->bool:
         """Determine if object is at maximum parallel usages."""
         return self._parallel_usages < self._maximum_usages or self._maximum_usages == -1
