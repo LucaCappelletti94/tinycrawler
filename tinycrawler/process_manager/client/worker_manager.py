@@ -34,3 +34,4 @@ class WorkerManager(QueueProcessManager):
 
     def can_spawn(self)->bool:
         """Return a boolean representing if a new worker process can be spawned."""
+        return self._tasks.size(self._client_data.ip) > 30 * self.size
