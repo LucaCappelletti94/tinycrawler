@@ -5,12 +5,15 @@
     "tasks": {
         "0": {
             "SporadicExpirable_available": false,
+            "SporadicSequentialExpirable_available": false,
             "binary": null,
             "consecutive_errors": 0,
             "error_rate": 0.0,
             "expired": false,
             "maximum_consecutive_errors": -1,
             "maximum_error_rate": 1,
+            "maximum_usages": -1,
+            "parallel_usages": 1,
             "proxy": {
                 "SporadicExpirable_available": true,
                 "SporadicSequentialExpirable_available": false,
@@ -67,6 +70,7 @@
                 "used_timeout": 0
             },
             "response_status": null,
+            "sequential_is_available": true,
             "sporadic_is_available": false,
             "task_id": 0,
             "task_status": "ASSIGNED",

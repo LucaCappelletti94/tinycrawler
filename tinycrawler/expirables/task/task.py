@@ -1,9 +1,9 @@
 """Create an unique task"""
-from ..sporadic_expirable import SporadicExpirable
+from ..sporadic_sequential_expirable import SporadicSequentialExpirable
 from typing import Dict
 
 
-class Task(SporadicExpirable):
+class Task(SporadicSequentialExpirable):
     """Create an unique task"""
     UNASSIGNED = "UNASSIGNED"
     ASSIGNED = "ASSIGNED"

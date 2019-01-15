@@ -1,11 +1,14 @@
 {
     "SporadicExpirable_available": true,
+    "SporadicSequentialExpirable_available": true,
     "binary": null,
     "consecutive_errors": 0,
     "error_rate": 0,
     "expired": false,
     "maximum_consecutive_errors": -1,
     "maximum_error_rate": 1,
+    "maximum_usages": -1,
+    "parallel_usages": 0,
     "proxy": {
         "SporadicExpirable_available": true,
         "SporadicSequentialExpirable_available": true,
@@ -43,6 +46,7 @@
         "used_timeout": 0
     },
     "response_status": null,
+    "sequential_is_available": true,
     "sporadic_is_available": true,
     "task_id": 0,
     "task_status": "UNASSIGNED",
