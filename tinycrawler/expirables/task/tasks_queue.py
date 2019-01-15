@@ -13,7 +13,9 @@ class TasksQueue(Printable):
     def __init__(self):
         """Create a queue of tasks."""
         self._tasks = {}
+        self._estimated_size = 0
         self._client_domains = {}
+        self._estimated_domains_size = {}
         self._add_lock = Lock()
         self._counter = 0
 
@@ -29,10 +31,24 @@ class TasksQueue(Printable):
         """
         if ip is not None and ip in self._client_domains:
             try:
-                return self._get_first_available(self._client_domains[ip], **kwargs)
+                task = self._get_first_available(
+                    self._client_domains[ip], **kwargs)
+                if not task.in_use():
+                    self._estimated_domains_size[ip] -= 1
+                return task
             except Empty:
                 pass
-        return self._get_first_available(self._tasks, **kwargs)
+        task = self._get_first_available(self._tasks, **kwargs)
+        if not task.in_use():
+            self._estimated_size -= 1
+        return task
+
+    def size(self, ip: Domain)->int:
+        """Return an approximated size of the queue.
+            ip: Domain, domain of the client for which to determine the size.
+        """
+        assert isinstance(ip, Domain)
+        return self._estimated_size + self._estimated_domains_size.get(ip, 0)
 
     def pop(self, ip: Domain = None, **kwargs)->Task:
         """Return first available task at given ip, if provided.
@@ -70,10 +86,13 @@ class TasksQueue(Printable):
                 self._counter += 1
         if ip is None:
             self._tasks[task] = task
+            self._estimated_size += 1
         else:
             if ip not in self._client_domains:
                 self._client_domains[ip] = {}
             self._client_domains[ip][task] = task
+            self._estimated_domains_size[ip] = self._estimated_domains_size.get(
+                ip, 0) + 1
 
     def ___repr___(self)->Dict:
         """Return a dictionary representation of object."""
