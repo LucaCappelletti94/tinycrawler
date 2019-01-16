@@ -45,6 +45,11 @@ class CircularUrlQueue(Printable):
             self._urls[url.domain] = ExpirablesQueue()
         self._urls[url.domain].add(url)
 
+    def size(self)->int:
+        return sum([
+            q.size() for q in self._urls.values()
+        ])
+
     def ___repr___(self)->Dict:
         """Return a dictionary representation of object."""
         return {

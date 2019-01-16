@@ -9,6 +9,7 @@ def setup():
 
 def test_proxies():
     proxies = setup()
+    assert proxies.size() == 1
     proxies.pop(Domain("https://www.youtube.com/watch?v=aVIXCdt7Ndg"))
 
 

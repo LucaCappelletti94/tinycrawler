@@ -1,6 +1,7 @@
 from tinycrawler.expirables import TasksQueue, DownloaderTask
 from tinycrawler.processes import Downloader
-from multiprocessing import Event
+from tinycrawler.exceptions import IllegalArgumentError
+import pytest
 import requests
 from httmock import HTTMock, urlmatch, response
 from typing import Tuple
@@ -54,7 +55,7 @@ def mock_downloader_failure_max_size(*args):
     return response(content=expected_successful_download(), headers={"Content-Length": 100000})
 
 
-def setup_downloader()->Tuple[Downloader, TasksQueue, TasksQueue]:
+def setup_downloader(email="myemail@email.com")->Tuple[Downloader, TasksQueue, TasksQueue]:
     manager = client_crawler_manager_setup()
     tasks = manager.downloader_tasks
     completed_tasks = manager.completed_downloader_tasks
@@ -66,7 +67,7 @@ def setup_downloader()->Tuple[Downloader, TasksQueue, TasksQueue]:
     return Downloader(
         max_content_len=10000,
         user_agent="*",
-        email="myemail@email.com",
+        email=email,
         client_data=client_data_setup(),
         tasks=tasks,
         completed_tasks=completed_tasks,
@@ -74,6 +75,15 @@ def setup_downloader()->Tuple[Downloader, TasksQueue, TasksQueue]:
         logger=logger_setup(),
         max_waiting_timeout=1
     ), tasks, completed_tasks, manager.end_event
+
+
+def test_downloader_email_failure():
+    with pytest.raises(IllegalArgumentError):
+        setup_downloader("not_a_valid_mail")
+
+
+def test_downloader_email_none():
+    setup_downloader(None)
 
 
 def test_downloader_success():

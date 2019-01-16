@@ -7,7 +7,7 @@ from typing import Dict
 class TaskAssemblerManager(QueueProcessManager):
     """Create a new manager of task assembler processes."""
 
-    def __init__(self, tasks: TasksQueue, task_kwargs: Dict, process, **kwargs):
+    def __init__(self, tasks: TasksQueue, task_kwargs: Dict, **kwargs):
         """Create a new manager of task assembling processes.
             stop: Event, event to signal to process that the end has been reached.
             logger: Logger, logger where to log the process exceptions.
@@ -15,17 +15,16 @@ class TaskAssemblerManager(QueueProcessManager):
             max_processes: int, maximum number of processes of this kind that can be spawned.
             tasks: TasksQueue, queue where to add created tasks.
             task_kwargs: Dict, argument to pass to the tasks.
-            process, class of the process to spawn.
         """
         super(TaskAssemblerManager, self).__init__(**kwargs)
         self._tasks = tasks
         self._task_kwargs = task_kwargs
-        self._process = process
 
-    def spawn(self):
-        """Spawn a new task assembler process."""
-        return self._process(
+    @property
+    def _kwargs(self)->Dict:
+        """Spawn a new generic task worker process."""
+        return {
             **super(TaskAssemblerManager, self)._kwargs,
-            tasks=self._tasks,
-            task_kwargs=self._task_kwargs
-        )
+            "tasks": self._tasks,
+            "task_kwargs": self._task_kwargs
+        }

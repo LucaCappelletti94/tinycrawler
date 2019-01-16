@@ -1,8 +1,5 @@
 import os
 import re
-import sys
-# To use a consistent encoding
-from codecs import open
 from os import path
 
 from setuptools import find_packages, setup
@@ -30,7 +27,8 @@ def find_version(*file_paths):
 
 __version__ = find_version("tinycrawler", "__version__.py")
 
-test_deps = ['pytest', 'pytest-cov', 'coveralls', 'httmock', 'httpretty']
+test_deps = ['pytest', 'pytest-cov', 'coveralls',
+             'httmock', 'httpretty', 'pytest-parallel']
 
 extras = {
     'test': test_deps,
@@ -87,7 +85,7 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     tests_require=test_deps,
-    install_requires=['validators', 'requests', 'user_agent', 'IPy',
+    install_requires=['validators', 'validate_email', 'requests', 'user_agent', 'IPy',
                       'pybloom_live', 'lxml', 'bs4', 'html5lib', 'binaryornot'],
     extras_require=extras,
 )

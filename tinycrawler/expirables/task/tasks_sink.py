@@ -28,6 +28,10 @@ class TasksSink(Printable):
         if self._source.delete(task):
             self._tasks.append(task)
 
+    def size(self)->int:
+        """Return size of the queue."""
+        return len(self._tasks)
+
     def ___repr___(self)->Dict:
         """Return a dictionary representation of object."""
         return {

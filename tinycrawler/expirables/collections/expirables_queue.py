@@ -30,6 +30,9 @@ class ExpirablesQueue(Printable):
         else:
             self._expirables.insert(0, expirable)
 
+    def size(self)->int:
+        return len(self._expirables)
+
     def __contains__(self, expirable: Expirable)->bool:
         """Return a boolean representing if given element is contained in list."""
         return expirable in self._expirables

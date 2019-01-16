@@ -39,6 +39,10 @@ class Urls(Printable):
         self._url_maximum_consecutive_errors = kwargs["url_maximum_consecutive_errors"]
         self._url_maximum_error_rate = kwargs["url_maximum_error_rate"]
 
+    def size(self)->int:
+        """Return an approximated size of the queue."""
+        return self._urls.size()
+
     def pop(self)->Url:
         """Returns downloadable url."""
         url = self._urls.pop()

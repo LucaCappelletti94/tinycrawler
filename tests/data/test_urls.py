@@ -27,6 +27,7 @@ def test_urls():
 
     url = build_default_url("/homepage")
     urls.add(url)
+    assert urls.size() == 1
     popped = urls.pop()
     assert popped.url == url
 

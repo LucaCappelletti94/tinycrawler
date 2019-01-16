@@ -1,6 +1,7 @@
 """Create a new manager of generic task worker processes."""
 from ...queue_process_manager import QueueProcessManager
 from ....expirables import TasksQueue
+from typing import Dict
 
 
 class TaskDisassemblerManager(QueueProcessManager):
@@ -19,9 +20,14 @@ class TaskDisassemblerManager(QueueProcessManager):
         self._tasks = tasks
         self._process = process
 
-    def spawn(self):
-        """Spawn a new task assembler process."""
-        return self._process(
+    @property
+    def _kwargs(self)->Dict:
+        """Spawn a new generic task worker process."""
+        return {
             **super(TaskDisassemblerManager, self)._kwargs,
-            tasks=self._tasks
-        )
+            "tasks": self._tasks
+        }
+
+    def can_spawn(self)->bool:
+        """Return a boolean representing if a new task disassembler process can be spawned."""
+        return self._tasks.size() > 500 * self.size

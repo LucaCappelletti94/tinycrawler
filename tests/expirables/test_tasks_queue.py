@@ -22,6 +22,8 @@ def test_tasks_queue():
     with pytest.raises(Empty):
         tq.pop(ip=ip2)
 
+    assert tq.size(ip=ip) == 1
+
     assert tq.pop(ip=ip) == task
     assert tq.delete(task)
 

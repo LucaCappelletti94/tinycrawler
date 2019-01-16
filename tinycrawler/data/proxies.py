@@ -24,6 +24,9 @@ class Proxies(Printable):
                     Proxy(ProxyData(data=data))
                 )
 
+    def size(self)->int:
+        return self._proxies.size()
+
     def pop(self, domain: Domain = None)->Proxy:
         """Get a valid proxy for given domain."""
         assert domain is None or isinstance(domain, Domain)

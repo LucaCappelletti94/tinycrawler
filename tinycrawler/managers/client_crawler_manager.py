@@ -22,6 +22,7 @@ class ClientCrawlerManager(CrawlerManager):
         self._end_event = None
         self._proxies = None
         self._clients = None
+        self._client = None
         self._responses = None
         self._downloader_tasks = None
         self._parser_tasks = None
@@ -48,6 +49,11 @@ class ClientCrawlerManager(CrawlerManager):
     def clients(self):
         assert self._clients is not None
         return self._clients
+
+    @property
+    def client(self):
+        assert self._client is not None
+        return self._client
 
     @property
     def responses(self):

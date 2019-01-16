@@ -1,8 +1,9 @@
 """Create a downloader tasks worker process."""
 from .worker import Worker
 from ...expirables import DownloaderTask
-from ...exceptions import MaxFileSize
+from ...exceptions import MaxFileSize, IllegalArgumentError
 import requests
+from validate_email import validate_email
 from binaryornot.helpers import is_binary_string
 from user_agent import generate_user_agent
 
@@ -23,9 +24,12 @@ class Downloader(Worker):
             email: str, email to offer for contact pourposes from website admins.
         """
         super(Downloader, self).__init__(*args, **kwargs)
+        if email is not None and not validate_email(email):
+            raise IllegalArgumentError(
+                "Given email {email} is not valid".format(email=email))
+        self._email = email
         self._max_content_len = max_content_len
         self._user_agent = user_agent
-        self._email = email
 
     def _work(self, downloader_task: DownloaderTask)->bool:
         try:
@@ -65,7 +69,7 @@ class Downloader(Worker):
     def _headers(self):
         return {
             'User-Agent': generate_user_agent() if self._user_agent == "*" else self._user_agent,
-            'From': self._email
+            'From': self._email if self._email else ""
         }
 
     def _has_content_len(self, headers)->bool:
