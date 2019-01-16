@@ -1,7 +1,7 @@
 from tinycrawler.expirables import DownloaderTask
 from .test_proxy import setup as proxy_setup, setup_local as proxy_setup_local
 from .test_url import setup as url_setup
-from ..commons import mock_repr, build_repr
+from ..commons import mock_repr
 
 
 def setup(proxy=None, url=None)->DownloaderTask:
@@ -63,5 +63,4 @@ def test_downloader_task():
 
 
 def test_downloader_task_repr():
-    build_repr(setup())
     mock_repr(setup())

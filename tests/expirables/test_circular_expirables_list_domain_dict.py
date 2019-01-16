@@ -1,7 +1,7 @@
 from tinycrawler.expirables import CircularUrlQueue
 from tinycrawler import Url
 from queue import Empty
-from ..commons import mock_repr, build_repr
+from ..commons import mock_repr
 from .test_url import setup as url_setup
 import pytest
 
@@ -39,5 +39,4 @@ def test_circular_expirables_list_domain_dict():
 
 
 def test_circular_expirables_list_domain_dict_repr():
-    build_repr(setup())
     mock_repr(setup())

@@ -7,7 +7,7 @@ from typing import Callable
 class ParserManager(WorkerManager):
     """Create a manager of parser tasks worker processes."""
 
-    def __init__(self, page: Callable = None, path: Callable = None, url: Callable = None, **kwargs):
+    def __init__(self, page: Callable, path: Callable, url: Callable, **kwargs):
         """Create a manager of parser tasks worker processes.
             stop: Event, event to signal to process that the end has been reached.
             logger: Logger, logger where to log the process exceptions.
@@ -16,9 +16,9 @@ class ParserManager(WorkerManager):
             client_data: ClientData, informations about the client that is running this Worker process.
             tasks: TasksQueue, queue of tasks that the worker will run through.
             completed_tasks: TasksSink, queue of tasks where the worker will put completed tasks.
-            page: Callable = None, function that handles the parsing of the page.
-            path: Callable = None, function that handles the generation of the path where to save the page.
-            url: Callable = None, function that handles the validation of an url.
+            page: Callable, function that handles the parsing of the page.
+            path: Callable, function that handles the generation of the path where to save the page.
+            url: Callable, function that handles the validation of an url.
         """
         super(ParserManager, self).__init__(**kwargs)
         self._page = page
