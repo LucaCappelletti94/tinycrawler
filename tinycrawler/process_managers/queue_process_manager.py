@@ -24,9 +24,9 @@ class QueueProcessManager:
     @property
     def size(self):
         """Determine number of alive processes."""
-        return [
+        return sum([
             process.is_alive() for process in self._processes
-        ]
+        ])
 
     def join(self):
         """Join all processes."""
