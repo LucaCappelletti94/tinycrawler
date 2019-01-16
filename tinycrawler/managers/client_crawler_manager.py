@@ -3,6 +3,8 @@ from .crawler_manager import CrawlerManager
 from ..expirables import ClientData
 from typing import Dict
 from ..utils import ClientQueueWrapper
+from threading import Event
+from ..data import Urls, Proxies, Clients
 
 
 class ClientCrawlerManager(CrawlerManager):
@@ -31,22 +33,22 @@ class ClientCrawlerManager(CrawlerManager):
         self._completed_parser_tasks = None
 
     @property
-    def end_event(self):
+    def end_event(self)->Event:
         assert self._end_event is not None
         return self._end_event
 
     @property
-    def urls(self):
+    def urls(self)->Urls:
         assert self._urls is not None
         return self._urls
 
     @property
-    def proxies(self):
+    def proxies(self)->Proxies:
         assert self._proxies is not None
         return self._proxies
 
     @property
-    def clients(self):
+    def clients(self)->Clients:
         assert self._clients is not None
         return self._clients
 
