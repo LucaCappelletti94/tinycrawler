@@ -18,6 +18,7 @@ def test_client_crawler_manager():
     assert ccm.urls
     assert ccm.proxies
     assert ccm.clients
+    assert ccm.client
     assert ccm.responses
     assert ccm.downloader_tasks
     assert ccm.parser_tasks
