@@ -4,7 +4,7 @@ from tinycrawler.managers import ClientCrawlerManager
 from ..managers.test_client_crawler_manager import setup as manager_setup
 from ..expirables.test_parser_task import setup as setup_parser_task
 from ..commons import default_url
-import time
+from ..commons import sleep
 import os
 from typing import Tuple
 
@@ -38,7 +38,7 @@ def test_parser_task_disassembler_success():
     manager.completed_parser_tasks.add(task)
 
     disassembler.start()
-    time.sleep(2)
+    sleep()
     manager.end_event.set()
     disassembler.join()
 
@@ -63,7 +63,7 @@ def test_parser_task_disassembler_failure():
     manager.completed_parser_tasks.add(task)
 
     disassembler.start()
-    time.sleep(2)
+    sleep()
     manager.end_event.set()
     disassembler.join()
 

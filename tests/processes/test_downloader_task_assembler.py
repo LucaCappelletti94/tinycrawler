@@ -5,7 +5,7 @@ from ..managers.test_client_crawler_manager import setup as manager_setup
 from ..expirables.test_url import setup as url_setup
 from ..expirables.test_proxy import setup_local as setup_local_proxy
 from ..commons import mock_repr
-import time
+from ..commons import sleep
 from typing import Tuple
 import pytest
 from queue import Empty
@@ -36,7 +36,7 @@ def test_downloader_task_assembler():
     manager.proxies.add(proxy)
 
     assembler.start()
-    time.sleep(2)
+    sleep()
     manager.end_event.set()
     assembler.join()
 
@@ -54,7 +54,7 @@ def test_downloader_task_assembler_no_url_available():
     manager.proxies.add(proxy)
 
     assembler.start()
-    time.sleep(2)
+    sleep()
     manager.end_event.set()
     assembler.join()
 
@@ -78,7 +78,7 @@ def test_downloader_task_assembler_no_proxy_available():
     manager.proxies.pop()
 
     assembler.start()
-    time.sleep(2)
+    sleep()
     manager.end_event.set()
     assembler.join()
 

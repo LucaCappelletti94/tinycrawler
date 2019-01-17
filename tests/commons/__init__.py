@@ -3,6 +3,7 @@ from .mock_ip import mock_ip_failures, mock_ip_success, default_ip
 from .mock_robots import default_robots_url, mock_robots, mock_sensitive_robots
 from .various import default_url, build_default_url
 from .repr import mock_repr, build_repr
+from .sleep import sleep
 import platform
 
 
@@ -24,5 +25,6 @@ __all__ = [
     "mock_robots",
     "mock_sensitive_robots",
     "mock_repr",
-    "build_repr"
+    "build_repr",
+    "sleep"
 ]

@@ -2,7 +2,7 @@
 from tinycrawler.processes import ParserTaskAssembler
 from ..managers.test_client_crawler_manager import setup as manager_setup
 from ..expirables.test_response import setup as setup_response
-import time
+from ..commons import sleep
 
 
 def test_parser_task_assembler():
@@ -21,7 +21,7 @@ def test_parser_task_assembler():
     manager.responses.add(response)
 
     assembler.start()
-    time.sleep(2)
+    sleep()
     manager.end_event.set()
     assembler.join()
 

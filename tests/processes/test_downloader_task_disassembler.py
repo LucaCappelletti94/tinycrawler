@@ -6,7 +6,7 @@ from ..managers.test_client_crawler_manager import setup as manager_setup
 from ..commons import mock_repr
 from typing import Tuple
 from queue import Empty
-import time
+from ..commons import sleep
 import pytest
 
 
@@ -48,7 +48,7 @@ def test_downloader_task_disassembler_success():
     manager.proxies.pop(url.domain)
 
     disassembler.start()
-    time.sleep(2)
+    sleep()
     manager.end_event.set()
     disassembler.join()
 
@@ -79,7 +79,7 @@ def test_downloader_task_disassembler_binary():
     manager.proxies.pop(url.domain)
 
     disassembler.start()
-    time.sleep(2)
+    sleep()
     manager.end_event.set()
     disassembler.join()
 
@@ -103,7 +103,7 @@ def test_downloader_task_disassembler_failure():
     manager.completed_downloader_tasks.add(task)
 
     disassembler.start()
-    time.sleep(2)
+    sleep()
     manager.end_event.set()
     disassembler.join()
 

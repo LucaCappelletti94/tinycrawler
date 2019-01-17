@@ -5,7 +5,7 @@ from typing import Tuple
 from ..expirables.test_parser_task import setup as parser_task_setup
 from ..utils.test_logger import setup as logger_setup
 from ..expirables.test_client_data import setup as client_data_setup
-import time
+from ..commons import sleep
 from ..commons import mock_repr
 from ..managers.test_client_crawler_manager import setup as client_crawler_manager_setup
 
@@ -35,7 +35,7 @@ def setup(page=None)->Tuple[Parser, TasksQueue, TasksQueue, Event]:
 def test_parser():
     parser, _, completed_tasks, e = setup()
     parser.start()
-    time.sleep(2)
+    sleep()
     e.set()
     parser.join()
     completed = completed_tasks.pop()
@@ -53,7 +53,7 @@ def test_parser_failure():
         page=fail
     )
     parser.start()
-    time.sleep(2)
+    sleep()
     e.set()
     parser.join()
     completed = completed_tasks.pop()

@@ -1,7 +1,9 @@
 from tinycrawler.process_managers import ParserTaskAssemblerManager
 from ..expirables.test_response import setup as response_setup
 from ..managers.test_client_crawler_manager import setup as client_crawler_manager_setup
-import time
+import pytest
+from queue import Empty
+from ..commons import sleep
 
 
 def setup():
@@ -23,7 +25,9 @@ def test_parser_task_assembler_manager():
     response = response_setup()
     ccm.responses.add(response)
     manager.update()
-    time.sleep(2)
+    sleep()
     ccm.end_event.set()
     manager.join()
     assert ccm.parser_tasks.pop()
+    with pytest.raises(Empty):
+        ccm.responses.pop()

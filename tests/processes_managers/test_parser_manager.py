@@ -1,7 +1,7 @@
 from tinycrawler.process_managers import ParserManager
 from ..expirables.test_parser_task import setup as parser_task_setup
 from ..managers.test_client_crawler_manager import setup as client_crawler_manager_setup
-import time
+from ..commons import sleep
 
 
 def setup():
@@ -26,7 +26,7 @@ def test_parser_manager():
     task = parser_task_setup()
     ccm.parser_tasks.add(task)
     manager.update()
-    time.sleep(2)
+    sleep()
     ccm.end_event.set()
     manager.join()
     assert ccm.completed_parser_tasks.pop() == task
