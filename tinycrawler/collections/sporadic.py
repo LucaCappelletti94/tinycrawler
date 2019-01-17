@@ -14,7 +14,6 @@ class Sporadic(Usable):
         """
 
         super(Sporadic, self).__init__(**kwargs)
-        self._set_available_time()
         self._use_timeout = kwargs.get(
             "use_timeout",
             0
@@ -32,6 +31,8 @@ class Sporadic(Usable):
         if self._used_timeout < 0:
             raise IllegalArgumentError(
                 "Given `used_timeout` is less than 0. Provide a value >= to zero.")
+
+        self._set_available_time()
 
     def is_available(self, **kwargs)->bool:
         """Determine if sporadic object is now available."""
