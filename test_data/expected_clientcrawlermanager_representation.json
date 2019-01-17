@@ -52,6 +52,7 @@
             "SporadicExpirable_available": true,
             "SporadicSequentialExpirable_available": true,
             "consecutive_errors": 0,
+            "data": null,
             "domain": {
                 "SporadicExpirable_available": true,
                 "SporadicSequentialExpirable_available": true,
@@ -73,6 +74,7 @@
             "domains": {},
             "error_rate": 0,
             "expired": false,
+            "local": true,
             "maximum_consecutive_errors": -1,
             "maximum_error_rate": 1,
             "maximum_usages": -1,

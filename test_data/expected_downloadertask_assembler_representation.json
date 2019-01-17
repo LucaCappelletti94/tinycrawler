@@ -13,6 +13,9 @@
         "SporadicExpirable_available": true,
         "SporadicSequentialExpirable_available": false,
         "consecutive_errors": 0,
+        "data": {
+            "https": "https://78.38.241.9:1080"
+        },
         "domain": {
             "SporadicExpirable_available": true,
             "SporadicSequentialExpirable_available": true,
@@ -53,6 +56,7 @@
         },
         "error_rate": 0,
         "expired": false,
+        "local": false,
         "maximum_consecutive_errors": -1,
         "maximum_error_rate": 1,
         "maximum_usages": 1,

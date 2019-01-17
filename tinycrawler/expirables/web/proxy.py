@@ -70,9 +70,10 @@ class Proxy(SporadicSequentialExpirable):
         """Return a dictionary representation of object."""
         return {
             **super(Proxy, self).___repr___(),
-            **{
-                "domain": self.ip.___repr___(),
-                "domains": {
-                    key.domain: value.___repr___() for key, value in self._domains.items()
-                }
-            }}
+            "domain": self.ip.___repr___(),
+            "local": self.local,
+            "data": self.data,
+            "domains": {
+                key.domain: value.___repr___() for key, value in self._domains.items()
+            }
+        }

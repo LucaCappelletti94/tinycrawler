@@ -4,7 +4,7 @@ from tinycrawler.managers import ClientCrawlerManager
 from ..managers.test_client_crawler_manager import setup as manager_setup
 from ..expirables.test_url import setup as url_setup
 from ..expirables.test_proxy import setup_local as setup_local_proxy
-from ..commons import mock_repr
+from ..commons import mock_repr, build_repr
 from ..commons import sleep
 from typing import Tuple
 import pytest
@@ -43,6 +43,7 @@ def test_downloader_task_assembler():
     task = manager.downloader_tasks.pop()
 
     assert (url, proxy) == task.data
+    build_repr(task, "assembler")
     mock_repr(task, "assembler")
 
 
