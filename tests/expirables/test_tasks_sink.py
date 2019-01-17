@@ -1,7 +1,7 @@
 from tinycrawler.expirables import TasksSink
-from .test_downloader_task import setup as downloader_task_setup
+from .test_downloader_task import downloader_task_setup
 from ..commons import mock_repr
-from .test_tasks_queue import setup as tasks_queue_setup
+from .test_tasks_queue import tasks_queue_setup
 
 
 def setup(tq=None):

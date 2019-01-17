@@ -3,20 +3,20 @@ from ..commons import mock_repr
 import pytest
 
 
-def setup():
+def task_setup():
     return Task()
 
 
 def test_task_eq():
-    t1 = setup()
-    t2 = setup()
+    t1 = task_setup()
+    t2 = task_setup()
     t1.task_id = t2.task_id = 3
 
     assert t1 == t2
 
 
 def test_task():
-    task = setup()
+    task = task_setup()
     with pytest.raises(AssertionError):
         task.task_id
 
@@ -33,6 +33,6 @@ def test_task():
 
 
 def test_task_repr():
-    task = setup()
+    task = task_setup()
     task.task_id = 0
     mock_repr(task)

@@ -4,14 +4,14 @@ from httmock import HTTMock
 from ..commons import mock_ip_success, mock_repr
 
 
-def setup():
+def client_data_setup():
     with HTTMock(mock_ip_success):
         return ClientData(3)
 
 
 def test_client_data():
-    assert setup() == setup()
+    assert client_data_setup() == client_data_setup()
 
 
 def test_client_data_repr():
-    mock_repr(setup())
+    mock_repr(client_data_setup())

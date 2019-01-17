@@ -1,16 +1,16 @@
 from tinycrawler.expirables import TasksQueue, Domain
 from queue import Empty
-from .test_downloader_task import setup as downloader_task_setup
+from .test_downloader_task import downloader_task_setup
 from ..commons import mock_repr
 import pytest
 
 
-def setup():
+def tasks_queue_setup():
     return TasksQueue()
 
 
 def test_tasks_queue():
-    tq = setup()
+    tq = tasks_queue_setup()
 
     task = downloader_task_setup()
 

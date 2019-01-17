@@ -1,16 +1,16 @@
 """Test if everything works in parser task disassembler."""
 from tinycrawler.processes import ParserTaskDisassembler
 from tinycrawler.managers import ClientCrawlerManager
-from ..managers.test_client_crawler_manager import setup as manager_setup
-from ..expirables.test_parser_task import setup as setup_parser_task
+from ..managers.test_client_crawler_manager import client_crawler_manager_setup
+from ..expirables.test_parser_task import parser_task_setup
 from ..commons import default_url
 from ..commons import sleep
 import os
 from typing import Tuple
 
 
-def setup()->Tuple[ParserTaskDisassembler, ClientCrawlerManager]:
-    manager = manager_setup()
+def parser_task_disassembler_setup()->Tuple[ParserTaskDisassembler, ClientCrawlerManager]:
+    manager = client_crawler_manager_setup()
     disassembler = ParserTaskDisassembler(
         responses=manager.responses,
         tasks=manager.completed_parser_tasks,
@@ -26,9 +26,9 @@ def setup()->Tuple[ParserTaskDisassembler, ClientCrawlerManager]:
 
 def test_parser_task_disassembler_success():
     """Test if everything works in parser task disassembler."""
-    disassembler, manager = setup()
+    disassembler, manager = parser_task_disassembler_setup()
 
-    task = setup_parser_task()
+    task = parser_task_setup()
     task.status = task.SUCCESS
     task.urls = {default_url}
     task.page = "ICH BINE EIN BERLINER."
@@ -51,9 +51,9 @@ def test_parser_task_disassembler_success():
 
 def test_parser_task_disassembler_failure():
     """Test if everything works in parser task disassembler."""
-    disassembler, manager = setup()
+    disassembler, manager = parser_task_disassembler_setup()
 
-    task = setup_parser_task()
+    task = parser_task_setup()
     task.status = task.FAILURE
     task.urls = {default_url}
     task.page = "ICH BINE EIN BERLINER."

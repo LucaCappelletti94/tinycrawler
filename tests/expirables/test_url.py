@@ -13,13 +13,13 @@ def test_url_arguments():
     double_arguments_test(Url, valid, invalid)
 
 
-def setup(default: str = "https://www.totallyfakewebsite.com"):
+def url_setup(default: str = "https://www.totallyfakewebsite.com"):
     return Url(default)
 
 
 def test_url():
-    url_1 = setup()
-    url_2 = setup("https://www.youtube.com/watch?")
+    url_1 = url_setup()
+    url_2 = url_setup("https://www.youtube.com/watch?")
 
     assert url_1 != url_2
     assert url_1.timeout == 0
@@ -30,4 +30,4 @@ def test_url():
 
 
 def test_url_repr():
-    mock_repr(setup())
+    mock_repr(url_setup())

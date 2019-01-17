@@ -2,13 +2,13 @@ from tinycrawler.collections import Usable
 from ..commons import mock_repr
 
 
-def setup():
+def usable_setup():
     return Usable()
 
 
 def test_usable():
-    setup()
+    usable_setup()
 
 
 def test_usable_repr():
-    mock_repr(setup())
+    mock_repr(usable_setup())

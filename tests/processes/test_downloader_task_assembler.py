@@ -1,18 +1,18 @@
 """Test if everything works in downloader task assembler."""
 from tinycrawler.processes import DownloaderTaskAssembler
 from tinycrawler.managers import ClientCrawlerManager
-from ..managers.test_client_crawler_manager import setup as manager_setup
-from ..expirables.test_url import setup as url_setup
+from ..managers.test_client_crawler_manager import client_crawler_manager_setup
+from ..expirables.test_url import url_setup
 from ..expirables.test_proxy import setup_local as setup_local_proxy
-from ..commons import mock_repr, build_repr
+from ..commons import mock_repr
 from ..commons import sleep
 from typing import Tuple
 import pytest
 from queue import Empty
 
 
-def setup()->Tuple[DownloaderTaskAssembler, ClientCrawlerManager]:
-    manager = manager_setup()
+def downloader_task_assembler_setup()->Tuple[DownloaderTaskAssembler, ClientCrawlerManager]:
+    manager = client_crawler_manager_setup()
     assembler = DownloaderTaskAssembler(
         urls=manager.urls,
         proxies=manager.proxies,
@@ -28,7 +28,7 @@ def setup()->Tuple[DownloaderTaskAssembler, ClientCrawlerManager]:
 
 def test_downloader_task_assembler():
     """Test if everything works in downloader task assembler."""
-    assembler, manager = setup()
+    assembler, manager = downloader_task_assembler_setup()
 
     url, proxy = url_setup(), setup_local_proxy()
     manager.urls.add(url)
@@ -43,13 +43,12 @@ def test_downloader_task_assembler():
     task = manager.downloader_tasks.pop()
 
     assert (url, proxy) == task.data
-    build_repr(task, "assembler")
     mock_repr(task, "assembler")
 
 
 def test_downloader_task_assembler_no_url_available():
     """Test if everything works in downloader task assembler."""
-    assembler, manager = setup()
+    assembler, manager = downloader_task_assembler_setup()
 
     proxy = setup_local_proxy()
     manager.proxies.add(proxy)
@@ -70,7 +69,7 @@ def test_downloader_task_assembler_no_url_available():
 
 def test_downloader_task_assembler_no_proxy_available():
     """Test if everything works in downloader task assembler."""
-    assembler, manager = setup()
+    assembler, manager = downloader_task_assembler_setup()
 
     url = url_setup()
     manager.urls.add(url)

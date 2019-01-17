@@ -1,10 +1,10 @@
 """Test if everything is ok with the worker."""
 from tinycrawler.processes.client.worker import Worker
-from tinycrawler.expirables import TasksQueue, DownloaderTask
+from tinycrawler.expirables import TasksQueue
 from multiprocessing import Event
-from ..expirables.test_downloader_task import setup as downloader_task_setup
-from ..expirables.test_client_data import setup as client_data_setup
-from ..utils.test_logger import setup as logger_setup
+from ..expirables.test_downloader_task import downloader_task_setup
+from ..expirables.test_client_data import client_data_setup
+from ..utils.test_logger import logger_setup
 import pytest
 
 

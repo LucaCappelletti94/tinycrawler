@@ -1,20 +1,22 @@
-from tinycrawler.process_managers import ParserTaskAssemblerManager
-from ..expirables.test_response import response_setup
-from ..managers.test_client_crawler_manager import client_crawler_manager_setup
+from tinycrawler.process_managers import ParserTaskDisassemblerManager
+from .test_parser_manager import run_parser_manager
 import pytest
 from queue import Empty
 from ..commons import sleep
+import shutil
 
 
 def parser_task_assembler_manager_setup():
-    ccm = client_crawler_manager_setup()
-    manager = ParserTaskAssemblerManager(
+    ccm = run_parser_manager()
+    ccm.end_event.clear()
+    manager = ParserTaskDisassemblerManager(
         stop=ccm.end_event,
         logger=ccm.logger,
         max_waiting_timeout=10,
         max_processes=8,
-        tasks=ccm.parser_tasks,
-        task_kwargs={},
+        tasks=ccm.completed_parser_tasks,
+        urls=ccm.urls,
+        proxies=ccm.proxies,
         responses=ccm.responses
     )
     return manager, ccm
@@ -22,12 +24,10 @@ def parser_task_assembler_manager_setup():
 
 def test_parser_task_assembler_manager():
     manager, ccm = parser_task_assembler_manager_setup()
-    response = response_setup()
-    ccm.responses.add(response)
     manager.update()
     sleep()
     ccm.end_event.set()
     manager.join()
-    assert ccm.parser_tasks.pop()
     with pytest.raises(Empty):
-        ccm.responses.pop()
+        ccm.completed_parser_tasks.pop()
+    shutil.rmtree("docs.python-requests.org")

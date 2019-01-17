@@ -1,8 +1,8 @@
 """Test if everything works in downloader task disassembler."""
 from tinycrawler.processes import DownloaderTaskDisassembler
 from tinycrawler.managers import ClientCrawlerManager
-from ..expirables.test_downloader_task import setup as setup_downloader_task
-from ..managers.test_client_crawler_manager import setup as manager_setup
+from ..expirables.test_downloader_task import downloader_task_setup
+from ..managers.test_client_crawler_manager import client_crawler_manager_setup
 from ..commons import mock_repr
 from typing import Tuple
 from queue import Empty
@@ -15,8 +15,8 @@ def expected_successful_download()->str:
         return f.read()
 
 
-def setup()->Tuple[DownloaderTaskDisassembler, ClientCrawlerManager]:
-    manager = manager_setup()
+def downloader_task_disassembler_setup()->Tuple[DownloaderTaskDisassembler, ClientCrawlerManager]:
+    manager = client_crawler_manager_setup()
     disassembler = DownloaderTaskDisassembler(
         urls=manager.urls,
         proxies=manager.proxies,
@@ -32,9 +32,9 @@ def setup()->Tuple[DownloaderTaskDisassembler, ClientCrawlerManager]:
 
 def test_downloader_task_disassembler_success():
     """Test if everything works in downloader task disassembler on occasion of success."""
-    disassembler, manager = setup()
+    disassembler, manager = downloader_task_disassembler_setup()
 
-    task = setup_downloader_task()
+    task = downloader_task_setup()
     task.status = task.SUCCESS
     task.binary = False
     task.response_status = 200
@@ -64,9 +64,9 @@ def test_downloader_task_disassembler_success():
 
 def test_downloader_task_disassembler_binary():
     """Test if everything works in downloader task disassembler on occasion of success."""
-    disassembler, manager = setup()
+    disassembler, manager = downloader_task_disassembler_setup()
 
-    task = setup_downloader_task()
+    task = downloader_task_setup()
     task.status = task.SUCCESS
     task.binary = True
     task.response_status = 200
@@ -95,9 +95,9 @@ def test_downloader_task_disassembler_binary():
 
 def test_downloader_task_disassembler_failure():
     """Test if everything works in downloader task disassembler on occasion of failure."""
-    disassembler, manager = setup()
+    disassembler, manager = downloader_task_disassembler_setup()
 
-    task = setup_downloader_task()
+    task = downloader_task_setup()
     task.status = task.FAILURE
     manager.downloader_tasks.add(task)
     manager.completed_downloader_tasks.add(task)

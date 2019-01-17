@@ -1,18 +1,18 @@
 """Define a process to disassemble tasks."""
 from ...queue_process import QueueProcess
-from ....expirables import TasksQueue, Task
+from ....expirables import TasksSink, Task
 from typing import Tuple
 
 
 class TaskDisassembler(QueueProcess):
     """Define a process to disassemble tasks."""
 
-    def __init__(self, tasks: TasksQueue, **kwargs):
+    def __init__(self, tasks: TasksSink, **kwargs):
         """Define a process to disassemble tasks.
             stop: Event, event to signal to process that the end has been reached.
             logger: Logger, logger where to log the process exceptions.
             max_waiting_timeout: float, maximum amount of time that the process has to wait doing nothing before quitting.
-            tasks: TasksQueue, completed tasks to disassemble.
+            tasks: TasksSink, completed tasks to disassemble.
         """
         super(TaskDisassembler, self).__init__(**kwargs)
         self._tasks = tasks

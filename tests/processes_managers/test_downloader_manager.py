@@ -1,12 +1,12 @@
 from tinycrawler.process_managers import DownloaderManager
 from ..expirables.test_downloader_task import local_setup as downloader_task_setup
-from ..managers.test_client_crawler_manager import setup as client_crawler_manager_setup
+from ..managers.test_client_crawler_manager import client_crawler_manager_setup
 from ..processes.test_downloader import mock_downloader_success
 from ..commons import sleep
 from httmock import HTTMock
 
 
-def setup():
+def downloader_manager_setup():
     ccm = client_crawler_manager_setup()
     manager = DownloaderManager(
         stop=ccm.end_event,
@@ -23,13 +23,19 @@ def setup():
     return manager, ccm
 
 
-def test_downloader_manager():
-    manager, ccm = setup()
-    task = downloader_task_setup()
+def run_downloader_manager(task=None):
+    manager, ccm = downloader_manager_setup()
+    task = task or downloader_task_setup()
     ccm.downloader_tasks.add(task)
     with HTTMock(mock_downloader_success):
         manager.update()
         sleep()
         ccm.end_event.set()
         manager.join()
-        assert ccm.completed_downloader_tasks.pop() == task
+    return ccm
+
+
+def test_downloader_manager():
+    task = downloader_task_setup()
+    ccm = run_downloader_manager(task)
+    assert ccm.completed_downloader_tasks.pop() == task

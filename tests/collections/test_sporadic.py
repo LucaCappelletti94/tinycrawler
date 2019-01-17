@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 
-def setup():
+def sporadic_setup():
     return Sporadic(
         used_timeout=1,
         use_timeout=1
@@ -54,7 +54,7 @@ def test_sporadic_arguments():
 
 
 def test_sporadic():
-    sporadic = setup()
+    sporadic = sporadic_setup()
 
     sporadic.use()
     with pytest.raises(AssertionError):
@@ -75,4 +75,4 @@ def test_sporadic():
 
 
 def test_sporadic_repr():
-    mock_repr(setup())
+    mock_repr(sporadic_setup())

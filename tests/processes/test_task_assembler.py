@@ -1,9 +1,9 @@
 """Test if everything is ok with the task assembler."""
 from tinycrawler.processes.server.assembler.task_assembler import TaskAssembler
-from tinycrawler.expirables import TasksQueue, DownloaderTask
+from tinycrawler.expirables import TasksQueue
 from multiprocessing import Event
-from ..expirables.test_downloader_task import setup as downloader_task_setup
-from ..utils.test_logger import setup as logger_setup
+from ..expirables.test_downloader_task import downloader_task_setup
+from ..utils.test_logger import logger_setup
 
 
 def test_task_assembler():

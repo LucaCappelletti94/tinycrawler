@@ -6,10 +6,10 @@ import requests
 from httmock import HTTMock, urlmatch, response
 from typing import Tuple
 from ..commons import sleep
-from ..utils.test_logger import setup as logger_setup
-from ..expirables.test_client_data import setup as client_data_setup
+from ..utils.test_logger import logger_setup
+from ..expirables.test_client_data import client_data_setup
 from ..expirables.test_downloader_task import local_setup as downloader_task_local_setup
-from ..managers.test_client_crawler_manager import setup as client_crawler_manager_setup
+from ..managers.test_client_crawler_manager import client_crawler_manager_setup
 
 
 def expected_successful_download()->str:

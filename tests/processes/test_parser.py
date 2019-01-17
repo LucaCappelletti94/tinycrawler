@@ -2,12 +2,12 @@ from tinycrawler.expirables import TasksQueue, ParserTask
 from tinycrawler.processes import Parser
 from multiprocessing import Event
 from typing import Tuple
-from ..expirables.test_parser_task import setup as parser_task_setup
-from ..utils.test_logger import setup as logger_setup
-from ..expirables.test_client_data import setup as client_data_setup
+from ..expirables.test_parser_task import parser_task_setup
+from ..utils.test_logger import logger_setup
+from ..expirables.test_client_data import client_data_setup
 from ..commons import sleep
 from ..commons import mock_repr
-from ..managers.test_client_crawler_manager import setup as client_crawler_manager_setup
+from ..managers.test_client_crawler_manager import client_crawler_manager_setup
 
 
 def setup(page=None)->Tuple[Parser, TasksQueue, TasksQueue, Event]:

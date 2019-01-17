@@ -3,7 +3,7 @@ from ..commons import mock_ip_success, mock_repr
 from httmock import HTTMock
 
 
-def setup():
+def server_crawler_manager_setup():
     with HTTMock(mock_ip_success):
         scm = ServerCrawlerManager(
             "",
@@ -22,8 +22,8 @@ def setup():
 
 
 def test_server_crawler_manager():
-    setup()
+    server_crawler_manager_setup()
 
 
 def test_server_crawler_manager_repr():
-    mock_repr(setup())
+    mock_repr(server_crawler_manager_setup())

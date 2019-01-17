@@ -1,19 +1,19 @@
 from tinycrawler.managers import ClientCrawlerManager
 from ..commons import mock_ip_success, mock_repr
-from .test_server_crawler_manager import setup as server_manager_setup
+from .test_server_crawler_manager import server_crawler_manager_setup
 from httmock import HTTMock
 
 
-def setup()->ClientCrawlerManager:
+def client_crawler_manager_setup()->ClientCrawlerManager:
     with HTTMock(mock_ip_success):
-        scm = server_manager_setup()
+        scm = server_crawler_manager_setup()
         ccm = ClientCrawlerManager(*scm.address, b"abc")
         ccm.connect()
         return ccm
 
 
 def test_client_crawler_manager():
-    ccm = setup()
+    ccm = client_crawler_manager_setup()
     assert ccm.end_event
     assert ccm.urls
     assert ccm.proxies
@@ -28,4 +28,4 @@ def test_client_crawler_manager():
 
 
 def test_client_crawler_manager_repr():
-    mock_repr(setup())
+    mock_repr(client_crawler_manager_setup())

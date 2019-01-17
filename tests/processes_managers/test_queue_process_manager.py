@@ -1,9 +1,9 @@
 from tinycrawler.process_managers.queue_process_manager import QueueProcessManager
-from ..managers.test_client_crawler_manager import setup as client_crawler_manager_setup
+from ..managers.test_client_crawler_manager import client_crawler_manager_setup
 import pytest
 
 
-def setup():
+def parser_manager_setup():
     ccm = client_crawler_manager_setup()
     manager = QueueProcessManager(
         stop=ccm.end_event,
@@ -15,7 +15,7 @@ def setup():
 
 
 def test_parser_manager():
-    manager, ccm = setup()
+    manager, _ = parser_manager_setup()
     with pytest.raises(NotImplementedError):
         manager.spawn()
     with pytest.raises(NotImplementedError):

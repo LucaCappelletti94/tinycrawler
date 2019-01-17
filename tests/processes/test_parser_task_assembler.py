@@ -1,13 +1,13 @@
 """Test if everything works in parser task assembler."""
 from tinycrawler.processes import ParserTaskAssembler
-from ..managers.test_client_crawler_manager import setup as manager_setup
-from ..expirables.test_response import setup as setup_response
+from ..managers.test_client_crawler_manager import client_crawler_manager_setup
+from ..expirables.test_response import response_setup
 from ..commons import sleep
 
 
 def test_parser_task_assembler():
     """Test if everything works in parser task assembler."""
-    manager = manager_setup()
+    manager = client_crawler_manager_setup()
     assembler = ParserTaskAssembler(
         responses=manager.responses,
         tasks=manager.parser_tasks,
@@ -17,7 +17,7 @@ def test_parser_task_assembler():
         max_waiting_timeout=60
     )
 
-    response = setup_response()
+    response = response_setup()
     manager.responses.add(response)
 
     assembler.start()

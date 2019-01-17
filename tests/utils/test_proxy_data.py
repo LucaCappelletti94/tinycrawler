@@ -1,10 +1,10 @@
 from tinycrawler.utils import ProxyData
 from ..commons import mock_repr
-from ..expirables.test_client_data import setup as client_data_setup
+from ..expirables.test_client_data import client_data_setup
 import json
 
 
-def setup(path=None)->ProxyData:
+def proxy_data_setup(path=None)->ProxyData:
     if path is None:
         path = "proxy_data"
     with open("test_data/raw_{path}.json".format(path=path), "r") as f:
@@ -16,9 +16,9 @@ def setup_local()->ProxyData:
 
 
 def test_proxy_data():
-    setup()
+    proxy_data_setup()
     setup_local()
 
 
 def test_proxy_data_repr():
-    mock_repr(setup())
+    mock_repr(proxy_data_setup())

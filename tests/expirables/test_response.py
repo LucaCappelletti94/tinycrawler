@@ -7,7 +7,7 @@ with open("test_data/successfull_download.html", "r") as f:
     default_content = f.read()
 
 
-def setup(content=None, status=None, url=None)->Response:
+def response_setup(content=None, status=None, url=None)->Response:
     global default_url, default_status, default_content
     return Response(
         content or default_content,
@@ -18,11 +18,11 @@ def setup(content=None, status=None, url=None)->Response:
 
 def test_response():
     global default_url, default_status, default_content
-    response = setup()
+    response = response_setup()
     assert response.url == default_url
     assert response.status == default_status
     assert response.text == default_content
 
 
 def test_response_repr():
-    mock_repr(setup())
+    mock_repr(response_setup())

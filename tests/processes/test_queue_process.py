@@ -1,6 +1,6 @@
 from tinycrawler.processes.queue_process import QueueProcess
 from multiprocessing import Event
-from ..utils.test_logger import setup as logger_setup
+from ..utils.test_logger import logger_setup
 import pytest
 
 

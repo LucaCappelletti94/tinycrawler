@@ -1,11 +1,11 @@
 from tinycrawler.expirables import Proxy
 from ..commons import mock_repr
-from .test_url import setup as setup_url
-from ..utils.test_proxy_data import setup as proxy_data_setup
+from .test_url import url_setup
+from ..utils.test_proxy_data import proxy_data_setup
 import pytest
 
 
-def setup(path=None)->Proxy:
+def proxy_setup(path=None)->Proxy:
     return Proxy(proxy_data_setup(path), maximum_usages=1)
 
 
@@ -14,10 +14,10 @@ def setup_local(path=None)->Proxy:
 
 
 def test_proxy():
-    proxy = setup()
-    proxy_b = setup("proxy_data_B")
+    proxy = proxy_setup()
+    proxy_b = proxy_setup("proxy_data_B")
 
-    url = setup_url()
+    url = url_setup()
     proxy.use(
         domain=url.domain
     )
@@ -39,4 +39,4 @@ def test_proxy():
 
 
 def test_proxy_repr():
-    mock_repr(setup())
+    mock_repr(proxy_setup())

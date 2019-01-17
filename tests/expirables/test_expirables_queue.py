@@ -1,18 +1,18 @@
 from tinycrawler.expirables import ExpirablesQueue
 from tinycrawler import Domain
 from queue import Empty
-from .test_domain import setup as domain_setup
+from .test_domain import domain_setup
 from ..commons import mock_repr
 import pytest
 
 
-def setup():
+def expirables_queue_setup():
     return ExpirablesQueue()
 
 
 def test_expirables_queue():
 
-    q = setup()
+    q = expirables_queue_setup()
 
     with pytest.raises(Empty):
         q.pop()
@@ -48,4 +48,4 @@ def test_expirables_queue():
 
 
 def test_expirables_queue_repr():
-    mock_repr(setup())
+    mock_repr(expirables_queue_setup())

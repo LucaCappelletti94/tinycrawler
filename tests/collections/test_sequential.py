@@ -3,12 +3,12 @@ from ..commons import mock_repr
 import pytest
 
 
-def setup():
+def sequential_setup():
     return Sequential(maximum_usages=1)
 
 
 def test_sequential():
-    sequential = setup()
+    sequential = sequential_setup()
     with pytest.raises(AssertionError):
         sequential.used()
     sequential.use()
@@ -19,4 +19,4 @@ def test_sequential():
 
 
 def test_sequential_repr():
-    mock_repr(setup())
+    mock_repr(sequential_setup())

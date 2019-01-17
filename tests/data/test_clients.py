@@ -5,7 +5,7 @@ from ..commons import mock_ip_success, mock_repr
 from httmock import HTTMock
 
 
-def setup():
+def clients_setup():
     with HTTMock(mock_ip_success):
         clients = Clients()
         clients.register(ClientData(clients.get_new_client_id()))
@@ -13,7 +13,7 @@ def setup():
 
 
 def test_clients():
-    clients = setup()
+    clients = clients_setup()
     with HTTMock(mock_ip_success):
         client2 = ClientData(clients.get_new_client_id())
     assert not clients.is_new_ip(client2.ip)
@@ -21,4 +21,4 @@ def test_clients():
 
 
 def test_clients_repr():
-    mock_repr(setup())
+    mock_repr(clients_setup())

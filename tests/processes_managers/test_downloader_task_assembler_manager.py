@@ -1,12 +1,12 @@
 from tinycrawler.process_managers import DownloaderTaskAssemblerManager
-from ..expirables.test_url import setup as url_setup
-from ..managers.test_client_crawler_manager import setup as client_crawler_manager_setup
+from ..expirables.test_url import url_setup
+from ..managers.test_client_crawler_manager import client_crawler_manager_setup
 import pytest
 from queue import Empty
 from ..commons import sleep
 
 
-def setup():
+def downloader_task_assembler_manager_setup():
     ccm = client_crawler_manager_setup()
     manager = DownloaderTaskAssemblerManager(
         stop=ccm.end_event,
@@ -22,7 +22,7 @@ def setup():
 
 
 def test_downloader_task_assembler_manager():
-    manager, ccm = setup()
+    manager, ccm = downloader_task_assembler_manager_setup()
     url = url_setup()
     ccm.urls.add(url)
     manager.update()

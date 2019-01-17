@@ -4,7 +4,7 @@ from httpretty import httprettified
 from ..commons import mock_repr, mock_robots
 
 
-def setup():
+def robots_setup():
     mock_robots()
     return Robots(
         follow_robot_txt=True,
@@ -25,7 +25,7 @@ def test_robots():
         "http://www.totallyfakeexample.com/Locale"
     ]
 
-    robots = setup()
+    robots = robots_setup()
 
     for url in valid + invalid:
         assert robots.get_timeout(Url(url).domain) == 5

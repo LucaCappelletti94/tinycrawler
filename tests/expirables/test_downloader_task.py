@@ -1,10 +1,10 @@
 from tinycrawler.expirables import DownloaderTask
-from .test_proxy import setup as proxy_setup, setup_local as proxy_setup_local
-from .test_url import setup as url_setup
+from .test_proxy import proxy_setup, setup_local as proxy_setup_local
+from .test_url import url_setup
 from ..commons import mock_repr
 
 
-def setup(proxy=None, url=None)->DownloaderTask:
+def downloader_task_setup(proxy=None, url=None)->DownloaderTask:
     proxy = proxy or proxy_setup()
     url = url or url_setup()
     task = DownloaderTask(proxy, url, use_timeout=10)
@@ -23,7 +23,7 @@ def local_setup(proxy=None, url=None)->DownloaderTask:
 def test_downloader_task():
     proxy = proxy_setup()
     url = url_setup()
-    downloader_task = setup(proxy, url)
+    downloader_task = downloader_task_setup(proxy, url)
 
     assert downloader_task.url == url.url
     assert downloader_task.proxy == proxy.data
@@ -63,4 +63,4 @@ def test_downloader_task():
 
 
 def test_downloader_task_repr():
-    mock_repr(setup())
+    mock_repr(downloader_task_setup())

@@ -3,12 +3,12 @@ from ..commons import mock_repr
 import pytest
 
 
-def setup():
+def crawler_manager_setup():
     return CrawlerManager("", 0, b"abc")
 
 
 def test_crawler_manager():
-    manager = setup()
+    manager = crawler_manager_setup()
     for endpoint in manager.endpoints:
         with pytest.raises(NotImplementedError):
             if endpoint == "register_client":
@@ -18,4 +18,4 @@ def test_crawler_manager():
 
 
 def test_crawler_manager_test():
-    mock_repr(setup())
+    mock_repr(crawler_manager_setup())
