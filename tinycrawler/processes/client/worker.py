@@ -32,6 +32,7 @@ class Worker(QueueProcess):
             success, status = True, Task.SUCCESS
         task.used(success=success)
         task.status = status
+        task.client = self._client_data
         return (task,)
 
     def _work(self, task: Type[Task])->bool:

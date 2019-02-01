@@ -29,6 +29,8 @@ class Clients(Printable):
             self._clients[client_data.ip] = ExpirablesQueue()
         self._clients[client_data.ip].add(client_data)
 
+    def disconnect(self, client_data: ClientData):
+
     def __contains__(self, client_data: ClientData)->bool:
         """Determine if given client data is already in structure."""
         return client_data.ip in self._clients and client_data in self._clients[client_data.ip]

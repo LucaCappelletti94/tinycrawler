@@ -1,5 +1,6 @@
 """Create an unique task"""
 from ..sporadic_sequential_expirable import SporadicSequentialExpirable
+from ..client_data import ClientData
 from typing import Dict
 
 
@@ -22,6 +23,7 @@ class Task(SporadicSequentialExpirable):
         super(Task, self).__init__(**kwargs)
         self._status = Task.UNASSIGNED
         self._task_id = None
+        self._client = None
 
     def use(self, **kwargs):
         """Update use task status."""
@@ -54,6 +56,12 @@ class Task(SporadicSequentialExpirable):
         return self._task_id is None
 
     @property
+    def client(self)->ClientData:
+        """Return boolean representing if task still has to receive its id."""
+        assert self._client is not None
+        return self._client
+
+    @property
     def task_id(self)->int:
         """Return task's id."""
         assert not self.new
@@ -66,6 +74,14 @@ class Task(SporadicSequentialExpirable):
         """
         assert self.new
         self._task_id = task_id
+
+    @client.setter
+    def client(self, client: ClientData):
+        """Set task's id.
+            client:ClientData, task client executor.
+        """
+        assert self._client is None
+        self._client = client
 
     @status.setter
     def status(self, status: str):
