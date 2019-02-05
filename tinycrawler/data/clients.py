@@ -30,6 +30,10 @@ class Clients(Printable):
         self._clients[client_data.ip].add(client_data)
 
     def disconnect(self, client_data: ClientData):
+        assert isinstance(client_data, ClientData)
+        assert client_data in self
+        del self._clients[client_data.ip]
+        # TODO What else is to be done here?
 
     def __contains__(self, client_data: ClientData)->bool:
         """Determine if given client data is already in structure."""
