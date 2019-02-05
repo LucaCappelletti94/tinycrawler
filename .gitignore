@@ -15,3 +15,5 @@ coverage.xml
 test.sh
 .vscode
 \.mypy_cache/
+
+virtual_tinycrawler/
