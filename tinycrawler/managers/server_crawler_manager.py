@@ -58,7 +58,7 @@ class ServerCrawlerManager(CrawlerManager):
         self.register(
             "get_completed_downloader_tasks",
             callable=lambda: self._completed_downloader_tasks
-        )R£TLYç°
+        )
         self.register(
             "get_completed_parser_tasks",
             callable=lambda: self._completed_parser_tasks
