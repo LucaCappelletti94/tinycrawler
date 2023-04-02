@@ -7,7 +7,7 @@ from ..robots import Robots
 from ..urls import Urls
 from requests import Response
 import validators
-from typing import Callable
+from typing import Callable, Set
 from multiprocessing import Event, Value
 from queue import Empty, Queue
 
@@ -17,11 +17,14 @@ class Parser(ProcessHandler):
         super().__init__("Parser", statistics, process_spawn_event)
         self._urls, self._responses, self._process_callback_event, self._pages_number, self._urls_number, self._robots, self._follow_robots_txt, self._file_parser,  self._url_validator, self._logger, self._parser_library = urls, responses, process_callback_event, pages_number, urls_number, robots, follow_robots_txt, file_parser, url_validator, logger, parser_library
 
-    def _url_parser(self, page_url: str, soup: BeautifulSoup):
+    def _url_parser(self, page_url: str, soup: BeautifulSoup) -> Set[str]:
         urls = set()
         for a in soup.findAll("a", href=True):
             url = urljoin(page_url, a.get("href"))
-            if validators.url(url) and self._url_validator(url, self._logger) and (not self._follow_robots_txt or self._robots.can_fetch(url)):
+            if (
+                validators.url(url) and
+                self._url_validator(url, self._logger) and
+                (not self._follow_robots_txt or self._robots.can_fetch(url))):
                 urls.add(url)
         if urls:
             n = self._urls.put(urls)
@@ -29,6 +32,7 @@ class Parser(ProcessHandler):
                 self._urls_number.value += n
                 self._statistics.add("Urls", "Total Urls", n)
                 self._process_callback_event.set()
+        return urls
 
     def _enough(self, active_processes):
         return active_processes*20 > self._pages_number.value
@@ -36,8 +40,8 @@ class Parser(ProcessHandler):
     def _target(self, response: Response):
         """Parse the downloaded files, cleans them and extracts urls"""
         soup = BeautifulSoup(response.text, self._parser_library)
-        self._url_parser(response.url, soup)
-        self._file_parser(response.url, soup, self._logger)
+        urls = self._url_parser(response.url, soup)
+        self._file_parser(response.url, soup, urls, self._logger)
 
     def _get_job(self):
         response = self._responses.get_nowait()
