@@ -93,7 +93,11 @@ class TinyCrawler:
             seed = [seed]
         self._urls.put(seed)
         self._urls_number.value += len(seed)
-        self._statistics.set("info", "Working on", get_domain(seed[0]))
+        if len(seed) == 1:
+            work_name = get_domain(seed[0])
+        else:
+            work_name = "{} and other {} domains".format(get_domain(seed[0]), len(seed) - 1)
+        self._statistics.set("info", "Working on", work_name)
         self._downloader.add_process()
 
     def _end_reached(self):
