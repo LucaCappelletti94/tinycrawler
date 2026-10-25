@@ -8,7 +8,7 @@
 TinyCrawler
 ====================
 
-|travis| |sonar_quality| |sonar_maintainability| |sonar_coverage| |code_climate_maintainability| |pip|
+|travis| |code_climate_maintainability| |pip|
 
 An highly customizable crawler that uses multiprocessing and proxies to download one or more websites following a given filter, search and save functions.
 
@@ -132,15 +132,6 @@ The software is released under the MIT license.
 
 .. |travis| image:: https://travis-ci.org/LucaCappelletti94/tinycrawler.png
    :target: https://travis-ci.org/LucaCappelletti94/tinycrawler
-
-.. |sonar_quality| image:: https://sonarcloud.io/api/project_badges/measure?project=tinycrawler.lucacappelletti&metric=alert_status
-    :target: https://sonarcloud.io/dashboard/index/tinycrawler.lucacappelletti
-
-.. |sonar_maintainability| image:: https://sonarcloud.io/api/project_badges/measure?project=tinycrawler.lucacappelletti&metric=sqale_rating
-    :target: https://sonarcloud.io/dashboard/index/tinycrawler.lucacappelletti
-
-.. |sonar_coverage| image:: https://sonarcloud.io/api/project_badges/measure?project=tinycrawler.lucacappelletti&metric=coverage
-    :target: https://sonarcloud.io/dashboard/index/tinycrawler.lucacappelletti
 
 .. |code_climate_maintainability| image:: https://api.codeclimate.com/v1/badges/25fb7c6119e188dbd12c/maintainability
    :target: https://codeclimate.com/github/LucaCappelletti94/tinycrawler/maintainability
